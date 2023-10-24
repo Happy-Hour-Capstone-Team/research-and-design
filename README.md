@@ -1,2 +1,2 @@
-# Documentation
-Contains the notes, plans, and research for the team.
+# Wick
+This repository provides the source code for a Wick interpreter.
