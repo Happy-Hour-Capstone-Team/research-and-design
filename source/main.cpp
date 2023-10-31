@@ -1,6 +1,6 @@
 #include "main.hpp"
 
 int main() {
-    std::cout << "Hello world!\n" << factorial(3);
+    std::cout << "Hello world!\n";
     return 0;
 }
