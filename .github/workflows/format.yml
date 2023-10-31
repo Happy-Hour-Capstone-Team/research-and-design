@@ -1,0 +1,31 @@
+name: Format
+
+on: [push, pull_request]
+
+jobs:
+  commits:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Run clang-format
+        run: ./run-clang-format.sh
+
+      - name: Commit Changes
+        run: |
+          rm -rf tmp
+          git config --local user.email "bradenwepierce@gmail.com"
+          git config --local user.name "HappyHourBot"
+          git add -A
+          git commit -a -m "Format code files."
+        continue-on-error: true
+
+      - name: Push Commit
+        uses: ad-m/github-push-action@master
+        with:
+          branch: main
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
