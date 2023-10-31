@@ -1,5 +1,4 @@
-cmake_minimum_required(VERSION 3.27)
-project(WickInterpreter LANGUAGES C CXX)
-SET(CMAKE_CXX_STANDARD 20)
+cmake_minimum_required(VERSION 3.25)
+project(Wick LANGUAGES CXX)
 include_directories(include)
-add_executable(WickInterpreter ./src/main.cpp)
+add_executable(Wick source/main.cpp)
