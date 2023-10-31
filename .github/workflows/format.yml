@@ -26,6 +26,5 @@ jobs:
       - name: Push Commit
         uses: ad-m/github-push-action@master
         with:
-          branch: main
           github_token: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
