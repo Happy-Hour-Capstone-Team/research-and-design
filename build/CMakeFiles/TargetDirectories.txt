@@ -1,3 +1,5 @@
-C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles/Wick.dir
+C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles/wick.dir
+C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles/test_wick.dir
+C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles/test.dir
 C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles/edit_cache.dir
 C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles/rebuild_cache.dir

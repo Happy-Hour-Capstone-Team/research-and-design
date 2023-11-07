@@ -1,7 +1,6 @@
-CMakeFiles/Wick.dir/source/main.cpp.obj: \
+CMakeFiles/wick.dir/source/main.cpp.obj: \
  C:/Users/brade/Documents/GitHub/wick-interpreter/source/main.cpp \
  C:/Users/brade/Documents/GitHub/wick-interpreter/include/main.hpp \
- C:/Users/brade/Documents/GitHub/wick-interpreter/include/bird.hpp \
  /usr/lib/gcc/x86_64-pc-cygwin/11/include/c++/iostream \
  /usr/lib/gcc/x86_64-pc-cygwin/11/include/c++/x86_64-pc-cygwin/bits/c++config.h \
  /usr/lib/gcc/x86_64-pc-cygwin/11/include/c++/x86_64-pc-cygwin/bits/os_defines.h \

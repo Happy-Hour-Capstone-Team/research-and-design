@@ -63,7 +63,8 @@ CMAKE_BINARY_DIR = C:/Users/brade/Documents/GitHub/wick-interpreter/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/Wick.dir/all
+all: CMakeFiles/wick.dir/all
+all: CMakeFiles/test_wick.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -71,34 +72,61 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/Wick.dir/clean
+clean: CMakeFiles/wick.dir/clean
+clean: CMakeFiles/test_wick.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/Wick.dir
+# Target rules for target CMakeFiles/wick.dir
 
 # All Build rule for target.
-CMakeFiles/Wick.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Wick.dir/build.make CMakeFiles/Wick.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Wick.dir/build.make CMakeFiles/Wick.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles --progress-num=1,2,3 "Built target Wick"
-.PHONY : CMakeFiles/Wick.dir/all
+CMakeFiles/wick.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/wick.dir/build.make CMakeFiles/wick.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/wick.dir/build.make CMakeFiles/wick.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles --progress-num=4,5,6 "Built target wick"
+.PHONY : CMakeFiles/wick.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/Wick.dir/rule: cmake_check_build_system
+CMakeFiles/wick.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles 3
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/Wick.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/wick.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles 0
-.PHONY : CMakeFiles/Wick.dir/rule
+.PHONY : CMakeFiles/wick.dir/rule
 
 # Convenience name for target.
-Wick: CMakeFiles/Wick.dir/rule
-.PHONY : Wick
+wick: CMakeFiles/wick.dir/rule
+.PHONY : wick
 
 # clean rule for target.
-CMakeFiles/Wick.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Wick.dir/build.make CMakeFiles/Wick.dir/clean
-.PHONY : CMakeFiles/Wick.dir/clean
+CMakeFiles/wick.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/wick.dir/build.make CMakeFiles/wick.dir/clean
+.PHONY : CMakeFiles/wick.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/test_wick.dir
+
+# All Build rule for target.
+CMakeFiles/test_wick.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_wick.dir/build.make CMakeFiles/test_wick.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_wick.dir/build.make CMakeFiles/test_wick.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles --progress-num=1,2,3 "Built target test_wick"
+.PHONY : CMakeFiles/test_wick.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/test_wick.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles 3
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/test_wick.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles 0
+.PHONY : CMakeFiles/test_wick.dir/rule
+
+# Convenience name for target.
+test_wick: CMakeFiles/test_wick.dir/rule
+.PHONY : test_wick
+
+# clean rule for target.
+CMakeFiles/test_wick.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_wick.dir/build.make CMakeFiles/test_wick.dir/clean
+.PHONY : CMakeFiles/test_wick.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
