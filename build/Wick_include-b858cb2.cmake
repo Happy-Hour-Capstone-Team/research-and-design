@@ -1,0 +1,5 @@
+if(EXISTS "C:/Users/pierc/Documents/GitHub/wick-interpreter/build/Wick_tests-b858cb2.cmake")
+  include("C:/Users/pierc/Documents/GitHub/wick-interpreter/build/Wick_tests-b858cb2.cmake")
+else()
+  add_test(Wick_NOT_BUILT-b858cb2 Wick_NOT_BUILT-b858cb2)
+endif()

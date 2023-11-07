@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Wick.dir/source/bird.cpp.obj"
-  "CMakeFiles/Wick.dir/source/bird.cpp.obj.d"
+  "CMakeFiles/Wick.dir/source/factorial.cpp.obj"
+  "CMakeFiles/Wick.dir/source/factorial.cpp.obj.d"
   "CMakeFiles/Wick.dir/source/main.cpp.obj"
   "CMakeFiles/Wick.dir/source/main.cpp.obj.d"
   "Wick.exe"

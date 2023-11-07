@@ -57,13 +57,23 @@ RM = "C:/Program Files/CMake/bin/cmake.exe" -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:/Users/brade/Documents/GitHub/wick-interpreter
+CMAKE_SOURCE_DIR = C:/Users/pierc/Documents/GitHub/wick-interpreter
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:/Users/brade/Documents/GitHub/wick-interpreter/build
+CMAKE_BINARY_DIR = C:/Users/pierc/Documents/GitHub/wick-interpreter/build
 
 #=============================================================================
 # Targets provided globally by CMake.
+
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
+	"C:/Program Files/CMake/bin/ctest.exe" --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -87,9 +97,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles C:/Users/brade/Documents/GitHub/wick-interpreter/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/pierc/Documents/GitHub/wick-interpreter/build/CMakeFiles C:/Users/pierc/Documents/GitHub/wick-interpreter/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/pierc/Documents/GitHub/wick-interpreter/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -129,29 +139,45 @@ Wick/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Wick.dir/build.make CMakeFiles/Wick.dir/build
 .PHONY : Wick/fast
 
-source/bird.obj: source/bird.cpp.obj
-.PHONY : source/bird.obj
+#=============================================================================
+# Target rules for targets named WickTest
+
+# Build rule for target.
+WickTest: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 WickTest
+.PHONY : WickTest
+
+# fast build rule for target.
+WickTest/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WickTest.dir/build.make CMakeFiles/WickTest.dir/build
+.PHONY : WickTest/fast
+
+source/factorial.obj: source/factorial.cpp.obj
+.PHONY : source/factorial.obj
 
 # target to build an object file
-source/bird.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Wick.dir/build.make CMakeFiles/Wick.dir/source/bird.cpp.obj
-.PHONY : source/bird.cpp.obj
+source/factorial.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Wick.dir/build.make CMakeFiles/Wick.dir/source/factorial.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WickTest.dir/build.make CMakeFiles/WickTest.dir/source/factorial.cpp.obj
+.PHONY : source/factorial.cpp.obj
 
-source/bird.i: source/bird.cpp.i
-.PHONY : source/bird.i
+source/factorial.i: source/factorial.cpp.i
+.PHONY : source/factorial.i
 
 # target to preprocess a source file
-source/bird.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Wick.dir/build.make CMakeFiles/Wick.dir/source/bird.cpp.i
-.PHONY : source/bird.cpp.i
+source/factorial.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Wick.dir/build.make CMakeFiles/Wick.dir/source/factorial.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WickTest.dir/build.make CMakeFiles/WickTest.dir/source/factorial.cpp.i
+.PHONY : source/factorial.cpp.i
 
-source/bird.s: source/bird.cpp.s
-.PHONY : source/bird.s
+source/factorial.s: source/factorial.cpp.s
+.PHONY : source/factorial.s
 
 # target to generate assembly for a file
-source/bird.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Wick.dir/build.make CMakeFiles/Wick.dir/source/bird.cpp.s
-.PHONY : source/bird.cpp.s
+source/factorial.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Wick.dir/build.make CMakeFiles/Wick.dir/source/factorial.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WickTest.dir/build.make CMakeFiles/WickTest.dir/source/factorial.cpp.s
+.PHONY : source/factorial.cpp.s
 
 source/main.obj: source/main.cpp.obj
 .PHONY : source/main.obj
@@ -177,6 +203,30 @@ source/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Wick.dir/build.make CMakeFiles/Wick.dir/source/main.cpp.s
 .PHONY : source/main.cpp.s
 
+test/factorial.obj: test/factorial.cpp.obj
+.PHONY : test/factorial.obj
+
+# target to build an object file
+test/factorial.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WickTest.dir/build.make CMakeFiles/WickTest.dir/test/factorial.cpp.obj
+.PHONY : test/factorial.cpp.obj
+
+test/factorial.i: test/factorial.cpp.i
+.PHONY : test/factorial.i
+
+# target to preprocess a source file
+test/factorial.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WickTest.dir/build.make CMakeFiles/WickTest.dir/test/factorial.cpp.i
+.PHONY : test/factorial.cpp.i
+
+test/factorial.s: test/factorial.cpp.s
+.PHONY : test/factorial.s
+
+# target to generate assembly for a file
+test/factorial.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WickTest.dir/build.make CMakeFiles/WickTest.dir/test/factorial.cpp.s
+.PHONY : test/factorial.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -185,13 +235,18 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... test"
 	@echo "... Wick"
-	@echo "... source/bird.obj"
-	@echo "... source/bird.i"
-	@echo "... source/bird.s"
+	@echo "... WickTest"
+	@echo "... source/factorial.obj"
+	@echo "... source/factorial.i"
+	@echo "... source/factorial.s"
 	@echo "... source/main.obj"
 	@echo "... source/main.i"
 	@echo "... source/main.s"
+	@echo "... test/factorial.obj"
+	@echo "... test/factorial.i"
+	@echo "... test/factorial.s"
 .PHONY : help
 
 
