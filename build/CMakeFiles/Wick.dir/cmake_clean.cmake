@@ -1,15 +1,15 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Wick.dir/source/bird.cpp.obj"
-  "CMakeFiles/Wick.dir/source/bird.cpp.obj.d"
-  "CMakeFiles/Wick.dir/source/main.cpp.obj"
-  "CMakeFiles/Wick.dir/source/main.cpp.obj.d"
-  "Wick.exe"
-  "Wick.exe.manifest"
-  "Wick.pdb"
-  "libWick.dll.a"
+  "CMakeFiles/wick.dir/source/factorial.cpp.obj"
+  "CMakeFiles/wick.dir/source/factorial.cpp.obj.d"
+  "CMakeFiles/wick.dir/source/main.cpp.obj"
+  "CMakeFiles/wick.dir/source/main.cpp.obj.d"
+  "libwick.dll.a"
+  "wick.exe"
+  "wick.exe.manifest"
+  "wick.pdb"
 )
 
 # Per-language clean rules from dependency scanning.
 foreach(lang CXX)
-  include(CMakeFiles/Wick.dir/cmake_clean_${lang}.cmake OPTIONAL)
+  include(CMakeFiles/wick.dir/cmake_clean_${lang}.cmake OPTIONAL)
 endforeach()
