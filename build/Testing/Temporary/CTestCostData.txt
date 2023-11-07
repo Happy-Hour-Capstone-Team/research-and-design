@@ -1,5 +1,0 @@
-WickTests 5 0.0117471
-Wick 0 1
-Wick 0 1
-Wick Tests 1 0.0596216
----
