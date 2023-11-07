@@ -1,4 +1,4 @@
-CMakeFiles/WickTest.dir/test/factorial.cpp.obj: \
+CMakeFiles/test_wick.dir/test/factorial.cpp.obj: \
  C:/Users/pierc/Documents/GitHub/wick-interpreter/test/factorial.cpp \
  C:/Users/pierc/Documents/GitHub/wick-interpreter/include/factorial.hpp \
  C:/Users/pierc/Documents/GitHub/wick-interpreter/test/doctest.h \

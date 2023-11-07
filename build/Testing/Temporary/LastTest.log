@@ -1,3 +1,24 @@
-Start testing: Nov 07 13:32 Central Standard Time
+Start testing: Nov 07 14:25 Central Standard Time
 ----------------------------------------------------------
-End testing: Nov 07 13:32 Central Standard Time
+1/1 Testing: Wick Tests
+1/1 Test: Wick Tests
+Command: "C:/Users/pierc/Documents/GitHub/wick-interpreter/build/test_wick.exe"
+Directory: C:/Users/pierc/Documents/GitHub/wick-interpreter/build
+"Wick Tests" start time: Nov 07 14:25 Central Standard Time
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 2 | 2 passed | 0 failed | 0 skipped
+[doctest] assertions: 7 | 7 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"Wick Tests" end time: Nov 07 14:25 Central Standard Time
+"Wick Tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Nov 07 14:25 Central Standard Time

@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "C:/Users/pierc/Documents/GitHub/wick-interpreter/source/factorial.cpp" "CMakeFiles/Wick.dir/source/factorial.cpp.obj" "gcc" "CMakeFiles/Wick.dir/source/factorial.cpp.obj.d"
-  "C:/Users/pierc/Documents/GitHub/wick-interpreter/source/main.cpp" "CMakeFiles/Wick.dir/source/main.cpp.obj" "gcc" "CMakeFiles/Wick.dir/source/main.cpp.obj.d"
+  "C:/Users/pierc/Documents/GitHub/wick-interpreter/source/factorial.cpp" "CMakeFiles/wick.dir/source/factorial.cpp.obj" "gcc" "CMakeFiles/wick.dir/source/factorial.cpp.obj.d"
+  "C:/Users/pierc/Documents/GitHub/wick-interpreter/source/main.cpp" "CMakeFiles/wick.dir/source/main.cpp.obj" "gcc" "CMakeFiles/wick.dir/source/main.cpp.obj.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

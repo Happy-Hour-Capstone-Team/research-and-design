@@ -1,4 +1,4 @@
-CMakeFiles/Wick.dir/source/main.cpp.obj: \
+CMakeFiles/wick.dir/source/main.cpp.obj: \
  C:/Users/pierc/Documents/GitHub/wick-interpreter/source/main.cpp \
  C:/Users/pierc/Documents/GitHub/wick-interpreter/include/main.hpp \
  /usr/lib/gcc/x86_64-pc-cygwin/11/include/c++/iostream \
