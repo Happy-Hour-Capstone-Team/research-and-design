@@ -8,8 +8,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "C:/Users/brade/Documents/GitHub/wick-interpreter/source/factorial.cpp" "CMakeFiles/test_wick.dir/source/factorial.cpp.obj" "gcc" "CMakeFiles/test_wick.dir/source/factorial.cpp.obj.d"
-  "C:/Users/brade/Documents/GitHub/wick-interpreter/test/factorial.cpp" "CMakeFiles/test_wick.dir/test/factorial.cpp.obj" "gcc" "CMakeFiles/test_wick.dir/test/factorial.cpp.obj.d"
+  "C:/Users/pierc/Documents/GitHub/wick-interpreter/source/factorial.cpp" "CMakeFiles/test_wick.dir/source/factorial.cpp.obj" "gcc" "CMakeFiles/test_wick.dir/source/factorial.cpp.obj.d"
+  "C:/Users/pierc/Documents/GitHub/wick-interpreter/source/tokenizer.cpp" "CMakeFiles/test_wick.dir/source/tokenizer.cpp.obj" "gcc" "CMakeFiles/test_wick.dir/source/tokenizer.cpp.obj.d"
+  "C:/Users/pierc/Documents/GitHub/wick-interpreter/test/factorial.cpp" "CMakeFiles/test_wick.dir/test/factorial.cpp.obj" "gcc" "CMakeFiles/test_wick.dir/test/factorial.cpp.obj.d"
+  "C:/Users/pierc/Documents/GitHub/wick-interpreter/test/tokenizer.cpp" "CMakeFiles/test_wick.dir/test/tokenizer.cpp.obj" "gcc" "CMakeFiles/test_wick.dir/test/tokenizer.cpp.obj.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

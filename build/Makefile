@@ -57,10 +57,10 @@ RM = "C:/Program Files/CMake/bin/cmake.exe" -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:/Users/brade/Documents/GitHub/wick-interpreter
+CMAKE_SOURCE_DIR = C:/Users/pierc/Documents/GitHub/wick-interpreter
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:/Users/brade/Documents/GitHub/wick-interpreter/build
+CMAKE_BINARY_DIR = C:/Users/pierc/Documents/GitHub/wick-interpreter/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -97,9 +97,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles C:/Users/brade/Documents/GitHub/wick-interpreter/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/pierc/Documents/GitHub/wick-interpreter/build/CMakeFiles C:/Users/pierc/Documents/GitHub/wick-interpreter/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/pierc/Documents/GitHub/wick-interpreter/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -203,6 +203,33 @@ source/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/wick.dir/build.make CMakeFiles/wick.dir/source/main.cpp.s
 .PHONY : source/main.cpp.s
 
+source/tokenizer.obj: source/tokenizer.cpp.obj
+.PHONY : source/tokenizer.obj
+
+# target to build an object file
+source/tokenizer.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/wick.dir/build.make CMakeFiles/wick.dir/source/tokenizer.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_wick.dir/build.make CMakeFiles/test_wick.dir/source/tokenizer.cpp.obj
+.PHONY : source/tokenizer.cpp.obj
+
+source/tokenizer.i: source/tokenizer.cpp.i
+.PHONY : source/tokenizer.i
+
+# target to preprocess a source file
+source/tokenizer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/wick.dir/build.make CMakeFiles/wick.dir/source/tokenizer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_wick.dir/build.make CMakeFiles/test_wick.dir/source/tokenizer.cpp.i
+.PHONY : source/tokenizer.cpp.i
+
+source/tokenizer.s: source/tokenizer.cpp.s
+.PHONY : source/tokenizer.s
+
+# target to generate assembly for a file
+source/tokenizer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/wick.dir/build.make CMakeFiles/wick.dir/source/tokenizer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_wick.dir/build.make CMakeFiles/test_wick.dir/source/tokenizer.cpp.s
+.PHONY : source/tokenizer.cpp.s
+
 test/factorial.obj: test/factorial.cpp.obj
 .PHONY : test/factorial.obj
 
@@ -227,6 +254,30 @@ test/factorial.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_wick.dir/build.make CMakeFiles/test_wick.dir/test/factorial.cpp.s
 .PHONY : test/factorial.cpp.s
 
+test/tokenizer.obj: test/tokenizer.cpp.obj
+.PHONY : test/tokenizer.obj
+
+# target to build an object file
+test/tokenizer.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_wick.dir/build.make CMakeFiles/test_wick.dir/test/tokenizer.cpp.obj
+.PHONY : test/tokenizer.cpp.obj
+
+test/tokenizer.i: test/tokenizer.cpp.i
+.PHONY : test/tokenizer.i
+
+# target to preprocess a source file
+test/tokenizer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_wick.dir/build.make CMakeFiles/test_wick.dir/test/tokenizer.cpp.i
+.PHONY : test/tokenizer.cpp.i
+
+test/tokenizer.s: test/tokenizer.cpp.s
+.PHONY : test/tokenizer.s
+
+# target to generate assembly for a file
+test/tokenizer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_wick.dir/build.make CMakeFiles/test_wick.dir/test/tokenizer.cpp.s
+.PHONY : test/tokenizer.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -244,9 +295,15 @@ help:
 	@echo "... source/main.obj"
 	@echo "... source/main.i"
 	@echo "... source/main.s"
+	@echo "... source/tokenizer.obj"
+	@echo "... source/tokenizer.i"
+	@echo "... source/tokenizer.s"
 	@echo "... test/factorial.obj"
 	@echo "... test/factorial.i"
 	@echo "... test/factorial.s"
+	@echo "... test/tokenizer.obj"
+	@echo "... test/tokenizer.i"
+	@echo "... test/tokenizer.s"
 .PHONY : help
 
 

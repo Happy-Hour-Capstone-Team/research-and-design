@@ -1,6 +1,5 @@
-CMakeFiles/wick.dir/source/main.cpp.obj: \
- C:/Users/pierc/Documents/GitHub/wick-interpreter/source/main.cpp \
- C:/Users/pierc/Documents/GitHub/wick-interpreter/include/main.hpp \
+CMakeFiles/test_wick.dir/source/tokenizer.cpp.obj: \
+ C:/Users/pierc/Documents/GitHub/wick-interpreter/source/tokenizer.cpp \
  C:/Users/pierc/Documents/GitHub/wick-interpreter/include/tokenizer.hpp \
  /usr/lib/gcc/x86_64-pc-cygwin/11/include/c++/regex \
  /usr/lib/gcc/x86_64-pc-cygwin/11/include/c++/algorithm \
@@ -202,5 +201,4 @@ CMakeFiles/wick.dir/source/main.cpp.obj: \
  /usr/lib/gcc/x86_64-pc-cygwin/11/include/c++/bits/regex.h \
  /usr/lib/gcc/x86_64-pc-cygwin/11/include/c++/bits/regex.tcc \
  /usr/lib/gcc/x86_64-pc-cygwin/11/include/c++/bits/regex_executor.h \
- /usr/lib/gcc/x86_64-pc-cygwin/11/include/c++/bits/regex_executor.tcc \
- /usr/lib/gcc/x86_64-pc-cygwin/11/include/c++/iostream
+ /usr/lib/gcc/x86_64-pc-cygwin/11/include/c++/bits/regex_executor.tcc

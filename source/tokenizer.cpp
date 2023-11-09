@@ -1,90 +1,44 @@
-#include <cctype>
-#include <iostream>
-#include <map>
-#include <regex>
-#include <string>
-#include <vector>
+#include "tokenizer.hpp"
 
-enum class TokenType {
-  Identifier,
-  Integer,
-  Real,
-  LeftParenthesis,
-  RightParenthesis,
-  Equals,
-  StatementEnd,
-  Custom
-};
+Tokenizer::Tokenizer(const std::string iCommentPattern,
+                     const std::vector<TokenRule> &iRules) :
+    commentPattern{iCommentPattern}, rules{iRules} {}
 
-struct Token {
-  std::string lexeme;
-  TokenType type;
-};
+std::vector<Token> Tokenizer::tokenize(std::string input) {
+  input = std::regex_replace(input, commentPattern, "");
+  std::vector<Token> tokens;
+  std::string currentToken;
 
-struct TokenRule {
-  std::regex pattern;
-  TokenType type;
-};
+  for(size_t i = 0; i < input.length(); i++) {
+    char c = input[i];
 
-class Tokenizer {
-public:
-  Tokenizer() {}
-
-  void addRule(const std::string &pattern, TokenType type) {
-    customRules_.push_back({std::regex(pattern), type});
-  }
-
-  std::vector<Token> tokenize(const std::string &input) {
-    std::vector<Token> tokens;
-    std::string currentToken;
-    bool inComment = false;
-
-    for (size_t i = 0; i < input.length(); i++) {
-      char c = input[i];
-
-      if (inComment) {
-        if (c == '\n') {
-          inComment = false;
-        }
-        continue;
-      }
-
-      if (std::isspace(c) || c == '\n') {
-        if (!currentToken.empty()) {
-          TokenType tokenType = TokenType::Identifier; // Default to Identifier
-          for (const auto &rule : customRules_) {
-            if (std::regex_match(currentToken, rule.pattern)) {
-              tokenType = rule.type;
-              break;
-            }
+    if(std::isspace(c) || c == '\n') {
+      if(!currentToken.empty()) {
+        TokenType tokenType{TokenType::Identifier}; // Default to Identifier
+        for(const auto &rule : rules) {
+          if(std::regex_match(currentToken, std::regex{rule.pattern})) {
+            tokenType = rule.type;
+            break;
           }
-          tokens.push_back({currentToken, tokenType});
-          currentToken.clear();
         }
-      } else if (c == '/') {
-        if (i + 1 < input.length() && input[i + 1] == '/') {
-          inComment = true; // Handle single-line comments
-          i++;
-        }
-      } else {
-        currentToken += c;
+        tokens.push_back({currentToken, tokenType});
+        currentToken.clear();
       }
+    } else {
+      currentToken += c;
     }
-
-    if (!currentToken.empty()) {
-      TokenType tokenType = TokenType::Identifier; // Default to Identifier
-      for (const auto &rule : customRules_) {
-        if (std::regex_match(currentToken, rule.pattern)) {
-          tokenType = rule.type;
-          break;
-        }
-      }
-      tokens.push_back({currentToken, tokenType});
-    }
-
-    return tokens;
   }
 
-private:
-  std::vector<TokenRule> customRules_;
-};
+  if(!currentToken.empty()) {
+    TokenType tokenType = TokenType::Identifier; // Default to Identifier
+    for(const auto &rule : rules) {
+      if(std::regex_match(currentToken, std::regex{rule.pattern})) {
+        tokenType = rule.type;
+        break;
+      }
+    }
+    tokens.push_back({currentToken, tokenType});
+  }
+
+  return tokens;
+}

@@ -53,10 +53,10 @@ RM = "C:/Program Files/CMake/bin/cmake.exe" -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:/Users/brade/Documents/GitHub/wick-interpreter
+CMAKE_SOURCE_DIR = C:/Users/pierc/Documents/GitHub/wick-interpreter
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:/Users/brade/Documents/GitHub/wick-interpreter/build
+CMAKE_BINARY_DIR = C:/Users/pierc/Documents/GitHub/wick-interpreter/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/wick.dir/depend.make
@@ -71,48 +71,65 @@ include CMakeFiles/wick.dir/flags.make
 
 CMakeFiles/wick.dir/source/main.cpp.obj: CMakeFiles/wick.dir/flags.make
 CMakeFiles/wick.dir/source/main.cpp.obj: CMakeFiles/wick.dir/includes_CXX.rsp
-CMakeFiles/wick.dir/source/main.cpp.obj: C:/Users/brade/Documents/GitHub/wick-interpreter/source/main.cpp
+CMakeFiles/wick.dir/source/main.cpp.obj: C:/Users/pierc/Documents/GitHub/wick-interpreter/source/main.cpp
 CMakeFiles/wick.dir/source/main.cpp.obj: CMakeFiles/wick.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/wick.dir/source/main.cpp.obj"
-	C:/cygwin64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/wick.dir/source/main.cpp.obj -MF CMakeFiles/wick.dir/source/main.cpp.obj.d -o CMakeFiles/wick.dir/source/main.cpp.obj -c C:/Users/brade/Documents/GitHub/wick-interpreter/source/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:/Users/pierc/Documents/GitHub/wick-interpreter/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/wick.dir/source/main.cpp.obj"
+	C:/cygwin64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/wick.dir/source/main.cpp.obj -MF CMakeFiles/wick.dir/source/main.cpp.obj.d -o CMakeFiles/wick.dir/source/main.cpp.obj -c C:/Users/pierc/Documents/GitHub/wick-interpreter/source/main.cpp
 
 CMakeFiles/wick.dir/source/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/wick.dir/source/main.cpp.i"
-	C:/cygwin64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:/Users/brade/Documents/GitHub/wick-interpreter/source/main.cpp > CMakeFiles/wick.dir/source/main.cpp.i
+	C:/cygwin64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:/Users/pierc/Documents/GitHub/wick-interpreter/source/main.cpp > CMakeFiles/wick.dir/source/main.cpp.i
 
 CMakeFiles/wick.dir/source/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/wick.dir/source/main.cpp.s"
-	C:/cygwin64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:/Users/brade/Documents/GitHub/wick-interpreter/source/main.cpp -o CMakeFiles/wick.dir/source/main.cpp.s
+	C:/cygwin64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:/Users/pierc/Documents/GitHub/wick-interpreter/source/main.cpp -o CMakeFiles/wick.dir/source/main.cpp.s
 
 CMakeFiles/wick.dir/source/factorial.cpp.obj: CMakeFiles/wick.dir/flags.make
 CMakeFiles/wick.dir/source/factorial.cpp.obj: CMakeFiles/wick.dir/includes_CXX.rsp
-CMakeFiles/wick.dir/source/factorial.cpp.obj: C:/Users/brade/Documents/GitHub/wick-interpreter/source/factorial.cpp
+CMakeFiles/wick.dir/source/factorial.cpp.obj: C:/Users/pierc/Documents/GitHub/wick-interpreter/source/factorial.cpp
 CMakeFiles/wick.dir/source/factorial.cpp.obj: CMakeFiles/wick.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/wick.dir/source/factorial.cpp.obj"
-	C:/cygwin64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/wick.dir/source/factorial.cpp.obj -MF CMakeFiles/wick.dir/source/factorial.cpp.obj.d -o CMakeFiles/wick.dir/source/factorial.cpp.obj -c C:/Users/brade/Documents/GitHub/wick-interpreter/source/factorial.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:/Users/pierc/Documents/GitHub/wick-interpreter/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/wick.dir/source/factorial.cpp.obj"
+	C:/cygwin64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/wick.dir/source/factorial.cpp.obj -MF CMakeFiles/wick.dir/source/factorial.cpp.obj.d -o CMakeFiles/wick.dir/source/factorial.cpp.obj -c C:/Users/pierc/Documents/GitHub/wick-interpreter/source/factorial.cpp
 
 CMakeFiles/wick.dir/source/factorial.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/wick.dir/source/factorial.cpp.i"
-	C:/cygwin64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:/Users/brade/Documents/GitHub/wick-interpreter/source/factorial.cpp > CMakeFiles/wick.dir/source/factorial.cpp.i
+	C:/cygwin64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:/Users/pierc/Documents/GitHub/wick-interpreter/source/factorial.cpp > CMakeFiles/wick.dir/source/factorial.cpp.i
 
 CMakeFiles/wick.dir/source/factorial.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/wick.dir/source/factorial.cpp.s"
-	C:/cygwin64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:/Users/brade/Documents/GitHub/wick-interpreter/source/factorial.cpp -o CMakeFiles/wick.dir/source/factorial.cpp.s
+	C:/cygwin64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:/Users/pierc/Documents/GitHub/wick-interpreter/source/factorial.cpp -o CMakeFiles/wick.dir/source/factorial.cpp.s
+
+CMakeFiles/wick.dir/source/tokenizer.cpp.obj: CMakeFiles/wick.dir/flags.make
+CMakeFiles/wick.dir/source/tokenizer.cpp.obj: CMakeFiles/wick.dir/includes_CXX.rsp
+CMakeFiles/wick.dir/source/tokenizer.cpp.obj: C:/Users/pierc/Documents/GitHub/wick-interpreter/source/tokenizer.cpp
+CMakeFiles/wick.dir/source/tokenizer.cpp.obj: CMakeFiles/wick.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:/Users/pierc/Documents/GitHub/wick-interpreter/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/wick.dir/source/tokenizer.cpp.obj"
+	C:/cygwin64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/wick.dir/source/tokenizer.cpp.obj -MF CMakeFiles/wick.dir/source/tokenizer.cpp.obj.d -o CMakeFiles/wick.dir/source/tokenizer.cpp.obj -c C:/Users/pierc/Documents/GitHub/wick-interpreter/source/tokenizer.cpp
+
+CMakeFiles/wick.dir/source/tokenizer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/wick.dir/source/tokenizer.cpp.i"
+	C:/cygwin64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:/Users/pierc/Documents/GitHub/wick-interpreter/source/tokenizer.cpp > CMakeFiles/wick.dir/source/tokenizer.cpp.i
+
+CMakeFiles/wick.dir/source/tokenizer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/wick.dir/source/tokenizer.cpp.s"
+	C:/cygwin64/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:/Users/pierc/Documents/GitHub/wick-interpreter/source/tokenizer.cpp -o CMakeFiles/wick.dir/source/tokenizer.cpp.s
 
 # Object files for target wick
 wick_OBJECTS = \
 "CMakeFiles/wick.dir/source/main.cpp.obj" \
-"CMakeFiles/wick.dir/source/factorial.cpp.obj"
+"CMakeFiles/wick.dir/source/factorial.cpp.obj" \
+"CMakeFiles/wick.dir/source/tokenizer.cpp.obj"
 
 # External object files for target wick
 wick_EXTERNAL_OBJECTS =
 
 wick.exe: CMakeFiles/wick.dir/source/main.cpp.obj
 wick.exe: CMakeFiles/wick.dir/source/factorial.cpp.obj
+wick.exe: CMakeFiles/wick.dir/source/tokenizer.cpp.obj
 wick.exe: CMakeFiles/wick.dir/build.make
 wick.exe: CMakeFiles/wick.dir/linkLibs.rsp
 wick.exe: CMakeFiles/wick.dir/objects1.rsp
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable wick.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:/Users/pierc/Documents/GitHub/wick-interpreter/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable wick.exe"
 	"C:/Program Files/CMake/bin/cmake.exe" -E rm -f CMakeFiles/wick.dir/objects.a
 	C:/cygwin64/bin/ar.exe qc CMakeFiles/wick.dir/objects.a @CMakeFiles/wick.dir/objects1.rsp
 	C:/cygwin64/bin/c++.exe -Wl,--whole-archive CMakeFiles/wick.dir/objects.a -Wl,--no-whole-archive -o wick.exe -Wl,--out-implib,libwick.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles/wick.dir/linkLibs.rsp
@@ -126,6 +143,6 @@ CMakeFiles/wick.dir/clean:
 .PHONY : CMakeFiles/wick.dir/clean
 
 CMakeFiles/wick.dir/depend:
-	$(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" C:/Users/brade/Documents/GitHub/wick-interpreter C:/Users/brade/Documents/GitHub/wick-interpreter C:/Users/brade/Documents/GitHub/wick-interpreter/build C:/Users/brade/Documents/GitHub/wick-interpreter/build C:/Users/brade/Documents/GitHub/wick-interpreter/build/CMakeFiles/wick.dir/DependInfo.cmake "--color=$(COLOR)"
+	$(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" C:/Users/pierc/Documents/GitHub/wick-interpreter C:/Users/pierc/Documents/GitHub/wick-interpreter C:/Users/pierc/Documents/GitHub/wick-interpreter/build C:/Users/pierc/Documents/GitHub/wick-interpreter/build C:/Users/pierc/Documents/GitHub/wick-interpreter/build/CMakeFiles/wick.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/wick.dir/depend
 
