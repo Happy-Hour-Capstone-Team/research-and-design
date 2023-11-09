@@ -18,7 +18,6 @@ std::vector<Token> Tokenizer::tokenize(std::string input) {
         for(const auto &rule : rules) {
           if(std::regex_match(currentToken, std::regex{rule.pattern})) {
             tokenType = rule.type;
-            break;
           }
         }
         tokens.push_back({currentToken, tokenType});
@@ -30,11 +29,10 @@ std::vector<Token> Tokenizer::tokenize(std::string input) {
   }
 
   if(!currentToken.empty()) {
-    TokenType tokenType = TokenType::Identifier; // Default to Identifier
+    TokenType tokenType{TokenType::Identifier}; // Default to Identifier
     for(const auto &rule : rules) {
       if(std::regex_match(currentToken, std::regex{rule.pattern})) {
         tokenType = rule.type;
-        break;
       }
     }
     tokens.push_back({currentToken, tokenType});
