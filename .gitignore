@@ -1,1 +1,2 @@
-build/
+# Exclude build files
+build/*
