@@ -2,8 +2,7 @@
 
 Tokenizer::Tokenizer(const std::string iCommentPattern,
                      const std::vector<TokenRule> &iRules) :
-    commentPattern{iCommentPattern},
-    rules{iRules} {}
+    commentPattern{iCommentPattern}, rules{iRules} {}
 
 std::vector<Token> Tokenizer::tokenize(std::string input) {
   input = std::regex_replace(input, commentPattern, "");
