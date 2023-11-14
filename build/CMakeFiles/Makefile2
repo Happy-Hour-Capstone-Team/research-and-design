@@ -54,10 +54,10 @@ RM = "C:/Program Files/CMake/bin/cmake.exe" -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:/Users/pierc/Documents/GitHub/wick-interpreter
+CMAKE_SOURCE_DIR = C:/Users/2020s/Documents/GitHub/wick-interpreter
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:/Users/pierc/Documents/GitHub/wick-interpreter/build
+CMAKE_BINARY_DIR = C:/Users/2020s/Documents/GitHub/wick-interpreter/build
 
 #=============================================================================
 # Directory level rules for the build root directory
@@ -83,14 +83,14 @@ clean: CMakeFiles/test_wick.dir/clean
 CMakeFiles/wick.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/wick.dir/build.make CMakeFiles/wick.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/wick.dir/build.make CMakeFiles/wick.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:/Users/pierc/Documents/GitHub/wick-interpreter/build/CMakeFiles --progress-num=6,7,8,9 "Built target wick"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:/Users/2020s/Documents/GitHub/wick-interpreter/build/CMakeFiles --progress-num=6,7,8,9 "Built target wick"
 .PHONY : CMakeFiles/wick.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/wick.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/pierc/Documents/GitHub/wick-interpreter/build/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/2020s/Documents/GitHub/wick-interpreter/build/CMakeFiles 4
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/wick.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/pierc/Documents/GitHub/wick-interpreter/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/2020s/Documents/GitHub/wick-interpreter/build/CMakeFiles 0
 .PHONY : CMakeFiles/wick.dir/rule
 
 # Convenience name for target.
@@ -109,14 +109,14 @@ CMakeFiles/wick.dir/clean:
 CMakeFiles/test_wick.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_wick.dir/build.make CMakeFiles/test_wick.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_wick.dir/build.make CMakeFiles/test_wick.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:/Users/pierc/Documents/GitHub/wick-interpreter/build/CMakeFiles --progress-num=1,2,3,4,5 "Built target test_wick"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:/Users/2020s/Documents/GitHub/wick-interpreter/build/CMakeFiles --progress-num=1,2,3,4,5 "Built target test_wick"
 .PHONY : CMakeFiles/test_wick.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/test_wick.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/pierc/Documents/GitHub/wick-interpreter/build/CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/2020s/Documents/GitHub/wick-interpreter/build/CMakeFiles 5
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/test_wick.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/pierc/Documents/GitHub/wick-interpreter/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start C:/Users/2020s/Documents/GitHub/wick-interpreter/build/CMakeFiles 0
 .PHONY : CMakeFiles/test_wick.dir/rule
 
 # Convenience name for target.

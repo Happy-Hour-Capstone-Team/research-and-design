@@ -1,6 +1,6 @@
 CMakeFiles/test_wick.dir/source/tokenizer.cpp.obj: \
- C:/Users/pierc/Documents/GitHub/wick-interpreter/source/tokenizer.cpp \
- C:/Users/pierc/Documents/GitHub/wick-interpreter/include/tokenizer.hpp \
+ C:/Users/2020s/Documents/GitHub/wick-interpreter/source/tokenizer.cpp \
+ C:/Users/2020s/Documents/GitHub/wick-interpreter/include/tokenizer.hpp \
  /usr/lib/gcc/x86_64-pc-cygwin/11/include/c++/regex \
  /usr/lib/gcc/x86_64-pc-cygwin/11/include/c++/algorithm \
  /usr/lib/gcc/x86_64-pc-cygwin/11/include/c++/utility \

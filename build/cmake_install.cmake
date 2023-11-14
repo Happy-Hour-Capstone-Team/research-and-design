@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/pierc/Documents/GitHub/wick-interpreter
+# Install script for directory: C:/Users/2020s/Documents/GitHub/wick-interpreter
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/pierc/Documents/GitHub/wick-interpreter/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/2020s/Documents/GitHub/wick-interpreter/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
