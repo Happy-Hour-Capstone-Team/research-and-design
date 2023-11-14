@@ -1,6 +1,6 @@
 #include "main.hpp"
 
 int main() {
-  std::cout << "Hello world!\n";
+  std::cout << "write code here";
   return 0;
 }
