@@ -1,5 +1,0 @@
-C:/Users/2020s/Documents/GitHub/wick-interpreter/build/CMakeFiles/wick.dir
-C:/Users/2020s/Documents/GitHub/wick-interpreter/build/CMakeFiles/test_wick.dir
-C:/Users/2020s/Documents/GitHub/wick-interpreter/build/CMakeFiles/test.dir
-C:/Users/2020s/Documents/GitHub/wick-interpreter/build/CMakeFiles/edit_cache.dir
-C:/Users/2020s/Documents/GitHub/wick-interpreter/build/CMakeFiles/rebuild_cache.dir
