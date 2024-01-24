@@ -3,6 +3,7 @@
 #include <sstream>
 #include <regex>
 #include <vector>
+#include <iostream>
 
 enum class TokenType {
   Identifier,
@@ -28,6 +29,8 @@ class Scanner {
   Scanner(std::initializer_list<TokenRule> rules);
 
   std::vector<Token> tokenize(const std::string &input);
+
+  static void printTokens(const std::vector<Token> &tokens);
 
   private:
   std::vector<TokenType> getTokenTypeMatches(const std::string &lexeme);
