@@ -1,5 +1,4 @@
 #include "scanner.hpp"
-#include <iostream>
 
 Scanner::Scanner(std::initializer_list<TokenRule> rules) : rules{rules} {}
 
@@ -11,21 +10,18 @@ std::vector<Token> Scanner::tokenize(const std::string &input) {
     std::string lexeme{""};
     for(char c : line) {
       if(isspace(c)) {
-        if(lexeme.empty()) continue;
-        tokens.push_back({lexeme, getTokenTypeMatches(lexeme)[0], lineNumber});
-        lexeme = "";
+        if(!lexeme.empty())
+          pushBackTokenWithLexemeUpdate(tokens, lexeme, "", lineNumber);
         continue;
       }
       const std::string newLexeme{lexeme + c};
-      std::vector<TokenType> tokenTypeMatches{getTokenTypeMatches(newLexeme)};
       // If no matches, get highest priority match from previous lexeme.
-      if(tokenTypeMatches.size() == 0) {
-        tokens.push_back({lexeme, getTokenTypeMatches(lexeme)[0], lineNumber});
-        lexeme = c;
-      } else
+      if(getTokenTypeMatches(newLexeme).size() == 0)
+        pushBackTokenWithLexemeUpdate(tokens, lexeme, "" + c, lineNumber);
+      else
         lexeme = newLexeme;
     }
-    tokens.push_back({lexeme, getTokenTypeMatches(lexeme)[0], lineNumber});
+    pushBackToken(tokens, lexeme, lineNumber);
   }
   return tokens;
 }
@@ -54,4 +50,18 @@ std::vector<TokenType> Scanner::getTokenTypeMatches(const std::string &lexeme) {
       tokenTypeMatches.push_back(rule.second);
   }
   return tokenTypeMatches;
+}
+
+void Scanner::pushBackToken(std::vector<Token> &tokens,
+                            const std::string &lexeme,
+                            int lineNumber) {
+  tokens.push_back({lexeme, getTokenTypeMatches(lexeme)[0], lineNumber});
+}
+
+void Scanner::pushBackTokenWithLexemeUpdate(std::vector<Token> &tokens,
+                                            std::string &lexeme,
+                                            const std::string &newLexeme,
+                                            int lineNumber) {
+  pushBackToken(tokens, lexeme, lineNumber);
+  lexeme = newLexeme;
 }

@@ -3,7 +3,6 @@ project(wick LANGUAGES CXX)
 
 include_directories(include)
 set(FILES
-    factorial.cpp
     scanner.cpp
     # Add other source files here.
 )
@@ -19,6 +18,7 @@ add_executable(wick
 )
 
 add_executable(test_wick
+    test/main.cpp
     ${TEST}
     ${SOURCE}
 )
