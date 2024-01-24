@@ -4,7 +4,7 @@ project(wick LANGUAGES CXX)
 include_directories(include)
 set(FILES
     factorial.cpp
-    tokenizer.cpp
+    scanner.cpp
     # Add other source files here.
 )
 

@@ -1,4 +1,4 @@
 #pragma once
 
-#include "tokenizer.hpp"
+#include "scanner.hpp"
 #include <iostream>

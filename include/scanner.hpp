@@ -1,5 +1,6 @@
 #pragma once
 
+#include <sstream>
 #include <regex>
 #include <vector>
 
@@ -17,21 +18,19 @@ enum class TokenType {
 struct Token {
   std::string lexeme;
   TokenType type;
+  int line{-1};
 };
 
-struct TokenRule {
-  std::string pattern;
-  TokenType type;
-};
+using TokenRule = std::pair<std::string, TokenType>;
 
-class Tokenizer {
+class Scanner {
   public:
-  Tokenizer(const std::string iCommentPattern,
-            const std::vector<TokenRule> &iRules);
+  Scanner(std::initializer_list<TokenRule> rules);
 
-  std::vector<Token> tokenize(std::string input);
+  std::vector<Token> tokenize(const std::string &input);
 
   private:
-  std::regex commentPattern;
+  std::vector<TokenType> getTokenTypeMatches(const std::string &lexeme);
+
   std::vector<TokenRule> rules;
 };
