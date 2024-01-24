@@ -4,21 +4,23 @@ Scanner::Scanner(std::initializer_list<TokenRule> rules) : rules{rules} {}
 
 std::vector<Token> Scanner::tokenize(const std::string &input) {
   std::vector<Token> tokens;
-  int lineNumber{0};
+  int lineNumber{1};
   std::stringstream ss{input};
   for(std::string line; std::getline(ss, line, '\n'); lineNumber++) {
     std::string lexeme{""};
     for(char c : line) {
-      if(isspace(c)) {
-        if(!lexeme.empty())
-          pushBackTokenWithLexemeUpdate(tokens, lexeme, "", lineNumber);
+      if(isspace(c)) {        
+        if(lexeme.empty()) continue;
+        pushBackToken(tokens, lexeme, lineNumber);
+        lexeme = "";
         continue;
       }
       const std::string newLexeme{lexeme + c};
       // If no matches, get highest priority match from previous lexeme.
-      if(getTokenTypeMatches(newLexeme).size() == 0)
-        pushBackTokenWithLexemeUpdate(tokens, lexeme, "" + c, lineNumber);
-      else
+      if(getTokenTypeMatches(newLexeme).size() == 0) {
+        pushBackToken(tokens, lexeme, lineNumber);
+        lexeme = c;
+      } else
         lexeme = newLexeme;
     }
     pushBackToken(tokens, lexeme, lineNumber);
@@ -56,12 +58,4 @@ void Scanner::pushBackToken(std::vector<Token> &tokens,
                             const std::string &lexeme,
                             int lineNumber) {
   tokens.push_back({lexeme, getTokenTypeMatches(lexeme)[0], lineNumber});
-}
-
-void Scanner::pushBackTokenWithLexemeUpdate(std::vector<Token> &tokens,
-                                            std::string &lexeme,
-                                            const std::string &newLexeme,
-                                            int lineNumber) {
-  pushBackToken(tokens, lexeme, lineNumber);
-  lexeme = newLexeme;
 }

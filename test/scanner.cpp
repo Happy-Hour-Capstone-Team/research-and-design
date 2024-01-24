@@ -42,13 +42,23 @@ TEST_SUITE("Scanner") {
     SUBCASE("Complex line.") {
       auto results = scanner.tokenize("value = (2.525)(3351);");
       REQUIRE(results.size() == 9);
-
-      CHECK(results[0].lexeme == "test1");
-      CHECK(results[0].type == TokenType::Identifier);
-      CHECK(results[1].lexeme == "test2");
-      CHECK(results[1].type == TokenType::Identifier);
-      CHECK(results[2].lexeme == "test3");
-      CHECK(results[2].type == TokenType::Identifier);
+      std::vector<Token> expected{
+          Token{"value", TokenType::Identifier},
+          Token{"=", TokenType::Equals},
+          Token{"(", TokenType::LeftParenthesis},
+          Token{"2.525", TokenType::Real},
+          Token{")", TokenType::RightParenthesis},
+          Token{"(", TokenType::LeftParenthesis},
+          Token{"3351", TokenType::Integer},
+          Token{")", TokenType::RightParenthesis},
+          Token{";", TokenType::StatementEnd}
+      };
+      Scanner::printTokens(results);
+      for(int i = 0; i < results.size(); i++) {
+        CHECK(results[i].lexeme == expected[i].lexeme);
+        CHECK(results[i].type == expected[i].type);
+        CHECK(results[i].line == 1);
+      }
     }
   }
 }
