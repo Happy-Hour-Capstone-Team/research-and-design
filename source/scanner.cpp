@@ -9,7 +9,7 @@ std::vector<Token> Scanner::tokenize(const std::string &input) {
   for(std::string line; std::getline(ss, line, '\n'); lineNumber++) {
     std::string lexeme{""};
     for(char c : line) {
-      if(isspace(c)) {        
+      if(isspace(c)) {
         if(lexeme.empty()) continue;
         pushBackToken(tokens, lexeme, lineNumber);
         lexeme = "";
@@ -33,13 +33,18 @@ void Scanner::printTokens(const std::vector<Token> &tokens) {
   for(const Token &token : tokens) {
     std::cout << "\t";
     switch(token.type) {
+      case TokenType::Variable: std::cout << "Variable"; break;
       case TokenType::Identifier: std::cout << "Identifier"; break;
       case TokenType::Integer: std::cout << "Integer"; break;
       case TokenType::Real: std::cout << "Real"; break;
-      case TokenType::LeftParenthesis: std::cout << "Left Parenthesis"; break;
-      case TokenType::RightParenthesis: std::cout << "Right Parenthesis"; break;
+      case TokenType::LeftParenthesis: std::cout << "LeftParenthesis"; break;
+      case TokenType::RightParenthesis: std::cout << "RightParenthesis"; break;
       case TokenType::Equals: std::cout << "Equals"; break;
-      case TokenType::StatementEnd: std::cout << "Statement End"; break;
+      case TokenType::Semicolon: std::cout << "Semicolon"; break;
+      case TokenType::Plus: std::cout << "Plus"; break;
+      case TokenType::Minus: std::cout << "Minus"; break;
+      case TokenType::Asterisk: std::cout << "Asterisk"; break;
+      case TokenType::ForwardSlash: std::cout << "ForwardSlash"; break;
     }
     std::cout << ", " << token.lexeme << '\n';
   }

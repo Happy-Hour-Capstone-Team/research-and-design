@@ -6,13 +6,18 @@
 #include <vector>
 
 enum class TokenType {
+  Variable,
   Identifier,
   Integer,
   Real,
   LeftParenthesis,
   RightParenthesis,
   Equals,
-  StatementEnd
+  Semicolon,
+  Plus,
+  Minus,
+  Asterisk,
+  ForwardSlash,
 };
 
 struct Token {
