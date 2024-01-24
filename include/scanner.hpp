@@ -1,9 +1,9 @@
 #pragma once
 
+#include <iostream>
 #include <regex>
 #include <sstream>
 #include <vector>
-#include <iostream>
 
 enum class TokenType {
   Identifier,
