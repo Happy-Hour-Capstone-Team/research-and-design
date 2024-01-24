@@ -1,0 +1,23 @@
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Valgrind
+        run: |
+          sudo apt-get update
+          sudo apt-get install valgrind
+
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Run Tests
+        run: ./run-doctest.sh
+
+      - name: Run Valgrind
+        run: valgrind --tool=memcheck --leak-check=full --leak-resolution=med  --show-leak-kinds=all --undef-value-errors=yes --track-origins=yes --show-reachable=no --error-exitcode=1 ./build/test_wick.exe
