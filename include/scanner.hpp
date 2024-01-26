@@ -9,24 +9,23 @@
 enum class TokenType {
   Variable = 0,
   Identifier,
-  Integer,
-  Real,
-  LeftParenthesis,
-  RightParenthesis,
+  Number,
+  LeftParen,
+  RightParen,
   Equals,
   Semicolon,
   Plus,
   Minus,
   Asterisk,
   ForwardSlash,
+  Error
 };
 
 const std::array<std::string, 12> tokenTypeNames{"Variable",
                                                  "Identifier",
-                                                 "Integer",
-                                                 "Real",
-                                                 "LeftParenthesis",
-                                                 "RightParenthesis",
+                                                 "Number",
+                                                 "LeftParen",
+                                                 "RightParen",
                                                  "Equals",
                                                  "Semicolon",
                                                  "Plus",
@@ -45,29 +44,21 @@ struct Token {
   }
 };
 
-using TokenRule = std::pair<std::string, TokenType>;
-
-struct CommentRules {
-  std::string singleLine;
-  std::string multiLineBegin;
-  std::string multiLineEnd;
-};
+using TokenRule = std::pair<std::regex, TokenType>;
 
 class Scanner {
   public:
-  Scanner(std::initializer_list<TokenRule> rules, const CommentRules &comments);
+  Scanner(std::initializer_list<TokenRule> rules);
 
   std::vector<Token> tokenize(std::string input);
 
   static void printTokens(const std::vector<Token> &tokens);
 
   private:
-  bool shouldComment(const std::string &lexeme);
   std::vector<TokenType> getTokenTypeMatches(const std::string &lexeme);
   void addToken(std::vector<Token> &tokens,
                 std::string &lexeme,
                 const std::string &newLexeme,
                 int lineNumber);
   std::vector<TokenRule> rules;
-  CommentRules comments;
 };
