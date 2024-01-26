@@ -7,7 +7,7 @@
 #include <vector>
 
 enum class TokenType {
-  Variable,
+  Variable = 0,
   Identifier,
   Integer,
   Real,
@@ -47,20 +47,27 @@ struct Token {
 
 using TokenRule = std::pair<std::string, TokenType>;
 
+struct CommentRules {
+  std::string singleLine;
+  std::string multiLineBegin;
+  std::string multiLineEnd;
+};
+
 class Scanner {
   public:
-  Scanner(std::initializer_list<TokenRule> rules);
+  Scanner(std::initializer_list<TokenRule> rules, const CommentRules &comments);
 
   std::vector<Token> tokenize(std::string input);
 
   static void printTokens(const std::vector<Token> &tokens);
 
   private:
+  bool shouldComment(const std::string &lexeme);
   std::vector<TokenType> getTokenTypeMatches(const std::string &lexeme);
   void addToken(std::vector<Token> &tokens,
                 std::string &lexeme,
                 const std::string &newLexeme,
                 int lineNumber);
   std::vector<TokenRule> rules;
-  bool multiLineComment{false};
+  CommentRules comments;
 };

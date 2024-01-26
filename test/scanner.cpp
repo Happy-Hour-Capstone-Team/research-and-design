@@ -13,7 +13,8 @@ TEST_SUITE("Scanner") {
                    {"\\+", TokenType::Plus},
                    {"-", TokenType::Minus},
                    {"\\*", TokenType::Asterisk},
-                   {"/", TokenType::ForwardSlash}}};
+                   {"/", TokenType::ForwardSlash}},
+                   {"//", "//:", "://"}};
 
   TEST_CASE("Single line tokenization.") {
     SUBCASE("One identifier.") {
@@ -79,7 +80,7 @@ TEST_SUITE("Scanner") {
                                 Token{";", TokenType::Semicolon, 3}};
     REQUIRE(results.size() == 24);
     for(int i = 0; i < results.size(); i++) CHECK(results[i] == expected[i]);
-  } /*
+  }
 
    TEST_CASE("Comments are ignored.") {
      SUBCASE("Single line comments.") {
@@ -111,5 +112,5 @@ TEST_SUITE("Scanner") {
        auto results = scanner.tokenize(input);
        CHECK(results.size() == 24);
      }
-   }*/
+   }
 }

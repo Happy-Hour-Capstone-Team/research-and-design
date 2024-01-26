@@ -1,15 +1,26 @@
 #include "scanner.hpp"
 
+/*
+TODO:
+- Handle comments (see outline below)
+- Read from file
+- Error handle unrecognized tokens
+- Error handle lone multiLineCommentEnd
+*/
+
 std::ostream &operator<<(std::ostream &out, const TokenType tokenType) {
   return out << tokenTypeNames[static_cast<int>(tokenType)];
 }
 
-Scanner::Scanner(std::initializer_list<TokenRule> rules) : rules{rules} {}
+Scanner::Scanner(std::initializer_list<TokenRule> rules,
+                 const CommentRules &comments) :
+    rules{rules}, comments{comments} {}
 
 std::vector<Token> Scanner::tokenize(std::string input) {
   std::vector<Token> tokens;
   int lineNumber{1};
   std::string lexeme{""};
+  bool singleLineComment{false}, multiLineComment{false};
   for(char c : input) {
     if(isspace(c)) {
       if(!lexeme.empty()) addToken(tokens, lexeme, "", lineNumber);
@@ -17,15 +28,22 @@ std::vector<Token> Scanner::tokenize(std::string input) {
       continue;
     }
     const std::string newLexeme{lexeme + c};
-    if(getTokenTypeMatches(newLexeme).size() == 0)
-      addToken(tokens, lexeme, std::string{1, c}, lineNumber);
-    else
+    if(newLexeme == comments.singleLine)
+      singleLineComment = true;
+    else if(newLexeme == comments.multiLineBegin)
+      multiLineComment = true;
+    else if(newLexeme == comments.multiLineEnd)
+      multiLineComment = false; // ADD ERROR HANDLING HERE
+
+    if(getTokenTypeMatches(newLexeme).size())
       lexeme = newLexeme;
+    else
+      addToken(tokens, lexeme, std::string(1, c), lineNumber);
   }
   if(!lexeme.empty()) addToken(tokens, lexeme, lexeme, lineNumber);
   Scanner::printTokens(tokens);
   return tokens;
-} 
+}
 
 void Scanner::printTokens(const std::vector<Token> &tokens) {
   std::cout << "TOKENS:\n";
