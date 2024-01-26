@@ -1,53 +1,36 @@
 #include "scanner.hpp"
 
+std::ostream &operator<<(std::ostream &out, const TokenType tokenType) {
+  return out << tokenTypeNames[static_cast<int>(tokenType)];
+}
+
 Scanner::Scanner(std::initializer_list<TokenRule> rules) : rules{rules} {}
 
-std::vector<Token> Scanner::tokenize(const std::string &input) {
+std::vector<Token> Scanner::tokenize(std::string input) {
   std::vector<Token> tokens;
   int lineNumber{1};
-  std::stringstream ss{input};
-  for(std::string line; std::getline(ss, line, '\n'); lineNumber++) {
-    std::string lexeme{""};
-    for(char c : line) {
-      if(isspace(c)) {
-        if(lexeme.empty()) continue;
-        pushBackToken(tokens, lexeme, lineNumber);
-        lexeme = "";
-        continue;
-      }
-      const std::string newLexeme{lexeme + c};
-      // If no matches, get highest priority match from previous lexeme.
-      if(getTokenTypeMatches(newLexeme).size() == 0) {
-        pushBackToken(tokens, lexeme, lineNumber);
-        lexeme = c;
-      } else
-        lexeme = newLexeme;
+  std::string lexeme{""};
+  for(char c : input) {
+    if(isspace(c)) {
+      if(!lexeme.empty()) addToken(tokens, lexeme, "", lineNumber);
+      if(c == '\n') lineNumber++;
+      continue;
     }
-    pushBackToken(tokens, lexeme, lineNumber);
+    const std::string newLexeme{lexeme + c};
+    if(getTokenTypeMatches(newLexeme).size() == 0)
+      addToken(tokens, lexeme, std::string{1, c}, lineNumber);
+    else
+      lexeme = newLexeme;
   }
+  if(!lexeme.empty()) addToken(tokens, lexeme, lexeme, lineNumber);
+  Scanner::printTokens(tokens);
   return tokens;
-}
+} 
 
 void Scanner::printTokens(const std::vector<Token> &tokens) {
   std::cout << "TOKENS:\n";
-  for(const Token &token : tokens) {
-    std::cout << "\t";
-    switch(token.type) {
-      case TokenType::Variable: std::cout << "Variable"; break;
-      case TokenType::Identifier: std::cout << "Identifier"; break;
-      case TokenType::Integer: std::cout << "Integer"; break;
-      case TokenType::Real: std::cout << "Real"; break;
-      case TokenType::LeftParenthesis: std::cout << "LeftParenthesis"; break;
-      case TokenType::RightParenthesis: std::cout << "RightParenthesis"; break;
-      case TokenType::Equals: std::cout << "Equals"; break;
-      case TokenType::Semicolon: std::cout << "Semicolon"; break;
-      case TokenType::Plus: std::cout << "Plus"; break;
-      case TokenType::Minus: std::cout << "Minus"; break;
-      case TokenType::Asterisk: std::cout << "Asterisk"; break;
-      case TokenType::ForwardSlash: std::cout << "ForwardSlash"; break;
-    }
-    std::cout << ", " << token.lexeme << '\n';
-  }
+  for(const Token &token : tokens)
+    std::cout << "\t" << token.type << ", " << token.lexeme << '\n';
 }
 
 std::vector<TokenType> Scanner::getTokenTypeMatches(const std::string &lexeme) {
@@ -59,8 +42,10 @@ std::vector<TokenType> Scanner::getTokenTypeMatches(const std::string &lexeme) {
   return tokenTypeMatches;
 }
 
-void Scanner::pushBackToken(std::vector<Token> &tokens,
-                            const std::string &lexeme,
-                            int lineNumber) {
+void Scanner::addToken(std::vector<Token> &tokens,
+                       std::string &lexeme,
+                       const std::string &newLexeme,
+                       int lineNumber) {
   tokens.push_back({lexeme, getTokenTypeMatches(lexeme)[0], lineNumber});
+  lexeme = newLexeme;
 }
