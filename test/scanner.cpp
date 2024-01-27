@@ -1,5 +1,5 @@
-#include "doctest.h"
 #include "scanner.hpp"
+#include "doctest.h"
 
 void sameAs(const Token &token,
             const std::string &lexeme,
