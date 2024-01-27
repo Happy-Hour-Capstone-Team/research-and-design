@@ -3,18 +3,16 @@
 /**
  * PROGRAM ->  DECLARATION*
  * DECLARATION -> VARIABLE | STATEMENT
- * STATEMENT -> EXPRESSION_STATEMENT | BLOCK | IF | WHILE  
- * EXPRESSION_STATEMENT -> EXPRESSION ; 
+ * STATEMENT -> EXPRESSION_STATEMENT | BLOCK | IF | WHILE
+ * EXPRESSION_STATEMENT -> EXPRESSION ;
  * BLOCK -> ( begin DECLARATION* end ) | ( { DECLARATION* } )
  * IF -> if ( EXPRESSION ) STATEMENT ( else STATEMENT )?
  * WHILE_STATEMENT -> while ( EXPRESSION ) STATEMENT
- * EXPRESSION -> 
+ * EXPRESSION ->
  */
 
 // equality -> expression
-class Expression {
-
-};
+class Expression {};
 
 struct Equality {
   Comparison comparison;
