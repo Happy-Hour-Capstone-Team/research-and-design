@@ -1,5 +1,5 @@
-#include "doctest.h"
 #include "scanner.hpp"
+#include "doctest.h"
 
 void sameAs(const Token &token,
             const std::string &lexeme,
@@ -77,7 +77,6 @@ TEST_SUITE("Scanner") {
                                   Token{";", TokenType::Semicolon, 1, 27}};
       sameAs(results, expected);
     }
-
   }
   TEST_CASE("Multiple lines.") {
     std::string input{"variable value1 = (2.525)(3351);\n"
