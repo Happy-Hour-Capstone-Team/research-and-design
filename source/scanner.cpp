@@ -1,11 +1,5 @@
 #include "scanner.hpp"
 
-/*
-TODO:
-- Read from file
-- Error handle unrecognized tokens
-*/
-
 std::ostream &operator<<(std::ostream &out, const TokenType tokenType) {
   const int value{static_cast<int>(tokenType)};
   if(value >= tokenTypeNames.size()) return out << "Error";
@@ -31,7 +25,7 @@ std::vector<Token> Scanner::tokenize(const std::string &input) {
 }
 
 void Scanner::scanToken() {
-  if(singleCharacter()) return;
+  if(smallTokens()) return;
   switch(text[pos]) {
     case '\n':
       line++;
@@ -43,20 +37,51 @@ void Scanner::scanToken() {
   };
 }
 
-bool Scanner::singleCharacter() {
+bool Scanner::smallTokens() {
   switch(text[pos]) {
     case ' ':
     case '\r':
     case '\t': return true;
     case '{': addToken("{", TokenType::LeftCurly); return true;
     case '}': addToken("}", TokenType::RightCurly); return true;
+    case ';': addToken(";", TokenType::Semicolon); return true;
     case '(': addToken("(", TokenType::LeftParen); return true;
     case ')': addToken(")", TokenType::RightParen); return true;
-    case '=': addToken("=", TokenType::Equals); return true;
-    case ';': addToken(";", TokenType::Semicolon); return true;
+    case '=':
+      if(text[pos + 1] == '=') {
+        addToken("==", TokenType::EqualTo);
+        pos++;
+        col++;
+      } else
+        addToken("=", TokenType::Equal);
+      return true;
+    case '<':
+      if(text[pos + 1] == '=') {
+        addToken("<=", TokenType::LessThanOrEqualTo);
+        pos++;
+        col++;
+      } else
+        addToken("<", TokenType::LessThan);
+      return true;
+    case '>':
+      if(text[pos + 1] == '=') {
+        addToken(">=", TokenType::GreaterThanOrEqualTo);
+        pos++;
+        col++;
+      } else
+        addToken(">", TokenType::GreaterThan);
+      return true;
+    case '*': addToken("*", TokenType::Asterisk); return true;
     case '+': addToken("+", TokenType::Plus); return true;
     case '-': addToken("-", TokenType::Dash); return true;
-    case '*': addToken("*", TokenType::Asterisk); return true;
+    case '!':
+      if(text[pos + 1] == '=') {
+        addToken("!=", TokenType::NotEqualTo);
+        pos++;
+        col++;
+      } else
+        addToken("!", TokenType::Exclamation);
+      return true;
     default: return false;
   };
 }
@@ -100,7 +125,7 @@ void Scanner::longTokens() {
   else if(std::isalpha(text[pos]))
     identifier(lexeme);
   else
-    tokens.push_back({lexeme, TokenType::Error, line, col});
+    addToken(lexeme, TokenType::Error);
   col += lexeme.size() - 1;
 }
 
@@ -123,13 +148,14 @@ void Scanner::identifier(std::string &lexeme) {
     pos++;
     lexeme += text[pos];
   }
-  if(lexeme == "variable")
-    addToken(lexeme, TokenType::Variable);
+  if(auto search = keywords.find(lexeme); search != keywords.end())
+    addToken(lexeme, search->second);
   else
     addToken(lexeme, TokenType::Identifier);
 }
 
 void Scanner::addToken(const std::string &lexeme, TokenType type) {
+  if(type == TokenType::Error) std::cout << "Add logging here...\n";
   tokens.push_back({lexeme, type, line, col});
 }
 

@@ -4,40 +4,55 @@
 #include <iostream>
 #include <regex>
 #include <sstream>
+#include <unordered_map>
 #include <vector>
+
+/**
+ * KEY WORDS AND SYMBOLS
+ * variable, constant, begin, end, if, else, while, or, and, true, false, {, },
+ * ;, (, ), ==, !=, <, >, <=, >=, +, =, -, *, /, !
+ */
 
 enum class TokenType {
   Variable = 0,
+  Constant,
+  If,
+  Else,
+  While,
+  Or,
+  And,
+  Boolean,
   Identifier,
   Number,
   String,
-  Semicolon,
+  Begin,
+  End,
   LeftCurly,
   RightCurly,
+  Semicolon,
   LeftParen,
   RightParen,
-  Equals,
-  Plus,
-  Dash,
+  EqualTo,
+  NotEqualTo,
+  LessThan,
+  GreaterThan,
+  LessThanOrEqualTo,
+  GreaterThanOrEqualTo,
+  Equal,
   Asterisk,
   ForwardSlash,
+  Plus,
+  Dash,
+  Exclamation,
   Error
 };
 
-const std::array<std::string, 15> tokenTypeNames{"Variable",
-                                                 "Identifier",
-                                                 "Number",
-                                                 "String",
-                                                 "Semicolon",
-                                                 "LeftCurly",
-                                                 "RightCurly",
-                                                 "LeftParen",
-                                                 "RightParen",
-                                                 "Equals",
-                                                 "Plus",
-                                                 "Dash",
-                                                 "Asterisk",
-                                                 "ForwardSlash"};
+const std::array<std::string, 30> tokenTypeNames{
+    "variable", "constant", "if",         "else",   "while",  "or",
+    "and",      "Boolean",  "Identifier", "Number", "String", "begin",
+    "end",      "{",        "}",          ";",      "(",      ")",
+    "==",       "!=",       "<",          ">",      "<=",     ">=",
+    "=",        "*",        "/",          "+",      "-",      "!"};
 
 std::ostream &operator<<(std::ostream &out, const TokenType tokenType);
 
@@ -66,7 +81,7 @@ class Scanner {
 
   private:
   void scanToken();
-  bool singleCharacter();
+  bool smallTokens();
   void forwardSlash();
   void string();
   void longTokens();
@@ -76,5 +91,17 @@ class Scanner {
 
   std::string text;
   std::vector<Token> tokens;
+  std::unordered_map<std::string, TokenType> keywords{
+      {"variable", TokenType::Variable},
+      {"constant", TokenType::Constant},
+      {"if", TokenType::If},
+      {"else", TokenType::Else},
+      {"while", TokenType::While},
+      {"or", TokenType::Or},
+      {"and", TokenType::And},
+      {"true", TokenType::Boolean},
+      {"false", TokenType::Boolean},
+      {"begin", TokenType::Begin},
+      {"end", TokenType::End}};
   int pos{0}, line{1}, col{0};
 };
