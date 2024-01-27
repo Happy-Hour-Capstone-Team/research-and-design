@@ -10,26 +10,32 @@ enum class TokenType {
   Variable = 0,
   Identifier,
   Number,
+  String,
+  Semicolon,
+  LeftCurly,
+  RightCurly,
   LeftParen,
   RightParen,
   Equals,
-  Semicolon,
   Plus,
-  Minus,
+  Dash,
   Asterisk,
   ForwardSlash,
   Error
 };
 
-const std::array<std::string, 12> tokenTypeNames{"Variable",
+const std::array<std::string, 15> tokenTypeNames{"Variable",
                                                  "Identifier",
                                                  "Number",
+                                                 "String",
+                                                 "Semicolon",
+                                                 "LeftCurly",
+                                                 "RightCurly",
                                                  "LeftParen",
                                                  "RightParen",
                                                  "Equals",
-                                                 "Semicolon",
                                                  "Plus",
-                                                 "Minus",
+                                                 "Dash",
                                                  "Asterisk",
                                                  "ForwardSlash"};
 
@@ -38,27 +44,37 @@ std::ostream &operator<<(std::ostream &out, const TokenType tokenType);
 struct Token {
   std::string lexeme;
   TokenType type;
-  int line{1};
-  bool operator==(const Token rhs) {
-    return lexeme == rhs.lexeme && type == rhs.type && line == rhs.line;
+  int line{-1};
+  int col{-1};
+
+  bool operator==(const Token &rhs) {
+    return type == rhs.type;
   }
 };
+
+std::ostream &operator<<(std::ostream &out, const Token &token);
 
 using TokenRule = std::pair<std::regex, TokenType>;
 
 class Scanner {
   public:
-  Scanner(std::initializer_list<TokenRule> rules);
+  Scanner();
 
-  std::vector<Token> tokenize(std::string input);
+  std::vector<Token> tokenize(const std::string &input);
 
   static void printTokens(const std::vector<Token> &tokens);
 
   private:
-  std::vector<TokenType> getTokenTypeMatches(const std::string &lexeme);
-  void addToken(std::vector<Token> &tokens,
-                std::string &lexeme,
-                const std::string &newLexeme,
-                int lineNumber);
-  std::vector<TokenRule> rules;
+  void scanToken();
+  bool singleCharacter();
+  void forwardSlash();
+  void string();
+  void longTokens();
+  void number(std::string &lexeme);
+  void identifier(std::string &lexeme);
+  void addToken(const std::string &lexeme, TokenType type);
+
+  std::string text;
+  std::vector<Token> tokens;
+  int pos{0}, line{1}, col{0};
 };

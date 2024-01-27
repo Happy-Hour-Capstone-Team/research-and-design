@@ -1,85 +1,114 @@
-#include "scanner.hpp"
 #include "doctest.h"
+#include "scanner.hpp"
+
+void sameAs(const Token &token,
+            const std::string &lexeme,
+            const TokenType type,
+            const int line,
+            const int col) {
+  CHECK(token.type == type);
+  CHECK(token.lexeme == lexeme);
+  CHECK(token.line == line);
+  CHECK(token.col == col);
+}
+
+void sameAs(const Token &token, const Token &expected) {
+  sameAs(token, expected.lexeme, expected.type, expected.line, expected.col);
+}
+
+void sameAs(const std::vector<Token> &results,
+            const std::vector<Token> &expected) {
+  REQUIRE(results.size() == expected.size());
+  for(int i = 0; i < results.size(); i++) sameAs(results[i], expected[i]);
+}
 
 TEST_SUITE("Scanner") {
-  Scanner scanner{
-      {std::regex{"variable"}, TokenType::Variable},
-      {std::regex{"[[:alpha:]][[:alnum:]]*"}, TokenType::Identifier},
-      {std::regex{"[[:digit:]]*"}, TokenType::Number},
-      {std::regex{"[[:digit:]]*\\.[[:digit:]]*"}, TokenType::Number},
-      {std::regex{"\\("}, TokenType::LeftParen},
-      {std::regex{"\\)"}, TokenType::RightParen},
-      {std::regex{"="}, TokenType::Equals},
-      {std::regex{";"}, TokenType::Semicolon},
-      {std::regex{"\\+"}, TokenType::Plus},
-      {std::regex{"-"}, TokenType::Minus},
-      {std::regex{"\\*"}, TokenType::Asterisk},
-      {std::regex{"/"}, TokenType::ForwardSlash}};
+  Scanner scanner{};
+
+  TEST_CASE("Single character tokens.") {
+    auto results = scanner.tokenize("()=;+-*/");
+    sameAs(results[0], "(", TokenType::LeftParen, 1, 1);
+    sameAs(results[1], ")", TokenType::RightParen, 1, 2);
+    sameAs(results[2], "=", TokenType::Equals, 1, 3);
+    sameAs(results[3], ";", TokenType::Semicolon, 1, 4);
+    sameAs(results[4], "+", TokenType::Plus, 1, 5);
+    sameAs(results[5], "-", TokenType::Dash, 1, 6);
+    sameAs(results[6], "*", TokenType::Asterisk, 1, 7);
+    sameAs(results[7], "/", TokenType::ForwardSlash, 1, 8);
+  }
 
   TEST_CASE("Single line tokenization.") {
     SUBCASE("One identifier.") {
       auto results = scanner.tokenize("test");
       REQUIRE(results.size() == 1);
-      CHECK(results[0] == Token{"test", TokenType::Identifier});
+      sameAs(results[0], "test", TokenType::Identifier, 1, 1);
     }
 
     SUBCASE("Three identifiers.") {
       auto results = scanner.tokenize("test1 test2 test3");
       REQUIRE(results.size() == 3);
-      CHECK(results[0] == Token{"test1", TokenType::Identifier});
-      CHECK(results[1] == Token{"test2", TokenType::Identifier});
-      CHECK(results[2] == Token{"test3", TokenType::Identifier});
+      sameAs(results[0], "test1", TokenType::Identifier, 1, 1);
+      sameAs(results[1], "test2", TokenType::Identifier, 1, 7);
+      sameAs(results[2], "test3", TokenType::Identifier, 1, 13);
     }
 
     SUBCASE("Complex line.") {
       auto results = scanner.tokenize("variable value = (2.525)(3351);");
       REQUIRE(results.size() == 10);
-      std::vector<Token> expected{Token{"variable", TokenType::Variable},
-                                  Token{"value", TokenType::Identifier},
-                                  Token{"=", TokenType::Equals},
-                                  Token{"(", TokenType::LeftParen},
-                                  Token{"2.525", TokenType::Number},
-                                  Token{")", TokenType::RightParen},
-                                  Token{"(", TokenType::LeftParen},
-                                  Token{"3351", TokenType::Number},
-                                  Token{")", TokenType::RightParen},
-                                  Token{";", TokenType::Semicolon}};
-      for(int i = 0; i < results.size(); i++) CHECK(results[i] == expected[i]);
+      std::vector<Token> expected{Token{"variable", TokenType::Variable, 1, 1},
+                                  Token{"value", TokenType::Identifier, 1, 10},
+                                  Token{"=", TokenType::Equals, 1, 16},
+                                  Token{"(", TokenType::LeftParen, 1, 18},
+                                  Token{"2.525", TokenType::Number, 1, 19},
+                                  Token{")", TokenType::RightParen, 1, 24},
+                                  Token{"(", TokenType::LeftParen, 1, 25},
+                                  Token{"3351", TokenType::Number, 1, 26},
+                                  Token{")", TokenType::RightParen, 1, 30},
+                                  Token{";", TokenType::Semicolon, 1, 31}};
+      sameAs(results, expected);
     }
-  }
 
+    SUBCASE("Strings.") {
+      auto results = scanner.tokenize("variable word = \"John Doe\";");
+      std::vector<Token> expected{Token{"variable", TokenType::Variable, 1, 1},
+                                  Token{"word", TokenType::Identifier, 1, 10},
+                                  Token{"=", TokenType::Equals, 1, 15},
+                                  Token{"John Doe", TokenType::String, 1, 17},
+                                  Token{";", TokenType::Semicolon, 1, 27}};
+      sameAs(results, expected);
+    }
+
+  }
   TEST_CASE("Multiple lines.") {
     std::string input{"variable value1 = (2.525)(3351);\n"
                       "variable value2 = 123 + 456;\n"
                       "variable value3 = 360 / 60;"};
     auto results = scanner.tokenize(input);
-
-    std::vector<Token> expected{Token{"variable", TokenType::Variable, 1},
-                                Token{"value1", TokenType::Identifier, 1},
-                                Token{"=", TokenType::Equals, 1},
-                                Token{"(", TokenType::LeftParen, 1},
-                                Token{"2.525", TokenType::Number, 1},
-                                Token{")", TokenType::RightParen, 1},
-                                Token{"(", TokenType::LeftParen, 1},
-                                Token{"3351", TokenType::Number, 1},
-                                Token{")", TokenType::RightParen, 1},
-                                Token{";", TokenType::Semicolon, 1},
-                                Token{"variable", TokenType::Variable, 2},
-                                Token{"value2", TokenType::Identifier, 2},
-                                Token{"=", TokenType::Equals, 2},
-                                Token{"123", TokenType::Number, 2},
-                                Token{"+", TokenType::Plus, 2},
-                                Token{"456", TokenType::Number, 2},
-                                Token{";", TokenType::Semicolon, 2},
-                                Token{"variable", TokenType::Variable, 3},
-                                Token{"value3", TokenType::Identifier, 3},
-                                Token{"=", TokenType::Equals, 3},
-                                Token{"360", TokenType::Number, 3},
-                                Token{"/", TokenType::ForwardSlash, 3},
-                                Token{"60", TokenType::Number, 3},
-                                Token{";", TokenType::Semicolon, 3}};
-    REQUIRE(results.size() == 24);
-    for(int i = 0; i < results.size(); i++) CHECK(results[i] == expected[i]);
+    std::vector<Token> expected{Token{"variable", TokenType::Variable, 1, 1},
+                                Token{"value1", TokenType::Identifier, 1, 10},
+                                Token{"=", TokenType::Equals, 1, 17},
+                                Token{"(", TokenType::LeftParen, 1, 19},
+                                Token{"2.525", TokenType::Number, 1, 20},
+                                Token{")", TokenType::RightParen, 1, 25},
+                                Token{"(", TokenType::LeftParen, 1, 26},
+                                Token{"3351", TokenType::Number, 1, 27},
+                                Token{")", TokenType::RightParen, 1, 31},
+                                Token{";", TokenType::Semicolon, 1, 32},
+                                Token{"variable", TokenType::Variable, 2, 1},
+                                Token{"value2", TokenType::Identifier, 2, 10},
+                                Token{"=", TokenType::Equals, 2, 17},
+                                Token{"123", TokenType::Number, 2, 19},
+                                Token{"+", TokenType::Plus, 2, 23},
+                                Token{"456", TokenType::Number, 2, 25},
+                                Token{";", TokenType::Semicolon, 2, 28},
+                                Token{"variable", TokenType::Variable, 3, 1},
+                                Token{"value3", TokenType::Identifier, 3, 10},
+                                Token{"=", TokenType::Equals, 3, 17},
+                                Token{"360", TokenType::Number, 3, 19},
+                                Token{"/", TokenType::ForwardSlash, 3, 23},
+                                Token{"60", TokenType::Number, 3, 25},
+                                Token{";", TokenType::Semicolon, 3, 27}};
+    sameAs(results, expected);
   }
 
   TEST_CASE("Comments are ignored.") {
@@ -87,11 +116,38 @@ TEST_SUITE("Scanner") {
       auto results =
           scanner.tokenize("variable value = 2.5 * 4 * anotherValue; // "
                            "This should be ignored.");
-      CHECK(results.size() == 9);
+      std::vector<Token> expected{
+          Token{"variable", TokenType::Variable, 1, 1},
+          Token{"value", TokenType::Identifier, 1, 10},
+          Token{"=", TokenType::Equals, 1, 16},
+          Token{"2.5", TokenType::Number, 1, 18},
+          Token{"*", TokenType::Asterisk, 1, 22},
+          Token{"4", TokenType::Number, 1, 24},
+          Token{"*", TokenType::Asterisk, 1, 26},
+          Token{"anotherValue", TokenType::Identifier, 1, 28},
+          Token{";", TokenType::Semicolon, 1, 40}};
+      sameAs(results, expected);
       std::string input{"variable value1 = (2.525)(3351); // Ignore me! \n"
                         "variable value2 = 123 + 456; // Ignore me!"};
       results = scanner.tokenize(input);
-      CHECK(results.size() == 17);
+      expected = {Token{"variable", TokenType::Variable, 1, 1},
+                  Token{"value1", TokenType::Identifier, 1, 10},
+                  Token{"=", TokenType::Equals, 1, 17},
+                  Token{"(", TokenType::LeftParen, 1, 19},
+                  Token{"2.525", TokenType::Number, 1, 20},
+                  Token{")", TokenType::RightParen, 1, 25},
+                  Token{"(", TokenType::LeftParen, 1, 26},
+                  Token{"3351", TokenType::Number, 1, 27},
+                  Token{")", TokenType::RightParen, 1, 31},
+                  Token{";", TokenType::Semicolon, 1, 32},
+                  Token{"variable", TokenType::Variable, 2, 1},
+                  Token{"value2", TokenType::Identifier, 2, 10},
+                  Token{"=", TokenType::Equals, 2, 17},
+                  Token{"123", TokenType::Number, 2, 19},
+                  Token{"+", TokenType::Plus, 2, 23},
+                  Token{"456", TokenType::Number, 2, 25},
+                  Token{";", TokenType::Semicolon, 2, 28}};
+      sameAs(results, expected);
     }
 
     SUBCASE("Muli-line comments.") {
@@ -102,15 +158,63 @@ TEST_SUITE("Scanner") {
                         "variable value2 = 123 + 456;\n"
                         "variable value3 = 360 / 60;"};
       auto results = scanner.tokenize(input);
-      CHECK(results.size() == 24);
+      auto expected = {Token{"variable", TokenType::Variable, 1, 1},
+                       Token{"value1", TokenType::Identifier, 1, 10},
+                       Token{"=", TokenType::Equals, 1, 17},
+                       Token{"(", TokenType::LeftParen, 1, 19},
+                       Token{"2.525", TokenType::Number, 1, 20},
+                       Token{")", TokenType::RightParen, 1, 25},
+                       Token{"(", TokenType::LeftParen, 1, 26},
+                       Token{"3351", TokenType::Number, 1, 27},
+                       Token{")", TokenType::RightParen, 1, 31},
+                       Token{";", TokenType::Semicolon, 1, 32},
+                       Token{"variable", TokenType::Variable, 5, 1},
+                       Token{"value2", TokenType::Identifier, 5, 10},
+                       Token{"=", TokenType::Equals, 5, 17},
+                       Token{"123", TokenType::Number, 5, 19},
+                       Token{"+", TokenType::Plus, 5, 23},
+                       Token{"456", TokenType::Number, 5, 25},
+                       Token{";", TokenType::Semicolon, 5, 28},
+                       Token{"variable", TokenType::Variable, 6, 1},
+                       Token{"value3", TokenType::Identifier, 6, 10},
+                       Token{"=", TokenType::Equals, 6, 17},
+                       Token{"360", TokenType::Number, 6, 19},
+                       Token{"/", TokenType::ForwardSlash, 6, 23},
+                       Token{"60", TokenType::Number, 6, 25},
+                       Token{";", TokenType::Semicolon, 6, 27}};
+      sameAs(results, expected);
     }
 
     SUBCASE("Edge case multi-line comments.") {
       std::string input{"variable value1 = (2.525)(3351); /: What\n"
                         "if it's weird? :/ variable value2 = 123 + 456;\n"
-                        "variable value3 = 360 / 60;"};
+                        "variable value3 = 360 / 60; /: What about this /:"};
       auto results = scanner.tokenize(input);
-      CHECK(results.size() == 24);
+      auto expected = {Token{"variable", TokenType::Variable, 1, 1},
+                       Token{"value1", TokenType::Identifier, 1, 10},
+                       Token{"=", TokenType::Equals, 1, 17},
+                       Token{"(", TokenType::LeftParen, 1, 19},
+                       Token{"2.525", TokenType::Number, 1, 20},
+                       Token{")", TokenType::RightParen, 1, 25},
+                       Token{"(", TokenType::LeftParen, 1, 26},
+                       Token{"3351", TokenType::Number, 1, 27},
+                       Token{")", TokenType::RightParen, 1, 31},
+                       Token{";", TokenType::Semicolon, 1, 32},
+                       Token{"variable", TokenType::Variable, 2, 19},
+                       Token{"value2", TokenType::Identifier, 2, 28},
+                       Token{"=", TokenType::Equals, 2, 35},
+                       Token{"123", TokenType::Number, 2, 37},
+                       Token{"+", TokenType::Plus, 2, 41},
+                       Token{"456", TokenType::Number, 2, 43},
+                       Token{";", TokenType::Semicolon, 2, 46},
+                       Token{"variable", TokenType::Variable, 3, 1},
+                       Token{"value3", TokenType::Identifier, 3, 10},
+                       Token{"=", TokenType::Equals, 3, 17},
+                       Token{"360", TokenType::Number, 3, 19},
+                       Token{"/", TokenType::ForwardSlash, 3, 23},
+                       Token{"60", TokenType::Number, 3, 25},
+                       Token{";", TokenType::Semicolon, 3, 27}};
+      sameAs(results, expected);
     }
   }
 }

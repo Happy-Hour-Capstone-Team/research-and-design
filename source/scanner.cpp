@@ -2,10 +2,8 @@
 
 /*
 TODO:
-- Handle comments (see outline below)
 - Read from file
 - Error handle unrecognized tokens
-- Error handle lone multiLineCommentEnd
 */
 
 std::ostream &operator<<(std::ostream &out, const TokenType tokenType) {
@@ -14,76 +12,128 @@ std::ostream &operator<<(std::ostream &out, const TokenType tokenType) {
   return out << tokenTypeNames[value];
 }
 
-Scanner::Scanner(std::initializer_list<TokenRule> rules) : rules{rules} {}
+std::ostream &operator<<(std::ostream &out, const Token &token) {
+  out << token.type << " (" << token.lexeme << ") on line " << token.line
+      << ", column " << token.col;
+  return out;
+}
 
-std::vector<Token> Scanner::tokenize(std::string input) {
-  std::vector<Token> tokens;
-  int line{1};
-  for(int i{0}; i < input.size(); i++) {
-    switch(input[i]) {
-      case '\n': line++; break;
-      case '(': tokens.push_back({"(", TokenType::LeftParen, line}); break;
-      case ')': tokens.push_back({")", TokenType::RightParen, line}); break;
-      case '=': tokens.push_back({"=", TokenType::Equals, line}); break;
-      case ';': tokens.push_back({";", TokenType::Semicolon, line}); break;
-      case '+': tokens.push_back({"+", TokenType::Plus, line}); break;
-      case '-': tokens.push_back({"-", TokenType::Minus, line}); break;
-      case '/':
-        switch(input[i + 1]) {
-          case '/':
-            while(input[i + 1] != '\n') i++;
-            break;
-          case ':':
-            while(input[i + 1] != ':' && input[i + 2] != '/') i += 2;
-            break;
-          default:
-            tokens.push_back({"/", TokenType::ForwardSlash, line});
-            break;
-        };
-        break;
-      case '*': tokens.push_back({"*", TokenType::Asterisk, line}); break;
-    };
-  }
+Scanner::Scanner() {}
+
+std::vector<Token> Scanner::tokenize(const std::string &input) {
+  text = input;
+  tokens.clear();
+  line = col = 1;
+  const std::size_t length{text.size()};
+  for(pos = 0; pos < length; pos++, col++) scanToken();
+  printTokens(tokens);
   return tokens;
 }
-/*
-for(char c : input)
-  const std::string newLexeme{lexeme + c};
-  if(isspace(c)) {
-    if(!lexeme.empty()) addToken(tokens, lexeme, "", lineNumber);
-    if(c == '\n') lineNumber++;
-    continue;
+
+void Scanner::scanToken() {
+  if(singleCharacter()) return;
+  switch(text[pos]) {
+    case '\n':
+      line++;
+      col = 0;
+      break;
+    case '/': forwardSlash(); break;
+    case '"': string(); break;
+    default: longTokens(); break;
+  };
+}
+
+bool Scanner::singleCharacter() {
+  switch(text[pos]) {
+    case ' ':
+    case '\r':
+    case '\t': return true;
+    case '{': addToken("{", TokenType::LeftCurly); return true;
+    case '}': addToken("}", TokenType::RightCurly); return true;
+    case '(': addToken("(", TokenType::LeftParen); return true;
+    case ')': addToken(")", TokenType::RightParen); return true;
+    case '=': addToken("=", TokenType::Equals); return true;
+    case ';': addToken(";", TokenType::Semicolon); return true;
+    case '+': addToken("+", TokenType::Plus); return true;
+    case '-': addToken("-", TokenType::Dash); return true;
+    case '*': addToken("*", TokenType::Asterisk); return true;
+    default: return false;
+  };
+}
+
+void Scanner::forwardSlash() {
+  switch(text[pos + 1]) {
+    case '/':
+      while(text[pos + 1] != '\n') pos++;
+      break;
+    case ':':
+      while(pos + 2 < text.length() &&
+            (text[pos + 1] != ':' || text[pos + 2] != '/')) {
+        if(text[pos] == '\n') {
+          line++;
+          col = 0;
+        }
+        pos++;
+        col++;
+      }
+      pos += 2;
+      col += 2;
+      break;
+    default: addToken("/", TokenType::ForwardSlash); break;
+  };
+}
+
+void Scanner::string() {
+  std::string lexeme{""};
+  while(pos + 1 < text.length() && text[pos + 1] != '"') {
+    lexeme += text[++pos];
   }
-  if(getTokenTypeMatches(newLexeme).size())
-    lexeme = newLexeme;
+  pos++;
+  addToken(lexeme, TokenType::String);
+  col += lexeme.length() + 1;
+}
+
+void Scanner::longTokens() {
+  std::string lexeme{text[pos]};
+  if(std::isdigit(text[pos]))
+    number(lexeme);
+  else if(std::isalpha(text[pos]))
+    identifier(lexeme);
   else
-    addToken(tokens, lexeme, std::string(1, c), lineNumber);
+    tokens.push_back({lexeme, TokenType::Error, line, col});
+  col += lexeme.size() - 1;
 }
-if(!lexeme.empty()) addToken(tokens, lexeme, lexeme, lineNumber);
-Scanner::printTokens(tokens) {
-  return tokens;
-}*/
+
+void Scanner::number(std::string &lexeme) {
+  while(std::isdigit(text[pos + 1])) {
+    pos++;
+    lexeme += text[pos];
+  }
+  if(text[pos + 1] == '.') {
+    do {
+      pos++;
+      lexeme += text[pos];
+    } while(std::isdigit(text[pos + 1]));
+  }
+  addToken(lexeme, TokenType::Number);
+}
+
+void Scanner::identifier(std::string &lexeme) {
+  while(std::isalnum(text[pos + 1])) {
+    pos++;
+    lexeme += text[pos];
+  }
+  if(lexeme == "variable")
+    addToken(lexeme, TokenType::Variable);
+  else
+    addToken(lexeme, TokenType::Identifier);
+}
+
+void Scanner::addToken(const std::string &lexeme, TokenType type) {
+  tokens.push_back({lexeme, type, line, col});
+}
 
 void Scanner::printTokens(const std::vector<Token> &tokens) {
   std::cout << "TOKENS:\n";
-  for(const Token &token : tokens)
-    std::cout << "\t" << token.type << ", " << token.lexeme << '\n';
-}
-
-std::vector<TokenType> Scanner::getTokenTypeMatches(const std::string &lexeme) {
-  std::vector<TokenType> tokenTypeMatches{};
-  for(TokenRule rule : rules) {
-    if(std::regex_match(lexeme, rule.first))
-      tokenTypeMatches.push_back(rule.second);
-  }
-  return tokenTypeMatches;
-}
-
-void Scanner::addToken(std::vector<Token> &tokens,
-                       std::string &lexeme,
-                       const std::string &newLexeme,
-                       int lineNumber) {
-  const TokenType type{getTokenTypeMatches(lexeme)[0]};
-  tokens.push_back({lexeme, type, lineNumber});
-  lexeme = newLexeme;
+  for(const Token &token : tokens) std::cout << "\t" << token << '\n';
 }
