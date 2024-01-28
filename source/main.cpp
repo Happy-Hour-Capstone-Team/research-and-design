@@ -76,7 +76,6 @@ struct Binary : Expression {
 };
 
 struct Group : Expression {
-  
   const std::unique_ptr<Expression> expression;
 
   std::any accept(Visitor *visitor) override {
