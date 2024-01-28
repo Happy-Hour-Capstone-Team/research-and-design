@@ -7,7 +7,6 @@ Tokens Scanner::tokenize() {
   line = col = 1;
   const std::size_t length{text.size()};
   for(pos = 0; pos < length; pos++, col++) scanToken();
-  printTokens(tokens);
   return tokens;
 }
 
