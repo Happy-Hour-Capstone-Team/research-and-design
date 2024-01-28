@@ -38,11 +38,14 @@ struct Expression {
 
   virtual std::any accept(Visitor *visitor) = 0;
 
+  // Need to free memory in children.
   virtual ~Expression() = default;
 };
 
+using ExpressionUPtr = ExpressionUPtr;
+
 struct Literal : Expression {
-  Literal(const Token &iToken) : token{iToken} {}
+  explicit Literal(const Token &iToken) : token{iToken} {}
   const Token token;
 
   std::any accept(Visitor *visitor) override {
@@ -51,10 +54,11 @@ struct Literal : Expression {
 };
 
 struct Unary : Expression {
-  Unary(const Token &iOp, std::unique_ptr<Expression> iRight) :
-      op{iOp}, right{std::move(iRight)} {}
+  Unary(const Token &iOp, ExpressionUPtr iRight) :
+      op{iOp},
+      right{std::move(iRight)} {}
   const Token op;
-  const std::unique_ptr<Expression> right;
+  const ExpressionUPtr right;
 
   std::any accept(Visitor *visitor) override {
     return visitor->visit(*this);
@@ -62,13 +66,13 @@ struct Unary : Expression {
 };
 
 struct Binary : Expression {
-  Binary(std::unique_ptr<Expression> iLeft,
-         const Token &iOp,
-         std::unique_ptr<Expression> iRight) :
-      left{std::move(iLeft)}, op{iOp}, right{std::move(iRight)} {}
-  const std::unique_ptr<Expression> left;
+  Binary(ExpressionUPtr iLeft, const Token &iOp, ExpressionUPtr iRight) :
+      left{std::move(iLeft)},
+      op{iOp},
+      right{std::move(iRight)} {}
+  const ExpressionUPtr left;
   const Token op;
-  const std::unique_ptr<Expression> right;
+  const ExpressionUPtr right;
 
   std::any accept(Visitor *visitor) override {
     return visitor->visit(*this);
@@ -76,8 +80,7 @@ struct Binary : Expression {
 };
 
 struct Group : Expression {
-  
-  const std::unique_ptr<Expression> expression;
+  const ExpressionUPtr expression;
 
   std::any accept(Visitor *visitor) override {
     return visitor->visit(*this);
@@ -115,13 +118,105 @@ class PrintVisitor : public Expression::Visitor {
 
 struct Parser {
   public:
+  explicit Parser(std::initializer_list<Token> iTokens) : tokens{iTokens} {}
+
+  ExpressionUPtr parse() {
+    return expression();
+  }
+
   private:
+  ExpressionUPtr expression() {
+    return std::move(equality());
+  }
+
+  ExpressionUPtr equality() {
+    ExpressionUPtr left{comparison()};
+    while(match({Token::Type::NotEqualTo, Token::Type::EqualTo})) {
+      const Token op{tokens[pos - 1]};
+      ExpressionUPtr right{comparison};
+      left = std::make_unique<Binary>(left, op, right);
+    }
+    return std::move(left);
+  }
+
+  ExpressionUPtr comparison() {
+    ExpressionUPtr left{term()};
+    while(match({Token::Type::LessThan,
+                 Token::Type::LessThanOrEqualTo,
+                 Token::Type::GreaterThan,
+                 Token::Type::GreaterThanOrEqualTo})) {
+      const Token op{tokens[pos - 1]};
+      ExpressionUPtr right{term()};
+      left = std::make_unique<Binary>(left, op, right);
+    }
+    return std::move(left);
+  }
+
+  ExpressionUPtr term() {
+    ExpressionUPtr left{factor()};
+    while(match({Token::Type::LessThan,
+                 Token::Type::LessThanOrEqualTo,
+                 Token::Type::GreaterThan,
+                 Token::Type::GreaterThanOrEqualTo})) {
+      const Token op{tokens[pos - 1]};
+      ExpressionUPtr right{factor()};
+      left = std::make_unique<Binary>(left, op, right);
+    }
+    return std::move(left);
+  }
+
+  ExpressionUPtr factor() {
+    ExpressionUPtr left{unary()};
+    while(match({Token::Type::LessThan,
+                 Token::Type::LessThanOrEqualTo,
+                 Token::Type::GreaterThan,
+                 Token::Type::GreaterThanOrEqualTo})) {
+      const Token op{tokens[pos - 1]};
+      ExpressionUPtr right{unary()};
+      left = std::make_unique<Binary>(left, op, right);
+    }
+    return std::move(left);
+  }
+
+  ExpressionUPtr unary() {
+    if(match({Token::Type::Exclamation, Token::Type::Dash})) {
+      const Token op{tokens[pos - 1]};
+      ExpressionUPtr right{primary()};
+      return std::make_unique<Unary>(op, right);
+    }
+    return std::move(primary());
+  }
+
+  ExpressionUPtr primary() {
+    switch(tokens[pos++].type) {
+      case Token::Type::Boolean:
+        return std::make_unique<Literal>(tokens[pos].lexeme == "true" ? true :
+                                                                        false);
+      case Token::Type::Number:
+        return std::make_unique<Literal>(std::stold(tokens[pos].lexeme));
+      case Token::Type::String:
+        return std::make_unique<Literal>(tokens[pos].lexeme);
+      case Token::Type::LeftParen:
+        // DEAL WITH LEFT PARENTHESIS ISSUE
+    }
+  }
+
+  bool match(const std::vector<Token::Type> &types) {
+    for(Token::Type type : types) {
+      if(tokens[pos].type == type) {
+        pos++;
+        return true;
+      }
+    }
+    return false;
+  }
+
   Tokens tokens;
   int pos{0};
 };
 
 int main() {
-  std::unique_ptr<Expression> test = std::make_unique<Binary>(
+  ExpressionUPtr test = std::make_unique<Binary>(
       std::make_unique<Unary>(
           Token{"!", Token::Type::Exclamation},
           std::make_unique<Literal>(Token{"true", Token::Type::Boolean})),
