@@ -49,11 +49,11 @@ struct Literal : Expression {
 };
 
 struct Unary : Expression {
-  Unary(const Token &iOp, std::unique_ptr<Expression> iRight) :
+  Unary(const Token &iOp, std::shared_ptr<Expression> iRight) :
       op{iOp},
       right{std::move(iRight)} {}
   const Token op;
-  const std::unique_ptr<Expression> right;
+  const std::shared_ptr<Expression> right;
 
   std::any accept(Visitor *visitor) override {
     return visitor->visit(*this);
@@ -61,15 +61,15 @@ struct Unary : Expression {
 };
 
 struct Binary : Expression {
-  Binary(std::unique_ptr<Expression> iLeft,
+  Binary(std::shared_ptr<Expression> iLeft,
          const Token &iOp,
-         std::unique_ptr<Expression> iRight) :
+         std::shared_ptr<Expression> iRight) :
       left{std::move(iLeft)},
       op{iOp},
       right{std::move(iRight)} {}
-  const std::unique_ptr<Expression> left;
+  const std::shared_ptr<Expression> left;
   const Token op;
-  const std::unique_ptr<Expression> right;
+  const std::shared_ptr<Expression> right;
 
   std::any accept(Visitor *visitor) override {
     return visitor->visit(*this);
@@ -77,7 +77,7 @@ struct Binary : Expression {
 };
 
 struct Group : Expression {
-  const std::unique_ptr<Expression> expression;
+  const std::shared_ptr<Expression> expression;
 
   std::any accept(Visitor *visitor) override {
     return visitor->visit(*this);
@@ -121,14 +121,14 @@ struct Parser {
 };
 
 void test() {
-  std::unique_ptr<Expression> test = std::make_unique<Binary>(
-      std::make_unique<Unary>(
+  std::shared_ptr<Expression> test = std::make_shared<Binary>(
+      std::make_shared<Unary>(
           Token{"!", Token::Type::Exclamation},
-          std::make_unique<Literal>(Token{"true", Token::Type::Boolean})),
+          std::make_shared<Literal>(Token{"true", Token::Type::Boolean})),
       Token{"or", Token::Type::Or},
-      std::make_unique<Literal>(Token{"true", Token::Type::Boolean}));
-  std::unique_ptr<Expression::Visitor> testVisitor =
-      std::make_unique<PrintVisitor>();
+      std::make_shared<Literal>(Token{"true", Token::Type::Boolean}));
+  std::shared_ptr<Expression::Visitor> testVisitor =
+      std::make_shared<PrintVisitor>();
   std::cout << std::any_cast<std::string>(test->accept(testVisitor.get()));
 }
 
