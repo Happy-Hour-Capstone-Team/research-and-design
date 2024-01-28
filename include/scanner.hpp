@@ -14,7 +14,6 @@ class Scanner {
 
   private:
   void scanToken();
-  bool shortTokens();
   void forwardSlash();
   void string();
   void longTokens();
