@@ -50,8 +50,7 @@ struct Literal : Expression {
 
 struct Unary : Expression {
   Unary(const Token &iOp, std::shared_ptr<Expression> iRight) :
-      op{iOp},
-      right{iRight} {}
+      op{iOp}, right{iRight} {}
   const Token op;
   const std::shared_ptr<Expression> right;
 
@@ -64,9 +63,7 @@ struct Binary : Expression {
   Binary(std::shared_ptr<Expression> iLeft,
          const Token &iOp,
          std::shared_ptr<Expression> iRight) :
-      left{iLeft},
-      op{iOp},
-      right{iRight} {}
+      left{iLeft}, op{iOp}, right{iRight} {}
   const std::shared_ptr<Expression> left;
   const Token op;
   const std::shared_ptr<Expression> right;
