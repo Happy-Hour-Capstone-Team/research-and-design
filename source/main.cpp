@@ -19,10 +19,8 @@
  */
 
 class Parser {
-public:
-  
-
-private:
+  public:
+  private:
   Tokens tokens;
   int pos{0};
 };
