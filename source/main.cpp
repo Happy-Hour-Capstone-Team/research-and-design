@@ -55,8 +55,7 @@ struct Literal : Expression {
 
 struct Unary : Expression {
   Unary(const Token &iOp, ExpressionUPtr iRight) :
-      op{iOp},
-      right{std::move(iRight)} {}
+      op{iOp}, right{std::move(iRight)} {}
   const Token op;
   const ExpressionUPtr right;
 
@@ -67,9 +66,7 @@ struct Unary : Expression {
 
 struct Binary : Expression {
   Binary(ExpressionUPtr iLeft, const Token &iOp, ExpressionUPtr iRight) :
-      left{std::move(iLeft)},
-      op{iOp},
-      right{std::move(iRight)} {}
+      left{std::move(iLeft)}, op{iOp}, right{std::move(iRight)} {}
   const ExpressionUPtr left;
   const Token op;
   const ExpressionUPtr right;
