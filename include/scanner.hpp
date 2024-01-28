@@ -1,64 +1,42 @@
 #pragma once
 
-#include <array>
-#include <iostream>
-#include <regex>
-#include <sstream>
+#include "token.hpp"
+#include <unordered_map>
 #include <vector>
-
-enum class TokenType {
-  Variable = 0,
-  Identifier,
-  Number,
-  LeftParen,
-  RightParen,
-  Equals,
-  Semicolon,
-  Plus,
-  Minus,
-  Asterisk,
-  ForwardSlash,
-  Error
-};
-
-const std::array<std::string, 12> tokenTypeNames{"Variable",
-                                                 "Identifier",
-                                                 "Number",
-                                                 "LeftParen",
-                                                 "RightParen",
-                                                 "Equals",
-                                                 "Semicolon",
-                                                 "Plus",
-                                                 "Minus",
-                                                 "Asterisk",
-                                                 "ForwardSlash"};
-
-std::ostream &operator<<(std::ostream &out, const TokenType tokenType);
-
-struct Token {
-  std::string lexeme;
-  TokenType type;
-  int line{1};
-  bool operator==(const Token rhs) {
-    return lexeme == rhs.lexeme && type == rhs.type && line == rhs.line;
-  }
-};
-
-using TokenRule = std::pair<std::regex, TokenType>;
 
 class Scanner {
   public:
-  Scanner(std::initializer_list<TokenRule> rules);
+  explicit Scanner(const std::string &input);
 
-  std::vector<Token> tokenize(std::string input);
+  Tokens tokenize();
 
-  static void printTokens(const std::vector<Token> &tokens);
+  static void printTokens(const Tokens &tokens);
 
   private:
-  std::vector<TokenType> getTokenTypeMatches(const std::string &lexeme);
-  void addToken(std::vector<Token> &tokens,
-                std::string &lexeme,
-                const std::string &newLexeme,
-                int lineNumber);
-  std::vector<TokenRule> rules;
+  void scanToken();
+  bool shortTokens();
+  void forwardSlash();
+  void string();
+  void longTokens();
+  void number(std::string &lexeme);
+  void identifier(std::string &lexeme);
+  void addToken(const std::string &lexeme, Token::Type type);
+  void newLine();
+  void incPosCol(int i = 1);
+
+  std::string text;
+  Tokens tokens;
+  std::unordered_map<std::string, Token::Type> keywords{
+      {"variable", Token::Type::Variable},
+      {"constant", Token::Type::Constant},
+      {"if", Token::Type::If},
+      {"else", Token::Type::Else},
+      {"while", Token::Type::While},
+      {"or", Token::Type::Or},
+      {"and", Token::Type::And},
+      {"true", Token::Type::Boolean},
+      {"false", Token::Type::Boolean},
+      {"begin", Token::Type::Begin},
+      {"end", Token::Type::End}};
+  int pos{0}, line{1}, col{0};
 };
