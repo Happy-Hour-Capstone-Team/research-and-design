@@ -4,6 +4,7 @@ project(wick LANGUAGES CXX)
 include_directories(include)
 set(FILES
     scanner.cpp
+    token.cpp
     # Add other source files here.
 )
 
