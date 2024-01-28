@@ -7,61 +7,51 @@ Tokens Scanner::tokenize() {
   line = col = 1;
   const std::size_t length{text.size()};
   for(pos = 0; pos < length; pos++, col++) scanToken();
+  printTokens(tokens);
   return tokens;
 }
 
 void Scanner::scanToken() {
-  if(shortTokens()) return;
   switch(text[pos]) {
+    case ' ':
+    case '\r':
+    case '\t': break;
+    case '{': addToken("{", Token::Type::LeftCurly); break;
+    case '}': addToken("}", Token::Type::RightCurly); break;
+    case ';': addToken(";", Token::Type::Semicolon); break;
+    case '(': addToken("(", Token::Type::LeftParen); break;
+    case ')': addToken(")", Token::Type::RightParen); break;
+    case '*': addToken("*", Token::Type::Asterisk); break;
+    case '+': addToken("+", Token::Type::Plus); break;
+    case '-': addToken("-", Token::Type::Dash); break;
+    case '!':
+      if(text[pos + 1] == '=')
+        addToken("!=", Token::Type::NotEqualTo);
+      else
+        addToken("!", Token::Type::Exclamation);
+      break;
+    case '=':
+      if(text[pos + 1] == '=')
+        addToken("==", Token::Type::EqualTo);
+      else
+        addToken("=", Token::Type::Equal);
+      break;
+    case '<':
+      if(text[pos + 1] == '=')
+        addToken("<=", Token::Type::LessThanOrEqualTo);
+      else
+        addToken("<", Token::Type::LessThan);
+      break;
+    case '>':
+      if(text[pos + 1] == '=')
+        addToken(">=", Token::Type::GreaterThanOrEqualTo);
+      else
+        addToken(">", Token::Type::GreaterThan);
+      break;
     case '\n': newLine(); break;
     case '/': forwardSlash(); break;
     case '"': string(); break;
     default: longTokens(); break;
-  };
-}
-
-bool Scanner::shortTokens() {
-  switch(text[pos]) {
-    case ' ':
-    case '\r':
-    case '\t': return true;
-    case '{': addToken("{", Token::Type::LeftCurly); return true;
-    case '}': addToken("}", Token::Type::RightCurly); return true;
-    case ';': addToken(";", Token::Type::Semicolon); return true;
-    case '(': addToken("(", Token::Type::LeftParen); return true;
-    case ')': addToken(")", Token::Type::RightParen); return true;
-    case '=':
-      if(text[pos + 1] == '=') {
-        addToken("==", Token::Type::EqualTo);
-        incPosCol();
-      } else
-        addToken("=", Token::Type::Equal);
-      return true;
-    case '<':
-      if(text[pos + 1] == '=') {
-        addToken("<=", Token::Type::LessThanOrEqualTo);
-        incPosCol();
-      } else
-        addToken("<", Token::Type::LessThan);
-      return true;
-    case '>':
-      if(text[pos + 1] == '=') {
-        addToken(">=", Token::Type::GreaterThanOrEqualTo);
-        incPosCol();
-      } else
-        addToken(">", Token::Type::GreaterThan);
-      return true;
-    case '*': addToken("*", Token::Type::Asterisk); return true;
-    case '+': addToken("+", Token::Type::Plus); return true;
-    case '-': addToken("-", Token::Type::Dash); return true;
-    case '!':
-      if(text[pos + 1] == '=') {
-        addToken("!=", Token::Type::NotEqualTo);
-        incPosCol();
-      } else
-        addToken("!", Token::Type::Exclamation);
-      return true;
-    default: return false;
   };
 }
 
@@ -84,44 +74,34 @@ void Scanner::forwardSlash() {
 
 void Scanner::string() {
   std::string lexeme{""};
-  while(pos + 1 < text.length() && text[pos + 1] != '"') {
-    lexeme += text[++pos];
-  }
-  pos++;
+  for(int i{1}; pos + i < text.length() && text[pos + i] != '"'; i++)
+    lexeme += text[pos + i];
   addToken(lexeme, Token::Type::String);
-  col += lexeme.length() + 1;
+  incPosCol(2); // Account for two skipped quotes.
 }
 
 void Scanner::longTokens() {
-  std::string lexeme{text[pos]};
+  std::string lexeme{""};
   if(std::isdigit(text[pos]))
     number(lexeme);
   else if(std::isalpha(text[pos]))
     identifier(lexeme);
   else
     addToken(lexeme, Token::Type::Error);
-  col += lexeme.size() - 1;
 }
 
 void Scanner::number(std::string &lexeme) {
-  while(std::isdigit(text[pos + 1])) {
-    pos++;
-    lexeme += text[pos];
-  }
-  if(text[pos + 1] == '.') {
-    do {
-      pos++;
-      lexeme += text[pos];
-    } while(std::isdigit(text[pos + 1]));
+  int i;
+  for(i = 0; std::isdigit(text[pos + i]); i++) lexeme += text[pos + i];
+  if(text[pos + i] == '.') {
+    lexeme += text[pos + i];
+    for(i++; std::isdigit(text[pos + i]); i++) lexeme += text[pos + i];
   }
   addToken(lexeme, Token::Type::Number);
 }
 
 void Scanner::identifier(std::string &lexeme) {
-  while(std::isalnum(text[pos + 1])) {
-    pos++;
-    lexeme += text[pos];
-  }
+  for(int i{0}; std::isalnum(text[pos + i]); i++) lexeme += text[pos + i];
   if(auto search = keywords.find(lexeme); search != keywords.end())
     addToken(lexeme, search->second);
   else
@@ -131,6 +111,8 @@ void Scanner::identifier(std::string &lexeme) {
 void Scanner::addToken(const std::string &lexeme, Token::Type type) {
   if(type == Token::Type::Error) std::cout << "Add logging here...\n";
   tokens.push_back({lexeme, type, line, col});
+  // Subtract one to account for for-loop increment.
+  incPosCol(lexeme.length() - 1);
 }
 
 void Scanner::newLine() {
