@@ -50,7 +50,8 @@ struct Literal : Expression {
 
 struct Unary : Expression {
   Unary(const Token &iOp, std::unique_ptr<Expression> iRight) :
-      op{iOp}, right{std::move(iRight)} {}
+      op{iOp},
+      right{std::move(iRight)} {}
   const Token op;
   const std::unique_ptr<Expression> right;
 
@@ -63,7 +64,9 @@ struct Binary : Expression {
   Binary(std::unique_ptr<Expression> iLeft,
          const Token &iOp,
          std::unique_ptr<Expression> iRight) :
-      left{std::move(iLeft)}, op{iOp}, right{std::move(iRight)} {}
+      left{std::move(iLeft)},
+      op{iOp},
+      right{std::move(iRight)} {}
   const std::unique_ptr<Expression> left;
   const Token op;
   const std::unique_ptr<Expression> right;
@@ -117,7 +120,7 @@ struct Parser {
   int pos{0};
 };
 
-int main() {
+void test() {
   std::unique_ptr<Expression> test = std::make_unique<Binary>(
       std::make_unique<Unary>(
           Token{"!", Token::Type::Exclamation},
@@ -127,5 +130,9 @@ int main() {
   std::unique_ptr<Expression::Visitor> testVisitor =
       std::make_unique<PrintVisitor>();
   std::cout << std::any_cast<std::string>(test->accept(testVisitor.get()));
+}
+
+int main() {
+  test();
   return 0;
 }
