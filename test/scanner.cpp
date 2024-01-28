@@ -1,5 +1,5 @@
-#include "doctest.h"
 #include "scanner.hpp"
+#include "doctest.h"
 
 void sameAs(const Tokens &results, const Tokens &expected) {
   REQUIRE(results.size() == expected.size());

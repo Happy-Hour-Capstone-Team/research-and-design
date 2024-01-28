@@ -1,5 +1,5 @@
-#include "doctest.h"
 #include "token.hpp"
+#include "doctest.h"
 
 TEST_SUITE("Token") {
   TEST_CASE("Type equality works.") {
