@@ -19,6 +19,7 @@
  */
 
 // Forward declares in order to declare visit methods.
+#include <any>
 #include <memory>
 
 struct Literal;
@@ -29,20 +30,20 @@ struct Group;
 struct Expression {
   class Visitor {
     public:
-    virtual Token visit(const Literal &literal) = 0;
-    virtual Token visit(const Unary &unary) = 0;
-    virtual Token visit(const Binary &binary) = 0;
-    virtual Token visit(const Group &group) = 0;
+    virtual std::any visit(const Literal &literal) = 0;
+    virtual std::any visit(const Unary &unary) = 0;
+    virtual std::any visit(const Binary &binary) = 0;
+    virtual std::any visit(const Group &group) = 0;
   };
 
-  virtual Token accept(const std::unique_ptr<Visitor> visitor) = 0;
+  virtual std::any accept(Visitor *visitor) = 0;
 };
 
 struct Literal : Expression {
   Literal(const Token &iToken) : token{iToken} {}
   const Token token;
 
-  Token accept(const std::unique_ptr<Visitor> visitor) override {
+  std::any accept(Visitor *visitor) override {
     return visitor->visit(*this);
   }
 };
@@ -53,7 +54,7 @@ struct Unary : Expression {
   const Token op;
   const std::unique_ptr<Expression> right;
 
-  Token accept(const std::unique_ptr<Visitor> visitor) override {
+  std::any accept(Visitor *visitor) override {
     return visitor->visit(*this);
   }
 };
@@ -67,7 +68,7 @@ struct Binary : Expression {
   const Token op;
   const std::unique_ptr<Expression> right;
 
-  Token accept(const std::unique_ptr<Visitor> visitor) override {
+  std::any accept(Visitor *visitor) override {
     return visitor->visit(*this);
   }
 };
@@ -75,8 +76,37 @@ struct Binary : Expression {
 struct Group : Expression {
   const std::unique_ptr<Expression> expression;
 
-  Token accept(const std::unique_ptr<Visitor> visitor) override {
+  std::any accept(Visitor *visitor) override {
     return visitor->visit(*this);
+  }
+};
+
+class PrintVisitor : public Expression::Visitor {
+  public:
+  std::any visit(const Literal &literal) override {
+    return literal.token.lexeme;
+  }
+
+  std::any visit(const Unary &unary) override {
+    return parenthesize(unary.op.lexeme, {unary.right.get()});
+  }
+
+  std::any visit(const Binary &binary) override {
+    return parenthesize(binary.op.lexeme,
+                        {binary.left.get(), binary.right.get()});
+  }
+
+  std::any visit(const Group &group) override {
+    return parenthesize("group", {group.expression.get()});
+  }
+
+  private:
+  std::string parenthesize(const std::string &lexeme,
+                           const std::vector<Expression *> &expressions) {
+    std::string output{"(" + lexeme};
+    for(Expression *expression : expressions)
+      output += ", " + std::any_cast<std::string>(expression->accept(this));
+    return output + ")";
   }
 };
 
@@ -94,6 +124,8 @@ int main() {
           std::make_unique<Literal>(Token{"true", Token::Type::Boolean})),
       Token{"or", Token::Type::Or},
       std::make_unique<Literal>(Token{"true", Token::Type::Boolean}));
-
+  std::unique_ptr<Expression::Visitor> testVisitor =
+      std::make_unique<PrintVisitor>();
+  std::cout << std::any_cast<std::string>(test->accept(testVisitor.get()));
   return 0;
 }
