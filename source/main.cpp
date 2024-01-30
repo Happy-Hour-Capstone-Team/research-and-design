@@ -19,6 +19,7 @@
  */
 
 // Forward declares in order to declare visit methods.
+
 #include <any>
 #include <memory>
 #include <string>
@@ -88,14 +89,15 @@ struct Group : Expression {
 class PrintVisitor : public Expression::Visitor {
   public:
   std::any visit(const Literal &literal) override {
-    std::string valueString;
-    if(literal.value.type() == typeid(long double))
-      valueString = std::to_string(std::any_cast<long double>(literal.value));
-    else if(literal.value.type() == typeid(bool))
-      valueString = std::to_string(std::any_cast<bool>(literal.value));
-    else
-      valueString = std::any_cast<std::string>(literal.value);
-    return valueString;
+    std::string str{""};
+    if(literal.value.type() == typeid(long double)) {
+      str = std::to_string(std::any_cast<long double>(literal.value));
+    } else if(literal.value.type() == typeid(bool)) {
+      str = std::to_string(std::any_cast<bool>(literal.value));
+    } else {
+      str = std::any_cast<std::string>(literal.value);
+    }
+    return str;
   }
 
   std::any visit(const Unary &unary) override {
@@ -193,7 +195,6 @@ class Parser {
         return std::make_unique<Literal>(
             tokens[pos - 1].lexeme == "true" ? true : false);
       case Token::Type::Number:
-        std::cout << tokens[pos - 1].lexeme << '\n';
         return std::make_unique<Literal>(std::stold(tokens[pos - 1].lexeme));
       case Token::Type::String:
         return std::make_unique<Literal>(tokens[pos - 1].lexeme);
@@ -229,11 +230,11 @@ class Parser {
 };
 
 int main() {
-  Scanner scanner{"1000.235 + (23 * 5 / 6) - 20.5"};
+  Scanner scanner{"(2 + 2) * (4.25 - 1 / 3)"};
   Parser parser{scanner.tokenize()};
   std::unique_ptr<Expression::Visitor> testVisitor =
       std::make_unique<PrintVisitor>();
-  ExpressionUPtr test = parser.parse();
-  std::cout << std::any_cast<std::string>(test->accept(testVisitor.get()));
+  std::cout << std::any_cast<std::string>(
+      parser.parse()->accept(testVisitor.get()));
   return 0;
 }
