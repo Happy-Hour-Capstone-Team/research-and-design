@@ -202,6 +202,7 @@ TEST_SUITE("Scanner") {
       sameAs(results, expected);
     }
   }
+  
   TEST_CASE("Every token type can be detected.") {
     std::string input{"variable constant if else while\n"
                       "or and true false thisIsATest1\n"

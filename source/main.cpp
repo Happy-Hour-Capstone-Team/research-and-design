@@ -21,6 +21,7 @@
 // Forward declares in order to declare visit methods.
 #include <any>
 #include <memory>
+#include <string>
 
 struct Literal;
 struct Unary;
@@ -42,11 +43,11 @@ struct Expression {
   virtual ~Expression() = default;
 };
 
-using ExpressionUPtr = ExpressionUPtr;
+using ExpressionUPtr = std::unique_ptr<Expression>;
 
 struct Literal : Expression {
-  explicit Literal(const Token &iToken) : token{iToken} {}
-  const Token token;
+  explicit Literal(const std::any &iValue) : value{iValue} {}
+  const std::any value;
 
   std::any accept(Visitor *visitor) override {
     return visitor->visit(*this);
@@ -77,7 +78,7 @@ struct Binary : Expression {
 };
 
 struct Group : Expression {
-  const ExpressionUPtr expression;
+  const ExpressionUPtr expr;
 
   std::any accept(Visitor *visitor) override {
     return visitor->visit(*this);
@@ -87,7 +88,14 @@ struct Group : Expression {
 class PrintVisitor : public Expression::Visitor {
   public:
   std::any visit(const Literal &literal) override {
-    return literal.token.lexeme;
+    std::string valueString;
+    if(literal.value.type() == typeid(long double))
+      valueString = std::to_string(std::any_cast<long double>(literal.value));
+    else if(literal.value.type() == typeid(bool))
+      valueString = std::to_string(std::any_cast<bool>(literal.value));
+    else
+      valueString = std::any_cast<std::string>(literal.value);
+    return valueString;
   }
 
   std::any visit(const Unary &unary) override {
@@ -100,7 +108,7 @@ class PrintVisitor : public Expression::Visitor {
   }
 
   std::any visit(const Group &group) override {
-    return parenthesize("group", {group.expression.get()});
+    return parenthesize("group", {group.expr.get()});
   }
 
   private:
@@ -113,8 +121,9 @@ class PrintVisitor : public Expression::Visitor {
   }
 };
 
-struct Parser {
+class Parser {
   public:
+  explicit Parser(const Tokens &iTokens) : tokens{iTokens} {}
   explicit Parser(std::initializer_list<Token> iTokens) : tokens{iTokens} {}
 
   ExpressionUPtr parse() {
@@ -130,8 +139,8 @@ struct Parser {
     ExpressionUPtr left{comparison()};
     while(match({Token::Type::NotEqualTo, Token::Type::EqualTo})) {
       const Token op{tokens[pos - 1]};
-      ExpressionUPtr right{comparison};
-      left = std::make_unique<Binary>(left, op, right);
+      ExpressionUPtr right{comparison()};
+      left = std::make_unique<Binary>(std::move(left), op, std::move(right));
     }
     return std::move(left);
   }
@@ -144,33 +153,27 @@ struct Parser {
                  Token::Type::GreaterThanOrEqualTo})) {
       const Token op{tokens[pos - 1]};
       ExpressionUPtr right{term()};
-      left = std::make_unique<Binary>(left, op, right);
+      left = std::make_unique<Binary>(std::move(left), op, std::move(right));
     }
     return std::move(left);
   }
 
   ExpressionUPtr term() {
     ExpressionUPtr left{factor()};
-    while(match({Token::Type::LessThan,
-                 Token::Type::LessThanOrEqualTo,
-                 Token::Type::GreaterThan,
-                 Token::Type::GreaterThanOrEqualTo})) {
+    while(match({Token::Type::Asterisk, Token::Type::ForwardSlash})) {
       const Token op{tokens[pos - 1]};
       ExpressionUPtr right{factor()};
-      left = std::make_unique<Binary>(left, op, right);
+      left = std::make_unique<Binary>(std::move(left), op, std::move(right));
     }
     return std::move(left);
   }
 
   ExpressionUPtr factor() {
     ExpressionUPtr left{unary()};
-    while(match({Token::Type::LessThan,
-                 Token::Type::LessThanOrEqualTo,
-                 Token::Type::GreaterThan,
-                 Token::Type::GreaterThanOrEqualTo})) {
+    while(match({Token::Type::Plus, Token::Type::Dash})) {
       const Token op{tokens[pos - 1]};
       ExpressionUPtr right{unary()};
-      left = std::make_unique<Binary>(left, op, right);
+      left = std::make_unique<Binary>(std::move(left), op, std::move(right));
     }
     return std::move(left);
   }
@@ -179,33 +182,46 @@ struct Parser {
     if(match({Token::Type::Exclamation, Token::Type::Dash})) {
       const Token op{tokens[pos - 1]};
       ExpressionUPtr right{primary()};
-      return std::make_unique<Unary>(op, right);
+      return std::make_unique<Unary>(op, std::move(right));
     }
     return std::move(primary());
   }
 
   ExpressionUPtr primary() {
-    switch(tokens[pos++].type) {
+    switch(tokens[incPos()].type) {
       case Token::Type::Boolean:
-        return std::make_unique<Literal>(tokens[pos].lexeme == "true" ? true :
-                                                                        false);
+        return std::make_unique<Literal>(
+            tokens[pos - 1].lexeme == "true" ? true : false);
       case Token::Type::Number:
-        return std::make_unique<Literal>(std::stold(tokens[pos].lexeme));
+        std::cout << tokens[pos - 1].lexeme << '\n';
+        return std::make_unique<Literal>(std::stold(tokens[pos - 1].lexeme));
       case Token::Type::String:
-        return std::make_unique<Literal>(tokens[pos].lexeme);
+        return std::make_unique<Literal>(tokens[pos - 1].lexeme);
       case Token::Type::LeftParen:
-        // DEAL WITH LEFT PARENTHESIS ISSUE
+        ExpressionUPtr expr{expression()};
+        expect(Token::Type::RightParen);
+        return std::move(expr);
     }
   }
 
   bool match(const std::vector<Token::Type> &types) {
     for(Token::Type type : types) {
       if(tokens[pos].type == type) {
-        pos++;
+        incPos();
         return true;
       }
     }
     return false;
+  }
+
+  Token expect(const Token::Type type) {
+    if(tokens[pos].type == type) return tokens[pos++];
+    throw std::string{"This is a problem..."}; // Log properly later...
+  }
+
+  int incPos() {
+    if(pos < tokens.size()) pos++;
+    return pos - 1;
   }
 
   Tokens tokens;
@@ -213,14 +229,11 @@ struct Parser {
 };
 
 int main() {
-  ExpressionUPtr test = std::make_unique<Binary>(
-      std::make_unique<Unary>(
-          Token{"!", Token::Type::Exclamation},
-          std::make_unique<Literal>(Token{"true", Token::Type::Boolean})),
-      Token{"or", Token::Type::Or},
-      std::make_unique<Literal>(Token{"true", Token::Type::Boolean}));
+  Scanner scanner{"1000.235 + (23 * 5 / 6) - 20.5"};
+  Parser parser{scanner.tokenize()};
   std::unique_ptr<Expression::Visitor> testVisitor =
       std::make_unique<PrintVisitor>();
+  ExpressionUPtr test = parser.parse();
   std::cout << std::any_cast<std::string>(test->accept(testVisitor.get()));
   return 0;
 }
