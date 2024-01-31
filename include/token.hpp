@@ -50,6 +50,8 @@ struct Token {
   bool operator==(const Token &rhs);
 };
 
+using Tokens = std::vector<Token>;
+
 std::ostream &operator<<(std::ostream &out, const Token::Type type);
 std::ostream &operator<<(std::ostream &out, const Token &token);
 
@@ -59,5 +61,3 @@ const std::array<std::string, 30> tokenTypeNames{
     "end",      "{",        "}",          ";",      "(",      ")",
     "==",       "!=",       "<",          ">",      "<=",     ">=",
     "=",        "*",        "/",          "+",      "-",      "!"};
-
-using Tokens = std::vector<Token>;

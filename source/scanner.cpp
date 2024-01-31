@@ -74,23 +74,25 @@ void Scanner::forwardSlash() {
 
 void Scanner::string() {
   std::string lexeme{""};
-  for(int i{1}; pos + i < text.length() && text[pos + i] != '"'; i++)
+  int i;
+  for(i = 1; pos + i < text.length() && text[pos + i] != '"'; i++)
     lexeme += text[pos + i];
+  if(pos + i >= text.length()) report(line, pos, "Unterminated quote.");
   addToken(lexeme, Token::Type::String);
   incPosCol(2); // Account for two skipped quotes.
 }
 
 void Scanner::longTokens() {
-  std::string lexeme{""};
   if(std::isdigit(text[pos]))
-    number(lexeme);
+    number();
   else if(std::isalpha(text[pos]))
-    identifier(lexeme);
+    identifier();
   else
-    addToken(lexeme, Token::Type::Error);
+    addToken(std::string{text[pos]}, Token::Type::Error);
 }
 
-void Scanner::number(std::string &lexeme) {
+void Scanner::number() {
+  std::string lexeme{""};
   int i;
   for(i = 0; std::isdigit(text[pos + i]); i++) lexeme += text[pos + i];
   if(text[pos + i] == '.') {
@@ -100,7 +102,8 @@ void Scanner::number(std::string &lexeme) {
   addToken(lexeme, Token::Type::Number);
 }
 
-void Scanner::identifier(std::string &lexeme) {
+void Scanner::identifier() {
+  std::string lexeme{""};
   for(int i{0}; std::isalnum(text[pos + i]); i++) lexeme += text[pos + i];
   if(auto search = keywords.find(lexeme); search != keywords.end())
     addToken(lexeme, search->second);
@@ -109,7 +112,8 @@ void Scanner::identifier(std::string &lexeme) {
 }
 
 void Scanner::addToken(const std::string &lexeme, Token::Type type) {
-  if(type == Token::Type::Error) std::cout << "Add logging here...\n";
+  if(type == Token::Type::Error)
+    report({lexeme, type, line, col}, "Unrecognized token.");
   tokens.push_back({lexeme, type, line, col});
   // Subtract one to account for for-loop increment.
   incPosCol(lexeme.length() - 1);

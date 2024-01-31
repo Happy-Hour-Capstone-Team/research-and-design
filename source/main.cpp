@@ -18,12 +18,11 @@
  * PRIMARY -> true | false | Number | String | Identifier | '( EXPRESSION ')'
  */
 
-// Forward declares in order to declare visit methods.
-
 #include <any>
 #include <memory>
 #include <string>
 
+// Forward declares in order to declare visit methods.
 struct Literal;
 struct Unary;
 struct Binary;
@@ -123,7 +122,7 @@ class PrintVisitor : public Expression::Visitor {
   }
 };
 
-class Parser {
+class Parser : public ErrorProne {
   public:
   explicit Parser(const Tokens &iTokens) : tokens{iTokens} {}
   explicit Parser(std::initializer_list<Token> iTokens) : tokens{iTokens} {}
@@ -133,6 +132,8 @@ class Parser {
   }
 
   private:
+  class ParserException : public std::runtime_error {};
+
   ExpressionUPtr expression() {
     return std::move(equality());
   }
@@ -200,14 +201,14 @@ class Parser {
         return std::make_unique<Literal>(tokens[pos - 1].lexeme);
       case Token::Type::LeftParen:
         ExpressionUPtr expr{expression()};
-        expect(Token::Type::RightParen);
+        expect(Token::Type::RightParen, "Expected ')' after expression.");
         return std::move(expr);
     }
   }
 
   bool match(const std::vector<Token::Type> &types) {
     for(Token::Type type : types) {
-      if(tokens[pos].type == type) {
+      if(pos < tokens.size() && tokens[pos] == type) {
         incPos();
         return true;
       }
@@ -215,9 +216,9 @@ class Parser {
     return false;
   }
 
-  Token expect(const Token::Type type) {
-    if(tokens[pos].type == type) return tokens[pos++];
-    throw std::string{"This is a problem..."}; // Log properly later...
+  Token expect(const Token::Type type, const std::string &msg) {
+    if(tokens[pos].type == type) return tokens[incPos()];
+    throw error(tokens[pos], msg); // Log properly later...
   }
 
   int incPos() {
@@ -225,16 +226,22 @@ class Parser {
     return pos - 1;
   }
 
+  ParserException error(const Token &token, const std::string &msg) {}
+
   Tokens tokens;
   int pos{0};
 };
 
 int main() {
-  Scanner scanner{"(2 + 2) * (4.25 - 1 / 3)"};
+  Scanner scanner{"(2 + 2) * ,(4.25 - 1 / 3)\"This is a string..."};
   Parser parser{scanner.tokenize()};
-  std::unique_ptr<Expression::Visitor> testVisitor =
-      std::make_unique<PrintVisitor>();
-  std::cout << std::any_cast<std::string>(
-      parser.parse()->accept(testVisitor.get()));
+  try {
+    std::unique_ptr<Expression::Visitor> testVisitor =
+        std::make_unique<PrintVisitor>();
+    std::cout << std::any_cast<std::string>(
+        parser.parse()->accept(testVisitor.get()));
+  } catch(std::out_of_range c) {
+    std::cout << c.what();
+  }
   return 0;
 }

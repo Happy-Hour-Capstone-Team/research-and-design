@@ -1,10 +1,11 @@
 #pragma once
 
-#include "token.hpp"
+#include "errorProne.hpp"
+#include <string>
 #include <unordered_map>
 #include <vector>
 
-class Scanner {
+class Scanner : public ErrorProne {
   public:
   explicit Scanner(const std::string &input);
 
@@ -17,8 +18,8 @@ class Scanner {
   void forwardSlash();
   void string();
   void longTokens();
-  void number(std::string &lexeme);
-  void identifier(std::string &lexeme);
+  void number();
+  void identifier();
   void addToken(const std::string &lexeme, Token::Type type);
   void newLine();
   void incPosCol(int i = 1);
