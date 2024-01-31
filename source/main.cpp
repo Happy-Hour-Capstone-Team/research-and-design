@@ -132,7 +132,10 @@ class Parser : public ErrorProne {
   }
 
   private:
-  class ParserException : public std::runtime_error {};
+  class ParserException : public std::runtime_error {
+    public:
+    ParserException() : std::runtime_error{"Internal parser exception."} {}
+  };
 
   ExpressionUPtr expression() {
     return std::move(equality());
@@ -204,6 +207,7 @@ class Parser : public ErrorProne {
         expect(Token::Type::RightParen, "Expected ')' after expression.");
         return std::move(expr);
     }
+    throw error(tokens[pos - 1], "Unexpected token.");
   }
 
   bool match(const std::vector<Token::Type> &types) {
@@ -218,7 +222,7 @@ class Parser : public ErrorProne {
 
   Token expect(const Token::Type type, const std::string &msg) {
     if(tokens[pos].type == type) return tokens[incPos()];
-    throw error(tokens[pos], msg); // Log properly later...
+    throw error(tokens[pos], msg);
   }
 
   int incPos() {
@@ -226,14 +230,17 @@ class Parser : public ErrorProne {
     return pos - 1;
   }
 
-  ParserException error(const Token &token, const std::string &msg) {}
+  ParserException error(const Token &token, const std::string &msg) {
+    report(token, msg);
+    return ParserException{};
+  }
 
   Tokens tokens;
   int pos{0};
 };
 
 int main() {
-  Scanner scanner{"(2 + 2) * ,(4.25 - 1 / 3)\"This is a string..."};
+  Scanner scanner{"(2 + 2) * (4.25 - 1 / 3)"};
   Parser parser{scanner.tokenize()};
   try {
     std::unique_ptr<Expression::Visitor> testVisitor =
