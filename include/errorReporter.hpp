@@ -1,11 +1,11 @@
 #include "token.hpp"
 
-class ErrorProne {
+class ErrorReporter {
   public:
   virtual void report(const Token &token, const std::string &msg);
   virtual void report(const int line, const int col, const std::string &msg);
-  virtual bool hadError() const;
+  bool hadError() const;
 
-  protected:
-  bool error{false};
+  private:
+  static bool error;
 };

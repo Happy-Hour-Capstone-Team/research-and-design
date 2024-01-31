@@ -1,13 +1,14 @@
 #pragma once
 
-#include "errorProne.hpp"
+#include "errorReporter.hpp"
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-class Scanner : public ErrorProne {
+class Scanner {
   public:
-  explicit Scanner(const std::string &input);
+  explicit Scanner(const std::string &iText,
+                   ErrorReporter *const iErrorReporter = nullptr);
 
   Tokens tokenize();
 
@@ -24,6 +25,7 @@ class Scanner : public ErrorProne {
   void newLine();
   void incPosCol(int i = 1);
 
+  ErrorReporter *const errorReporter;
   std::string text;
   Tokens tokens;
   std::unordered_map<std::string, Token::Type> keywords{

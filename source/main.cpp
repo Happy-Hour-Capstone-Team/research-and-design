@@ -122,10 +122,13 @@ class PrintVisitor : public Expression::Visitor {
   }
 };
 
-class Parser : public ErrorProne {
+class Parser {
   public:
-  explicit Parser(const Tokens &iTokens) : tokens{iTokens} {}
-  explicit Parser(std::initializer_list<Token> iTokens) : tokens{iTokens} {}
+  Parser(const Tokens &iTokens, ErrorReporter *const iErrorReporter = nullptr) :
+      tokens{iTokens}, errorReporter{iErrorReporter} {}
+  Parser(std::initializer_list<Token> iTokens,
+         ErrorReporter *const iErrorReporter = nullptr) :
+      tokens{iTokens}, errorReporter{iErrorReporter} {}
 
   ExpressionUPtr parse() {
     return expression();
@@ -203,6 +206,7 @@ class Parser : public ErrorProne {
       case Token::Type::String:
         return std::make_unique<Literal>(tokens[pos - 1].lexeme);
       case Token::Type::LeftParen:
+        std::cout << "HERE!\n";
         ExpressionUPtr expr{expression()};
         expect(Token::Type::RightParen, "Expected ')' after expression.");
         return std::move(expr);
@@ -231,24 +235,27 @@ class Parser : public ErrorProne {
   }
 
   ParserException error(const Token &token, const std::string &msg) {
-    report(token, msg);
+    if(errorReporter) errorReporter->report(token, msg);
     return ParserException{};
   }
 
   Tokens tokens;
+  ErrorReporter *const errorReporter;
   int pos{0};
 };
 
 int main() {
-  Scanner scanner{"(2 + 2) * (4.25 - 1 / 3)"};
-  Parser parser{scanner.tokenize()};
   try {
+    const std::unique_ptr<ErrorReporter> errorReporter =
+        std::make_unique<ErrorReporter>();
+    Scanner scanner{"(2 + 2) * (4.25 - 1 / 3)(", errorReporter.get()};
+    Parser parser{scanner.tokenize(), errorReporter.get()};
     std::unique_ptr<Expression::Visitor> testVisitor =
         std::make_unique<PrintVisitor>();
     std::cout << std::any_cast<std::string>(
         parser.parse()->accept(testVisitor.get()));
-  } catch(std::out_of_range c) {
-    std::cout << c.what();
+  } catch(...) {
+    std::cout << "BRO\n";
   }
   return 0;
 }

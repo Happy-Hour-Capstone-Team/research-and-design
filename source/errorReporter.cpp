@@ -1,16 +1,18 @@
-#include "errorProne.hpp"
+#include "errorReporter.hpp"
 
-void ErrorProne::report(const Token &token, const std::string &msg) {
+void ErrorReporter::report(const Token &token, const std::string &msg) {
   std::cerr << "On line " << token.line << ", column " << token.col << " ["
             << token.lexeme << "]: " << msg << '\n';
   error = true;
 }
 
-void ErrorProne::report(const int line, const int col, const std::string &msg) {
+void ErrorReporter::report(const int line, const int col, const std::string &msg) {
   std::cerr << "On line " << line << ", column " << col << ": " << msg << '\n';
   error = true;
 }
 
-bool ErrorProne::hadError() const {
+bool ErrorReporter::hadError() const {
   return error;
 }
+
+bool ErrorReporter::error{false};

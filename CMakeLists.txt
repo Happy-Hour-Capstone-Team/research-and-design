@@ -5,7 +5,7 @@ include_directories(include)
 set(FILES
     scanner.cpp
     token.cpp
-    errorProne.cpp
+    errorReporter.cpp
     # Add other source files here.
 )
 

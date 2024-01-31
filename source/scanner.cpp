@@ -1,13 +1,14 @@
 #include "scanner.hpp"
 
-Scanner::Scanner(const std::string &input) : text{input} {}
+Scanner::Scanner(const std::string &iText,
+                 ErrorReporter *const iErrorReporter) :
+    text{iText}, errorReporter{iErrorReporter} {}
 
 Tokens Scanner::tokenize() {
   tokens.clear();
   line = col = 1;
   const std::size_t length{text.size()};
   for(pos = 0; pos < length; pos++, col++) scanToken();
-  printTokens(tokens);
   return tokens;
 }
 
@@ -77,7 +78,8 @@ void Scanner::string() {
   int i;
   for(i = 1; pos + i < text.length() && text[pos + i] != '"'; i++)
     lexeme += text[pos + i];
-  if(pos + i >= text.length()) report(line, pos, "Unterminated quote.");
+  if(pos + i >= text.length() && errorReporter)
+    errorReporter->report(line, pos, "Unterminated quote.");
   addToken(lexeme, Token::Type::String);
   incPosCol(2); // Account for two skipped quotes.
 }
@@ -112,8 +114,8 @@ void Scanner::identifier() {
 }
 
 void Scanner::addToken(const std::string &lexeme, Token::Type type) {
-  if(type == Token::Type::Error)
-    report({lexeme, type, line, col}, "Unrecognized token.");
+  if(type == Token::Type::Error && errorReporter)
+    errorReporter->report({lexeme, type, line, col}, "Unrecognized token.");
   tokens.push_back({lexeme, type, line, col});
   // Subtract one to account for for-loop increment.
   incPosCol(lexeme.length() - 1);
