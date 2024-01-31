@@ -206,7 +206,6 @@ class Parser {
       case Token::Type::String:
         return std::make_unique<Literal>(tokens[pos - 1].lexeme);
       case Token::Type::LeftParen:
-        std::cout << "HERE!\n";
         ExpressionUPtr expr{expression()};
         expect(Token::Type::RightParen, "Expected ')' after expression.");
         return std::move(expr);
