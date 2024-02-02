@@ -141,7 +141,7 @@ class Parser {
   };
 
   ExpressionUPtr expression() {
-    return std::move(equality());
+    return equality();
   }
 
   ExpressionUPtr equality() {
@@ -169,7 +169,7 @@ class Parser {
 
   ExpressionUPtr term() {
     ExpressionUPtr left{factor()};
-    while(match({Token::Type::Asterisk, Token::Type::ForwardSlash})) {
+    while(match({Token::Type::Plus, Token::Type::Dash})) {
       const Token op{tokens[pos - 1]};
       ExpressionUPtr right{factor()};
       left = std::make_unique<Binary>(std::move(left), op, std::move(right));
@@ -179,7 +179,7 @@ class Parser {
 
   ExpressionUPtr factor() {
     ExpressionUPtr left{unary()};
-    while(match({Token::Type::Plus, Token::Type::Dash})) {
+    while(match({Token::Type::Asterisk, Token::Type::ForwardSlash})) {
       const Token op{tokens[pos - 1]};
       ExpressionUPtr right{unary()};
       left = std::make_unique<Binary>(std::move(left), op, std::move(right));
@@ -193,44 +193,47 @@ class Parser {
       ExpressionUPtr right{primary()};
       return std::make_unique<Unary>(op, std::move(right));
     }
-    return std::move(primary());
+    return primary();
   }
 
   ExpressionUPtr primary() {
-    switch(tokens[incPos()].type) {
-      case Token::Type::Boolean:
-        return std::make_unique<Literal>(
-            tokens[pos - 1].lexeme == "true" ? true : false);
-      case Token::Type::Number:
-        return std::make_unique<Literal>(std::stold(tokens[pos - 1].lexeme));
-      case Token::Type::String:
-        return std::make_unique<Literal>(tokens[pos - 1].lexeme);
-      case Token::Type::LeftParen:
-        ExpressionUPtr expr{expression()};
-        expect(Token::Type::RightParen, "Expected ')' after expression.");
-        return std::move(expr);
+    if(match({Token::Type::Boolean}))
+      return std::make_unique<Literal>(
+          tokens[pos - 1].lexeme == "true" ? true : false);
+    if(match({Token::Type::Number}))
+      return std::make_unique<Literal>(std::stold(tokens[pos - 1].lexeme));
+    if(match({Token::Type::String}))
+      return std::make_unique<Literal>(tokens[pos - 1].lexeme);
+    if(match({Token::Type::LeftParen})) {
+      ExpressionUPtr expr{expression()};
+      expect(Token::Type::RightParen, "Expected ')' after expression.");
+      return std::move(expr);
     }
     throw error(tokens[pos - 1], "Unexpected token.");
   }
 
   bool match(const std::vector<Token::Type> &types) {
     for(Token::Type type : types) {
-      if(pos < tokens.size() && tokens[pos] == type) {
-        incPos();
+      if(check(type)) {
+        advance();
         return true;
       }
     }
     return false;
   }
 
-  Token expect(const Token::Type type, const std::string &msg) {
-    if(tokens[pos].type == type) return tokens[incPos()];
+  const Token &expect(const Token::Type type, const std::string &msg) {
+    if(check(type)) return advance();
     throw error(tokens[pos], msg);
   }
 
-  int incPos() {
-    if(pos < tokens.size()) pos++;
-    return pos - 1;
+  bool check(const Token::Type type) {
+    return tokens[pos].type != Token::Type::End && tokens[pos] == type;
+  }
+
+  const Token &advance() {
+    if(pos != tokens.size()) pos++;
+    return tokens[pos - 1];
   }
 
   ParserException error(const Token &token, const std::string &msg) {
@@ -247,13 +250,14 @@ int main() {
   try {
     const std::unique_ptr<ErrorReporter> errorReporter =
         std::make_unique<ErrorReporter>();
-    Scanner scanner{"(2 + 2) * (4.25 - 1 / 3)(", errorReporter.get()};
+    Scanner scanner{"(2 + 2) * (4.25 - 1 / 3)(end", errorReporter.get()};
+    Scanner::printTokens(scanner.tokenize());
     Parser parser{scanner.tokenize(), errorReporter.get()};
     std::unique_ptr<Expression::Visitor> testVisitor =
         std::make_unique<PrintVisitor>();
     std::cout << std::any_cast<std::string>(
         parser.parse()->accept(testVisitor.get()));
-  } catch(...) {
+  } catch(std::out_of_range) {
     std::cout << "BRO\n";
   }
   return 0;
