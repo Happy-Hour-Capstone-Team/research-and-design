@@ -205,6 +205,7 @@ class Parser {
     if(match({Token::Type::String}))
       return std::make_unique<Literal>(tokens[pos - 1].lexeme);
     if(match({Token::Type::LeftParen})) {
+      std::cout << "HERE\n";
       ExpressionUPtr expr{expression()};
       expect(Token::Type::RightParen, "Expected ')' after expression.");
       return std::move(expr);
@@ -224,11 +225,11 @@ class Parser {
 
   const Token &expect(const Token::Type type, const std::string &msg) {
     if(check(type)) return advance();
-    throw error(tokens[pos], msg);
+    throw error(tokens[pos - 1], msg);
   }
 
   bool check(const Token::Type type) {
-    return tokens[pos].type != Token::Type::End && tokens[pos] == type;
+    return pos != tokens.size() && tokens[pos] == type;
   }
 
   const Token &advance() {
@@ -250,7 +251,7 @@ int main() {
   try {
     const std::unique_ptr<ErrorReporter> errorReporter =
         std::make_unique<ErrorReporter>();
-    Scanner scanner{"(2 + 2) * (4.25 - 1 / 3)(end", errorReporter.get()};
+    Scanner scanner{"(2 + 2) * (4.25 - 1 / 3)(", errorReporter.get()};
     Scanner::printTokens(scanner.tokenize());
     Parser parser{scanner.tokenize(), errorReporter.get()};
     std::unique_ptr<Expression::Visitor> testVisitor =
