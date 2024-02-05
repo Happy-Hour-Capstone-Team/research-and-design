@@ -29,6 +29,7 @@ struct Literal;
 struct Unary;
 struct Binary;
 struct Group;
+struct Variable;
 
 struct Expression {
   class Visitor {
@@ -37,6 +38,7 @@ struct Expression {
     virtual std::any visit(const Unary &unary) = 0;
     virtual std::any visit(const Binary &binary) = 0;
     virtual std::any visit(const Group &group) = 0;
+    virtual std::any visit(const Variable &token) = 0;
   };
 
   virtual std::any accept(Visitor *visitor) = 0;
@@ -86,6 +88,15 @@ struct Group : Expression {
     return visitor->visit(*this);
   }
 };
+
+struct Variable : Expression {
+  const Token variable;
+
+  std::any accept(Visitor *visitor) override {
+    return visitor->visit(*this);
+  }
+};
+
 } // namespace Expression
 
 namespace Statement {
@@ -144,6 +155,10 @@ class PrintVisitor : public Expression::Expression::Visitor {
 
   std::any visit(const Expression::Group &group) override {
     return parenthesize("group", {group.expr.get()});
+  }
+
+  std::any visit(const Expression::Variable &token) override {
+    return nullptr;
   }
 
   private:
