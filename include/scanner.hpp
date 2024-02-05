@@ -39,6 +39,8 @@ class Scanner {
       {"true", Token::Type::Boolean},
       {"false", Token::Type::Boolean},
       {"begin", Token::Type::Begin},
-      {"end", Token::Type::End}};
+      {"end", Token::Type::End},
+      {"function", Token::Type::Function},
+      {"lambda", Token::Type::Lambda}};
   int pos{0}, line{1}, col{0};
 };
