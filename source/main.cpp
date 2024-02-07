@@ -19,10 +19,9 @@
  */
 
 #include <any>
+#include <fstream>
 #include <memory>
 #include <string>
-#include <fstream>
-
 
 // Forward declares in order to declare visit methods.
 struct Literal;
@@ -251,19 +250,20 @@ class Parser {
 
 int main(int argc, char *argv[]) {
   try {
-    if (argc != 2) {
+    if(argc != 2) {
       std::cout << "Usage: " << argv[0] << " <file>\n";
       return 1;
     }
     const std::unique_ptr<ErrorReporter> errorReporter =
         std::make_unique<ErrorReporter>();
-    std::ifstream file(argv[1]); // Open the file specified in the command-line argument
-    if (!file.is_open()) {
+    std::ifstream file(
+        argv[1]); // Open the file specified in the command-line argument
+    if(!file.is_open()) {
       std::cout << "Error opening file: " << argv[1] << "\n";
       return 1;
     }
     std::string expression((std::istreambuf_iterator<char>(file)),
-                          std::istreambuf_iterator<char>());
+                           std::istreambuf_iterator<char>());
     Scanner scanner{"(2 + 2) * (4.25 - 1 / 3)(", errorReporter.get()};
     Scanner::printTokens(scanner.tokenize());
     Parser parser{scanner.tokenize(), errorReporter.get()};
