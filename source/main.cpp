@@ -16,6 +16,9 @@
  * FACTOR -> UNARY ( ( * | / ) UNARY )*
  * UNARY -> ( ! | - ) PRIMARY
  * PRIMARY -> true | false | Number | String | Identifier | '( EXPRESSION ')'
+ * unary -> ( "!" | "-" ) unary | call ; 
+ * CALL -> primary ( "(" arguments? ")" )* ;
+ * ARGUMENTS -> expression ( "," expression )* ;
  */
 
 #include <any>
@@ -242,6 +245,8 @@ class Parser {
   ErrorReporter *const errorReporter;
   int pos{0};
 };
+
+// code functions here
 
 int main() {
   try {

@@ -7,7 +7,7 @@
 /**
  * KEY WORDS AND SYMBOLS
  * variable, constant, begin, end, if, else, while, or, and, true, false, {, },
- * ;, (, ), ==, !=, <, >, <=, >=, +, =, -, *, /, !
+ * ;, (, ), ==, !=, <, >, <=, >=, +, =, -, *, /, ! %, ,, ^, function, lambda
  */
 struct Token {
   std::string lexeme;
