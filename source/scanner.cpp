@@ -2,7 +2,8 @@
 
 Scanner::Scanner(const std::string &iText,
                  ErrorReporter *const iErrorReporter) :
-    text{iText}, errorReporter{iErrorReporter} {}
+    text{iText},
+    errorReporter{iErrorReporter} {}
 
 Tokens Scanner::tokenize() {
   tokens.clear();
