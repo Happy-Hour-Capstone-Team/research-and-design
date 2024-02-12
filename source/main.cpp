@@ -56,8 +56,7 @@ struct Literal : Expression {
 
 struct Unary : Expression {
   Unary(const Token &iOp, ExpressionUPtr iRight) :
-      op{iOp},
-      right{std::move(iRight)} {}
+      op{iOp}, right{std::move(iRight)} {}
   const Token op;
   const ExpressionUPtr right;
 
@@ -68,9 +67,7 @@ struct Unary : Expression {
 
 struct Binary : Expression {
   Binary(ExpressionUPtr iLeft, const Token &iOp, ExpressionUPtr iRight) :
-      left{std::move(iLeft)},
-      op{iOp},
-      right{std::move(iRight)} {}
+      left{std::move(iLeft)}, op{iOp}, right{std::move(iRight)} {}
   const ExpressionUPtr left;
   const Token op;
   const ExpressionUPtr right;
@@ -128,12 +125,10 @@ class PrintVisitor : public Expression::Visitor {
 class Parser {
   public:
   Parser(const Tokens &iTokens, ErrorReporter *const iErrorReporter = nullptr) :
-      tokens{iTokens},
-      errorReporter{iErrorReporter} {}
+      tokens{iTokens}, errorReporter{iErrorReporter} {}
   Parser(std::initializer_list<Token> iTokens,
          ErrorReporter *const iErrorReporter = nullptr) :
-      tokens{iTokens},
-      errorReporter{iErrorReporter} {}
+      tokens{iTokens}, errorReporter{iErrorReporter} {}
 
   ExpressionUPtr parse() {
     return expression();
