@@ -104,14 +104,16 @@ namespace Statement {
 
 // Forward declares in order to declare visit methods.
 struct Expression;
+struct Variable;
 
 struct Statement {
   class Visitor {
     public:
-    virtual std::any visit(const Expression &expr) = 0;
+    virtual void visit(const Expression &expr) = 0;
+    virtual void visit(const Variable &var) = 0;
   };
 
-  virtual std::any accept(Visitor *visitor) = 0;
+  virtual void accept(Visitor *visitor) = 0;
 
   // Need to free memory in children.
   virtual ~Statement() = default;
@@ -124,7 +126,15 @@ struct Expression : Statement {
       expr{std::move(iExpr)} {}
   const ::Expression::ExpressionUPtr expr;
 
-  std::any accept(Visitor *visitor) override {
+  void accept(Visitor *visitor) override {
+    visitor->visit(*this);
+  }
+};
+
+struct Variable : Statement {
+  const Token variable;
+
+  void accept(Visitor *visitor) override {
     return visitor->visit(*this);
   }
 };
@@ -232,8 +242,8 @@ class Parser {
     return std::move(left);
   }
 
-  ExpressionUPtr term() {
-    ExpressionUPtr left{factor()};
+  Expression::ExpressionUPtr term() {
+    Expression::ExpressionUPtr left{factor()};
     while(match({Token::Type::Plus, Token::Type::Dash})) {
       const Token op{tokens[pos - 1]};
       Expression::ExpressionUPtr right{factor()};
@@ -243,8 +253,8 @@ class Parser {
     return std::move(left);
   }
 
-  ExpressionUPtr factor() {
-    ExpressionUPtr left{unary()};
+  Expression::ExpressionUPtr factor() {
+    Expression::ExpressionUPtr left{unary()};
     while(match({Token::Type::Asterisk, Token::Type::ForwardSlash})) {
       const Token op{tokens[pos - 1]};
       Expression::ExpressionUPtr right{unary()};
@@ -314,13 +324,15 @@ class Parser {
   int pos{0};
 };
 
-class Evalexpressions : public Expression::Visitor {
+class Interpreter :
+    public Expression::Expression::Visitor,
+    public Statement::Statement::Visitor {
   public:
-  std::any visit(const Literal &literal) override {
+  std::any visit(const Expression::Literal &literal) override {
     return literal.value;
   }
 
-  std::any visit(const Unary &unary) override {
+  std::any visit(const Expression::Unary &unary) override {
     std::any rightVal = unary.right->accept(this);
     switch(unary.op.type) {
       case Token::Type::Exclamation: return !std::any_cast<bool>(rightVal);
@@ -329,7 +341,7 @@ class Evalexpressions : public Expression::Visitor {
     }
   }
 
-  std::any visit(const Binary &binary) override {
+  std::any visit(const Expression::Binary &binary) override {
     std::any leftVal = binary.left->accept(this);
     std::any rightVal = binary.right->accept(this);
     const long double leftNumber{std::any_cast<long double>(leftVal)};
@@ -385,35 +397,53 @@ class Evalexpressions : public Expression::Visitor {
     }
   }
 
-  std::any visit(const Group &group) override {
+  std::any visit(const Expression::Group &group) override {
     return group.expr->accept(this);
   }
-};
-int main() {
-  try {
-    if(argc != 2) {
-      std::cerr << "Usage: " << argv[0] << " <file>\n";
-      return 1;
-    }
-    const std::unique_ptr<ErrorReporter> errorReporter =
-        std::make_unique<ErrorReporter>();
-    std::ifstream file(
-        argv[1]); // Open the file specified in the command-line argument
-    if(!file.is_open()) {
-      std::cerr << "Error opening file: " << argv[1] << "\n";
-      return 1;
-    }
-    std::string expression((std::istreambuf_iterator<char>(file)),
-                           std::istreambuf_iterator<char>());
-    Scanner scanner{expression, errorReporter.get()};
-    Scanner::printTokens(scanner.tokenize());
-    Parser parser{scanner.tokenize(), errorReporter.get()};
-    std::unique_ptr<Expression::Expression::Visitor> testVisitor =
-        std::make_unique<PrintVisitor>();
-    // std::cout << std::any_cast<std::string>(
-    //    parser.parse()->accept(testVisitor.get()));
-  } catch(std::out_of_range) {
-    std::cout << "BRO\n";
+
+  void visit(const Statement::Expression &expr) override {
+    evaluate(expr.expr.get());
   }
+
+  void interpret(const std::vector<Statement::StatementUPtr> &statements) {
+    try {
+      for(std::size_t i{0}; i < statements.size(); i++)
+        execute(statements[i].get());
+    } catch(std::runtime_error e) {
+      std::cerr << e.what() << '\n'; // Add proper error logging here later...
+    }
+  }
+
+  private:
+  std::any evaluate(Expression::Expression *expr) {
+    return expr->accept(this);
+  }
+
+  void execute(Statement::Statement *statement) {
+    statement->accept(this);
+  }
+};
+
+int main(int argc, char *argv[]) {
+  if(argc != 2) {
+    std::cerr << "Usage: " << argv[0] << " <file>\n";
+    return 1;
+  }
+  std::ifstream file{argv[1]}; // Open the file specified in the CLI.
+  if(!file.is_open()) {
+    std::cerr << "Error opening file: " << argv[1] << "\n";
+    return 1;
+  }
+  std::string expression{std::istreambuf_iterator<char>(file),
+                         std::istreambuf_iterator<char>()};
+  const std::unique_ptr<ErrorReporter> errorReporter =
+      std::make_unique<ErrorReporter>();
+  Scanner scanner{expression, errorReporter.get()};
+  Scanner::printTokens(scanner.tokenize());
+  Parser parser{scanner.tokenize(), errorReporter.get()};
+  const std::vector<Statement::StatementUPtr> statements{parser.parse()};
+  if(errorReporter->hadError()) return;
+  Interpreter interpreter{};
+
   return 0;
 }
