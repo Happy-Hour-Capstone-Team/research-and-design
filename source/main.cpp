@@ -19,6 +19,7 @@
  */
 
 #include <any>
+#include <fstream>
 #include <memory>
 #include <string>
 
@@ -56,8 +57,7 @@ struct Literal : Expression {
 
 struct Unary : Expression {
   Unary(const Token &iOp, ExpressionUPtr iRight) :
-      op{iOp},
-      right{std::move(iRight)} {}
+      op{iOp}, right{std::move(iRight)} {}
   const Token op;
   const ExpressionUPtr right;
 
@@ -68,9 +68,7 @@ struct Unary : Expression {
 
 struct Binary : Expression {
   Binary(ExpressionUPtr iLeft, const Token &iOp, ExpressionUPtr iRight) :
-      left{std::move(iLeft)},
-      op{iOp},
-      right{std::move(iRight)} {}
+      left{std::move(iLeft)}, op{iOp}, right{std::move(iRight)} {}
   const ExpressionUPtr left;
   const Token op;
   const ExpressionUPtr right;
@@ -128,12 +126,10 @@ class PrintVisitor : public Expression::Visitor {
 class Parser {
   public:
   Parser(const Tokens &iTokens, ErrorReporter *const iErrorReporter = nullptr) :
-      tokens{iTokens},
-      errorReporter{iErrorReporter} {}
+      tokens{iTokens}, errorReporter{iErrorReporter} {}
   Parser(std::initializer_list<Token> iTokens,
          ErrorReporter *const iErrorReporter = nullptr) :
-      tokens{iTokens},
-      errorReporter{iErrorReporter} {}
+      tokens{iTokens}, errorReporter{iErrorReporter} {}
 
   ExpressionUPtr parse() {
     return expression();
@@ -146,7 +142,7 @@ class Parser {
   };
 
   ExpressionUPtr expression() {
-    return std::move(equality());
+    return equality();
   }
 
   ExpressionUPtr equality() {
@@ -198,44 +194,48 @@ class Parser {
       ExpressionUPtr right{primary()};
       return std::make_unique<Unary>(op, std::move(right));
     }
-    return std::move(primary());
+    return primary();
   }
 
   ExpressionUPtr primary() {
-    switch(tokens[incPos()].type) {
-      case Token::Type::Boolean:
-        return std::make_unique<Literal>(
-            tokens[pos - 1].lexeme == "true" ? true : false);
-      case Token::Type::Number:
-        return std::make_unique<Literal>(std::stold(tokens[pos - 1].lexeme));
-      case Token::Type::String:
-        return std::make_unique<Literal>(tokens[pos - 1].lexeme);
-      case Token::Type::LeftParen:
-        ExpressionUPtr expr{expression()};
-        expect(Token::Type::RightParen, "Expected ')' after expression.");
-        return std::move(expr);
+    if(match({Token::Type::Boolean}))
+      return std::make_unique<Literal>(
+          tokens[pos - 1].lexeme == "true" ? true : false);
+    if(match({Token::Type::Number}))
+      return std::make_unique<Literal>(std::stold(tokens[pos - 1].lexeme));
+    if(match({Token::Type::String}))
+      return std::make_unique<Literal>(tokens[pos - 1].lexeme);
+    if(match({Token::Type::LeftParen})) {
+      std::cout << "HERE\n";
+      ExpressionUPtr expr{expression()};
+      expect(Token::Type::RightParen, "Expected ')' after expression.");
+      return std::move(expr);
     }
     throw error(tokens[pos - 1], "Unexpected token.");
   }
 
   bool match(const std::vector<Token::Type> &types) {
     for(Token::Type type : types) {
-      if(pos < tokens.size() && tokens[pos] == type) {
-        incPos();
+      if(check(type)) {
+        advance();
         return true;
       }
     }
     return false;
   }
 
-  Token expect(const Token::Type type, const std::string &msg) {
-    if(tokens[pos].type == type) return tokens[incPos()];
-    throw error(tokens[pos], msg);
+  const Token &expect(const Token::Type type, const std::string &msg) {
+    if(check(type)) return advance();
+    throw error(tokens[pos - 1], msg);
   }
 
-  int incPos() {
-    if(pos < tokens.size()) pos++;
-    return pos - 1;
+  bool check(const Token::Type type) {
+    return pos != tokens.size() && tokens[pos] == type;
+  }
+
+  const Token &advance() {
+    if(pos != tokens.size()) pos++;
+    return tokens[pos - 1];
   }
 
   ParserException error(const Token &token, const std::string &msg) {
@@ -248,105 +248,31 @@ class Parser {
   int pos{0};
 };
 
-class Evalexpressions : public Expression::Visitor {
-  public:
-  std::any visit(const Literal &literal) override {
-    return literal.value;
-  }
-
-  std::any visit(const Unary &unary) override {
-    std::any rightVal = unary.right->accept(this);
-    switch(unary.op.type) {
-      case Token::Type::Exclamation: return !std::any_cast<bool>(rightVal);
-      case Token::Type::Dash: return -std::any_cast<long double>(rightVal);
-      default: throw std::runtime_error("Not a supported unary operator");
-    }
-  }
-
-  std::any visit(const Binary &binary) override {
-    std::any leftVal = binary.left->accept(this);
-    std::any rightVal = binary.right->accept(this);
-    const long double leftNumber{std::any_cast<long double>(leftVal)};
-    const long double rightNumber{std::any_cast<long double>(rightVal)};
-    switch(binary.op.type) {
-      case Token::Type::NotEqualTo:
-        return std::any_cast<long double>(leftVal) !=
-               std::any_cast<long double>(rightVal);
-      case Token::Type::EqualTo:
-        return std::any_cast<long double>(leftVal) ==
-               std::any_cast<long double>(rightVal);
-      case Token::Type::LessThan:
-        return std::any_cast<long double>(leftVal) <
-               std::any_cast<long double>(rightVal);
-      case Token::Type::LessThanOrEqualTo:
-        return std::any_cast<long double>(leftVal) <=
-               std::any_cast<long double>(rightVal);
-      case Token::Type::GreaterThan:
-        return std::any_cast<long double>(leftVal) >
-               std::any_cast<long double>(rightVal);
-      case Token::Type::GreaterThanOrEqualTo:
-        return std::any_cast<long double>(leftVal) >=
-               std::any_cast<long double>(rightVal);
-      case Token::Type::Asterisk:
-        try {
-          return std::any_cast<long double>(leftVal) *
-                 std::any_cast<long double>(rightVal);
-        } catch(const std::bad_any_cast) {
-          throw std::runtime_error("error");
-        }
-      case Token::Type::Plus:
-        try {
-          return std::any_cast<long double>(leftNumber) +
-                 std::any_cast<long double>(rightNumber);
-        } catch(const std::bad_any_cast) {
-          throw std::runtime_error("error");
-        }
-      case Token::Type::Dash:
-        try {
-          return std::any_cast<long double>(leftVal) -
-                 std::any_cast<long double>(rightVal);
-        } catch(const std::bad_any_cast) {
-          throw std::runtime_error("error");
-        }
-      case Token::Type::ForwardSlash:
-        try {
-          return std::any_cast<long double>(leftVal) /
-                 std::any_cast<long double>(rightVal);
-        } catch(const std::bad_any_cast &) {
-          throw std::runtime_error("Error");
-        }
-      default: throw std::runtime_error("Not a supproted binary operator");
-    }
-  }
-
-  std::any visit(const Group &group) override {
-    return group.expr->accept(this);
-  }
-};
-int main() {
+int main(int argc, char *argv[]) {
   try {
+    if(argc != 2) {
+      std::cerr << "Usage: " << argv[0] << " <file>\n";
+      return 1;
+    }
     const std::unique_ptr<ErrorReporter> errorReporter =
         std::make_unique<ErrorReporter>();
-    std::string inputExpression = "(2 + 2) * (4.25 - 1 / 2)";
-    Scanner scanner{inputExpression, errorReporter.get()};
-    Tokens tokens = scanner.tokenize();
-    Parser parser{tokens, errorReporter.get()};
-    ExpressionUPtr parsedExpression = parser.parse();
-    std::unique_ptr<Expression::Visitor> printVisitor =
+    std::ifstream file(
+        argv[1]); // Open the file specified in the command-line argument
+    if(!file.is_open()) {
+      std::cerr << "Error opening file: " << argv[1] << "\n";
+      return 1;
+    }
+    std::string expression((std::istreambuf_iterator<char>(file)),
+                           std::istreambuf_iterator<char>());
+    Scanner scanner{expression, errorReporter.get()};
+    Scanner::printTokens(scanner.tokenize());
+    Parser parser{scanner.tokenize(), errorReporter.get()};
+    std::unique_ptr<Expression::Visitor> testVisitor =
         std::make_unique<PrintVisitor>();
-    std::cout << "Parsed expression: "
-              << std::any_cast<std::string>(
-                     parsedExpression->accept(printVisitor.get()))
-              << std::endl;
-    std::unique_ptr<Expression::Visitor> evalVisitor =
-        std::make_unique<Evalexpressions>();
-    std::any evaluationResult = parsedExpression->accept(evalVisitor.get());
-    std::cout << "Evaluation result: "
-              << std::any_cast<long double>(evaluationResult) << std::endl;
-  } catch(const std::exception) {
-    std::cout << "An error occurred: " << std::endl;
-  } catch(...) {
-    std::cout << "An error occurred." << std::endl;
+    std::cout << std::any_cast<std::string>(
+        parser.parse()->accept(testVisitor.get()));
+  } catch(std::out_of_range) {
+    std::cout << "BRO\n";
   }
   return 0;
 }
