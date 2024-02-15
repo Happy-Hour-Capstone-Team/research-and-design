@@ -1,3 +1,9 @@
+/**
+ * Thank you to Robert Nystrom for the Java examples provided in his
+ * book found at https://craftinginterpreters.com/.
+ *
+ */
+
 #include "main.hpp"
 
 /**
@@ -94,6 +100,8 @@ struct Group : Expression {
 };
 
 struct Variable : Expression {
+  Variable(const Token &iVariable) : variable{iVariable} {}
+
   const Token variable;
 
   std::any accept(Visitor *visitor) override {
@@ -135,7 +143,10 @@ struct Expression : Statement {
 };
 
 struct Variable : Statement {
+  Variable(const Token &iVariable, ::Expression::ExpressionUPtr iInitializer) :
+      variable{iVariable}, initializer{std::move(iInitializer)} {}
   const Token variable;
+  const ::Expression::ExpressionUPtr initializer;
 
   void accept(Visitor *visitor) override {
     return visitor->visit(*this);
@@ -196,7 +207,7 @@ class Parser {
 
   std::vector<Statement::StatementUPtr> parse() {
     std::vector<Statement::StatementUPtr> statements{};
-    while(pos != tokens.size()) statements.push_back(statement());
+    while(pos != tokens.size()) statements.push_back(declaration());
     return statements;
   }
 
@@ -206,13 +217,48 @@ class Parser {
     ParserException() : std::runtime_error{"Internal parser exception."} {}
   };
 
+  void synchronize() {
+    advance();
+    while(pos < tokens.size()) {
+      if(tokens[pos - 1].type == Token::Type::Semicolon) return;
+      switch(tokens[pos].type) {
+        case Token::Type::Function:
+        case Token::Type::Variable:
+        case Token::Type::If:
+        case Token::Type::While: return;
+      }
+      advance();
+    }
+  }
+
+  Statement::StatementUPtr declaration() {
+    try {
+      if(match({Token::Type::Variable})) return variableDeclaration();
+      return statement();
+    } catch(ParserException e) {
+      synchronize();
+      return nullptr;
+    }
+  }
+
+  Statement::StatementUPtr variableDeclaration() {
+    const Token variable{
+        expect(Token::Type::Identifier, "Expected a variable name.")};
+    Expression::ExpressionUPtr variableInitializer{nullptr};
+    if(match({Token::Type::Equal})) variableInitializer = expression();
+    expect(Token::Type::Semicolon,
+           "Expected a ';' after variable declaration.");
+    return std::make_unique<Statement::Variable>(
+        variable, std::move(variableInitializer));
+  }
+
   Statement::StatementUPtr statement() {
     return expressionStatement();
   }
 
   Statement::StatementUPtr expressionStatement() {
     Expression::ExpressionUPtr expr = expression();
-    expect(Token::Type::Semicolon, "Expected ';' after statement.");
+    expect(Token::Type::Semicolon, "Expected a ';' after statement.");
     return std::make_unique<Statement::Expression>(std::move(expr));
   }
 
@@ -285,9 +331,11 @@ class Parser {
           std::stold(tokens[pos - 1].lexeme));
     if(match({Token::Type::String}))
       return std::make_unique<Expression::Literal>(tokens[pos - 1].lexeme);
+    if(match({Token::Type::Identifier}))
+      return std::make_unique<Expression::Variable>(tokens[pos - 1]);
     if(match({Token::Type::LeftParen})) {
       Expression::ExpressionUPtr expr{expression()};
-      expect(Token::Type::RightParen, "Expected ')' after expression.");
+      expect(Token::Type::RightParen, "Expected a ')' after expression.");
       return std::move(expr);
     }
     throw error(tokens[pos - 1], "Unexpected token.");
@@ -325,6 +373,28 @@ class Parser {
   Tokens tokens;
   ErrorReporter *const errorReporter;
   int pos{0};
+};
+
+class Environment {
+  public:
+  using SymbolTable = std::unordered_map<Token, std::any>;
+
+  Environment() :
+      values{std::make_unique<SymbolTable>(
+          std::initializer_list<std::pair<Token, std::any>>{})} {}
+
+  void define(const Token &variable, const std::any &value) {
+    values->insert(make_pair(variable, value));
+  }
+
+  std::any get(const Token &variable) {
+    if(auto search = values->find(variable); search != values->end())
+      return search->second;
+    throw std::runtime_error{"Undefined variable!"}; // Make this better later.
+  }
+
+  private:
+  std::unique_ptr<SymbolTable> values;
 };
 
 class Interpreter :
@@ -373,21 +443,21 @@ class Interpreter :
           return std::any_cast<long double>(leftVal) *
                  std::any_cast<long double>(rightVal);
         } catch(const std::bad_any_cast) {
-          throw std::runtime_error("error");
+          throw std::runtime_error("Error");
         }
       case Token::Type::Plus:
         try {
           return std::any_cast<long double>(leftNumber) +
                  std::any_cast<long double>(rightNumber);
         } catch(const std::bad_any_cast) {
-          throw std::runtime_error("error");
+          throw std::runtime_error("Error");
         }
       case Token::Type::Dash:
         try {
           return std::any_cast<long double>(leftVal) -
                  std::any_cast<long double>(rightVal);
         } catch(const std::bad_any_cast) {
-          throw std::runtime_error("error");
+          throw std::runtime_error("Error");
         }
       case Token::Type::ForwardSlash:
         try {
@@ -404,8 +474,18 @@ class Interpreter :
     return group.expr->accept(this);
   }
 
+  std::any visit(const Expression::Variable &variable) override {
+    return environment.get(variable.variable);
+  }
+
   void visit(const Statement::Expression &expr) override {
     evaluate(expr.expr.get());
+  }
+
+  void visit(const Statement::Variable &variable) override {
+    std::any value;
+    if(variable.initializer) value = evaluate(variable.initializer.get());
+    environment.define(variable.variable, value);
   }
 
   void interpret(const std::vector<Statement::StatementUPtr> &statements) {
@@ -418,6 +498,8 @@ class Interpreter :
   }
 
   private:
+  Environment environment;
+
   std::any evaluate(Expression::Expression *expr) {
     return expr->accept(this);
   }
@@ -439,13 +521,13 @@ int main(int argc, char *argv[]) {
   }
   std::string expression{std::istreambuf_iterator<char>(file),
                          std::istreambuf_iterator<char>()};
-  const std::unique_ptr<ErrorReporter> errorReporter =
-      std::make_unique<ErrorReporter>();
+  const std::unique_ptr<ErrorReporter> errorReporter{
+      std::make_unique<ErrorReporter>()};
   Scanner scanner{expression, errorReporter.get()};
   Scanner::printTokens(scanner.tokenize());
   Parser parser{scanner.tokenize(), errorReporter.get()};
   const std::vector<Statement::StatementUPtr> statements{parser.parse()};
-  if(errorReporter->hadError()) return;
+  if(errorReporter->hadError()) return 1;
   Interpreter interpreter{};
 
   return 0;
