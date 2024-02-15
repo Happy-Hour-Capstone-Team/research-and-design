@@ -232,8 +232,8 @@ class Parser {
     return std::move(left);
   }
 
-  Expression::ExpressionUPtr term() {
-    Expression::ExpressionUPtr left{factor()};
+  ExpressionUPtr term() {
+    ExpressionUPtr left{factor()};
     while(match({Token::Type::Plus, Token::Type::Dash})) {
       const Token op{tokens[pos - 1]};
       Expression::ExpressionUPtr right{factor()};
@@ -243,8 +243,8 @@ class Parser {
     return std::move(left);
   }
 
-  Expression::ExpressionUPtr factor() {
-    Expression::ExpressionUPtr left{unary()};
+  ExpressionUPtr factor() {
+    ExpressionUPtr left{unary()};
     while(match({Token::Type::Asterisk, Token::Type::ForwardSlash})) {
       const Token op{tokens[pos - 1]};
       Expression::ExpressionUPtr right{unary()};
@@ -314,7 +314,82 @@ class Parser {
   int pos{0};
 };
 
-int main(int argc, char *argv[]) {
+class Evalexpressions : public Expression::Visitor {
+  public:
+  std::any visit(const Literal &literal) override {
+    return literal.value;
+  }
+
+  std::any visit(const Unary &unary) override {
+    std::any rightVal = unary.right->accept(this);
+    switch(unary.op.type) {
+      case Token::Type::Exclamation: return !std::any_cast<bool>(rightVal);
+      case Token::Type::Dash: return -std::any_cast<long double>(rightVal);
+      default: throw std::runtime_error("Not a supported unary operator");
+    }
+  }
+
+  std::any visit(const Binary &binary) override {
+    std::any leftVal = binary.left->accept(this);
+    std::any rightVal = binary.right->accept(this);
+    const long double leftNumber{std::any_cast<long double>(leftVal)};
+    const long double rightNumber{std::any_cast<long double>(rightVal)};
+    switch(binary.op.type) {
+      case Token::Type::NotEqualTo:
+        return std::any_cast<long double>(leftVal) !=
+               std::any_cast<long double>(rightVal);
+      case Token::Type::EqualTo:
+        return std::any_cast<long double>(leftVal) ==
+               std::any_cast<long double>(rightVal);
+      case Token::Type::LessThan:
+        return std::any_cast<long double>(leftVal) <
+               std::any_cast<long double>(rightVal);
+      case Token::Type::LessThanOrEqualTo:
+        return std::any_cast<long double>(leftVal) <=
+               std::any_cast<long double>(rightVal);
+      case Token::Type::GreaterThan:
+        return std::any_cast<long double>(leftVal) >
+               std::any_cast<long double>(rightVal);
+      case Token::Type::GreaterThanOrEqualTo:
+        return std::any_cast<long double>(leftVal) >=
+               std::any_cast<long double>(rightVal);
+      case Token::Type::Asterisk:
+        try {
+          return std::any_cast<long double>(leftVal) *
+                 std::any_cast<long double>(rightVal);
+        } catch(const std::bad_any_cast) {
+          throw std::runtime_error("error");
+        }
+      case Token::Type::Plus:
+        try {
+          return std::any_cast<long double>(leftNumber) +
+                 std::any_cast<long double>(rightNumber);
+        } catch(const std::bad_any_cast) {
+          throw std::runtime_error("error");
+        }
+      case Token::Type::Dash:
+        try {
+          return std::any_cast<long double>(leftVal) -
+                 std::any_cast<long double>(rightVal);
+        } catch(const std::bad_any_cast) {
+          throw std::runtime_error("error");
+        }
+      case Token::Type::ForwardSlash:
+        try {
+          return std::any_cast<long double>(leftVal) /
+                 std::any_cast<long double>(rightVal);
+        } catch(const std::bad_any_cast &) {
+          throw std::runtime_error("Error");
+        }
+      default: throw std::runtime_error("Not a supproted binary operator");
+    }
+  }
+
+  std::any visit(const Group &group) override {
+    return group.expr->accept(this);
+  }
+};
+int main() {
   try {
     if(argc != 2) {
       std::cerr << "Usage: " << argv[0] << " <file>\n";
