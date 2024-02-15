@@ -101,7 +101,9 @@
         "__tuple": "cpp",
         "queue": "cpp",
         "stack": "cpp",
-        "any": "cpp"
+        "any": "cpp",
+        "forward_list": "cpp",
+        "xstddef": "cpp"
     },
     "C_Cpp.default.includePath": [
         "include"
