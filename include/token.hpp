@@ -7,7 +7,7 @@
 /**
  * KEY WORDS AND SYMBOLS
  * variable, constant, begin, end, if, else, while, or, and, true, false, {, },
- * ;, (, ), ==, !=, <, >, <=, >=, +, =, -, *, /, !
+ * ;, (, ), ==, !=, <, >, <=, >=, +, =, -, *, /, ! %, ,, ^, function, lambda
  */
 struct Token {
   std::string lexeme;
@@ -42,7 +42,12 @@ struct Token {
     Plus,
     Dash,
     Exclamation,
-    Error
+    Percent,
+    Comma,
+    Caret,
+    Function,
+    Lambda,
+    Error // Error needs to always be at the bottom of the list!
   } type;
   int line{-1};
   int col{-1};
@@ -55,9 +60,10 @@ using Tokens = std::vector<Token>;
 std::ostream &operator<<(std::ostream &out, const Token::Type type);
 std::ostream &operator<<(std::ostream &out, const Token &token);
 
-const std::array<std::string, 30> tokenTypeNames{
-    "variable", "constant", "if",         "else",   "while",  "or",
-    "and",      "Boolean",  "Identifier", "Number", "String", "begin",
-    "end",      "{",        "}",          ";",      "(",      ")",
-    "==",       "!=",       "<",          ">",      "<=",     ">=",
-    "=",        "*",        "/",          "+",      "-",      "!"};
+const std::array<std::string, 35> tokenTypeNames{
+    "variable", "constant", "if",         "else",     "while",  "or",
+    "and",      "Boolean",  "Identifier", "Number",   "String", "begin",
+    "end",      "{",        "}",          ";",        "(",      ")",
+    "==",       "!=",       "<",          ">",        "<=",     ">=",
+    "=",        "*",        "/",          "+",        "-",      "!",
+    "%",        ",",        "^",          "Function", "Lambda"};

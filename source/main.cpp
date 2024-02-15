@@ -16,6 +16,9 @@
  * FACTOR -> UNARY ( ( * | / ) UNARY )*
  * UNARY -> ( ! | - ) PRIMARY
  * PRIMARY -> true | false | Number | String | Identifier | '( EXPRESSION ')'
+ * unary -> ( "!" | "-" ) unary | call ;
+ * CALL -> primary ( "(" arguments? ")" )* ;
+ * ARGUMENTS -> expression ( "," expression )* ;
  */
 
 #include <any>
