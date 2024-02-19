@@ -527,9 +527,11 @@ int main(int argc, char *argv[]) {
   if(errorReporter->hadError()) return 1;
   Interpreter interpreter{};
   interpreter.interpret(statements);
-  std::cout << std::any_cast<bool>(
-      interpreter.environment.get(Token{"a", Token::Type::Identifier})) << '\n';
-  std::cout << std::any_cast<bool>(
-      interpreter.environment.get(Token{"b", Token::Type::Identifier})) << '\n';
+  std::cout << std::any_cast<bool>(interpreter.environment.get(
+                   Token{"a", Token::Type::Identifier}))
+            << '\n';
+  std::cout << std::any_cast<bool>(interpreter.environment.get(
+                   Token{"b", Token::Type::Identifier}))
+            << '\n';
   return 0;
 }
