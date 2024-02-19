@@ -51,8 +51,15 @@ struct Token {
   } type;
   int line{-1};
   int col{-1};
-  bool operator==(const Type rhs);
-  bool operator==(const Token &rhs);
+  bool operator==(const Type rhs) const;
+  bool operator==(const Token &rhs) const;
+};
+
+template <>
+struct std::hash<Token> {
+  std::size_t operator()(const Token &token) const noexcept {
+    return std::hash<std::string>{}(token.lexeme);
+  }
 };
 
 using Tokens = std::vector<Token>;

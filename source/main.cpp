@@ -379,22 +379,18 @@ class Environment {
   public:
   using SymbolTable = std::unordered_map<Token, std::any>;
 
-  Environment() :
-      values{std::make_unique<SymbolTable>(
-          std::initializer_list<std::pair<Token, std::any>>{})} {}
-
   void define(const Token &variable, const std::any &value) {
-    values->insert(make_pair(variable, value));
+    values.insert(make_pair(variable, value));
   }
 
   std::any get(const Token &variable) {
-    if(auto search = values->find(variable); search != values->end())
+    if(auto search = values.find(variable); search != values.end())
       return search->second;
     throw std::runtime_error{"Undefined variable!"}; // Make this better later.
   }
 
   private:
-  std::unique_ptr<SymbolTable> values;
+  SymbolTable values;
 };
 
 class Interpreter :
@@ -497,7 +493,8 @@ class Interpreter :
     }
   }
 
-  private:
+  // THIS SHOULD BE PRIVATE LATER!!!
+  // private:
   Environment environment;
 
   std::any evaluate(Expression::Expression *expr) {
@@ -529,6 +526,10 @@ int main(int argc, char *argv[]) {
   const std::vector<Statement::StatementUPtr> statements{parser.parse()};
   if(errorReporter->hadError()) return 1;
   Interpreter interpreter{};
-
+  interpreter.interpret(statements);
+  std::cout << std::any_cast<bool>(
+      interpreter.environment.get(Token{"a", Token::Type::Identifier})) << '\n';
+  std::cout << std::any_cast<bool>(
+      interpreter.environment.get(Token{"b", Token::Type::Identifier})) << '\n';
   return 0;
 }
