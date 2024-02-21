@@ -1,12 +1,11 @@
 #include "token.hpp"
 
-bool Token::operator==(const Type rhs) {
+bool Token::operator==(const Type rhs) const {
   return type == rhs;
 }
 
-bool Token::operator==(const Token &rhs) {
-  return lexeme == rhs.lexeme && type == rhs.type && line == rhs.line &&
-         col == rhs.col;
+bool Token::operator==(const Token &rhs) const {
+  return lexeme == rhs.lexeme && type == rhs.type;
 }
 
 std::ostream &operator<<(std::ostream &out, const Token::Type type) {
