@@ -288,7 +288,8 @@ class Parser {
       try {
         const Token variable{
             static_cast<Expression::Variable *>(expr.get())->variable};
-        return std::make_unique<Expression::Assignment>(variable, std::move(value));
+        return std::make_unique<Expression::Assignment>(variable,
+                                                        std::move(value));
       } catch(...) {
         error(equal, "Can not assign to this token!");
       }
