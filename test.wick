@@ -1,2 +1,17 @@
-variable a = true and false;
-variable b = !false;
+/:
+This is an example Wick program demonstrating the most basic
+features of the language. 
+:/
+
+variable a = 1 + 2 + 3; // This should be 6.
+variable b = 1 * 2 * 3; // This should be 6.
+a = a / b; // This should be 1. 
+b = a * b; // This should be 6. 
+
+/:
+function gcf(a, b) {
+    if b == 0
+        return a;
+    return gcf(a, a mod b);
+}
+:/

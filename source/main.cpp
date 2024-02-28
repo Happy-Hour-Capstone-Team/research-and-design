@@ -40,6 +40,7 @@ struct Unary;
 struct Binary;
 struct Group;
 struct Variable;
+struct Assignment;
 
 struct Expression {
   class Visitor {
@@ -48,7 +49,8 @@ struct Expression {
     virtual std::any visit(const Unary &unary) = 0;
     virtual std::any visit(const Binary &binary) = 0;
     virtual std::any visit(const Group &group) = 0;
-    virtual std::any visit(const Variable &token) = 0;
+    virtual std::any visit(const Variable &variable) = 0;
+    virtual std::any visit(const Assignment &assignment) = 0;
   };
 
   virtual std::any accept(Visitor *visitor) = 0;
@@ -103,6 +105,18 @@ struct Variable : Expression {
   Variable(const Token &iVariable) : variable{iVariable} {}
 
   const Token variable;
+
+  std::any accept(Visitor *visitor) override {
+    return visitor->visit(*this);
+  }
+};
+
+struct Assignment : Expression {
+  Assignment(const Token &iVariable, ExpressionUPtr iValue) :
+      variable{iVariable}, value{std::move(iValue)} {}
+
+  const Token variable;
+  const ExpressionUPtr value;
 
   std::any accept(Visitor *visitor) override {
     return visitor->visit(*this);
@@ -263,7 +277,23 @@ class Parser {
   }
 
   Expression::ExpressionUPtr expression() {
-    return equality();
+    return assignment();
+  }
+
+  Expression::ExpressionUPtr assignment() {
+    Expression::ExpressionUPtr expr = equality();
+    if(match({Token::Type::Equal})) {
+      const Token equal{tokens[pos - 1]};
+      Expression::ExpressionUPtr value{assignment()};
+      try {
+        const Token variable{
+            static_cast<Expression::Variable *>(expr.get())->variable};
+        return std::make_unique<Expression::Assignment>(variable, std::move(value));
+      } catch(...) {
+        error(equal, "Can not assign to this token!");
+      }
+    }
+    return std::move(expr);
   }
 
   Expression::ExpressionUPtr equality() {
@@ -383,10 +413,17 @@ class Environment {
     values.insert(make_pair(variable, value));
   }
 
+  void assign(const Token &variable, const std::any &value) {
+    if(auto search = values.find(variable); search == values.end())
+      throw std::runtime_error{"Undefined variable \"" + variable.lexeme +
+                               "\"."};
+    values.insert_or_assign(variable, value);
+  }
+
   std::any get(const Token &variable) {
     if(auto search = values.find(variable); search != values.end())
       return search->second;
-    throw std::runtime_error{"Undefined variable!"}; // Make this better later.
+    throw std::runtime_error{"Undefined variable!"};
   }
 
   private:
@@ -474,6 +511,12 @@ class Interpreter :
     return environment.get(variable.variable);
   }
 
+  std::any visit(const Expression::Assignment &assignment) override {
+    std::any value = evaluate(assignment.value.get());
+    environment.assign(assignment.variable, value);
+    return value;
+  }
+
   void visit(const Statement::Expression &expr) override {
     evaluate(expr.expr.get());
   }
@@ -527,10 +570,10 @@ int main(int argc, char *argv[]) {
   if(errorReporter->hadError()) return 1;
   Interpreter interpreter{};
   interpreter.interpret(statements);
-  std::cout << std::any_cast<bool>(interpreter.environment.get(
+  std::cout << std::any_cast<long double>(interpreter.environment.get(
                    Token{"a", Token::Type::Identifier}))
             << '\n';
-  std::cout << std::any_cast<bool>(interpreter.environment.get(
+  std::cout << std::any_cast<long double>(interpreter.environment.get(
                    Token{"b", Token::Type::Identifier}))
             << '\n';
   return 0;
