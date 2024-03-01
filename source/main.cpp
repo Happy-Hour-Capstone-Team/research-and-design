@@ -169,6 +169,7 @@ struct Expression;
 struct Variable;
 struct Scope;
 struct If;
+struct For;
 
 struct Statement {
   class Visitor {
@@ -177,6 +178,7 @@ struct Statement {
     virtual void visit(const Variable &var, Environment *env) = 0;
     virtual void visit(const Scope &scope, Environment *env) = 0;
     virtual void visit(const If &ifStmt, Environment *env) = 0;
+    virtual void visit(const For &forStmt, Environment *env) = 0;
   };
 
   virtual void accept(Visitor *visitor, Environment *env) = 0;
@@ -229,6 +231,26 @@ struct If : Statement {
   const ::Expression::ExpressionUPtr condition;
   const StatementUPtr thenStmt;
   const StatementUPtr elseStmt;
+
+  void accept(Visitor *visitor, Environment *env) override {
+    return visitor->visit(*this, env);
+  }
+};
+
+struct For : Statement {
+  For(StatementUPtr iInitializer,
+      ::Expression::ExpressionUPtr iCondition,
+      StatementUPtr iBody,
+      StatementUPtr iUpdate) :
+      initializer{std::move(iInitializer)},
+      condition{std::move(iCondition)},
+      body{std::move(iBody)},
+      update{std::move(iUpdate)} {}
+
+  const StatementUPtr initializer;
+  const ::Expression::ExpressionUPtr condition;
+  const StatementUPtr body;
+  const StatementUPtr update;
 
   void accept(Visitor *visitor, Environment *env) override {
     return visitor->visit(*this, env);
@@ -293,9 +315,18 @@ class Parser {
   }
 
   Statement::StatementUPtr statement() {
+    if(match({Token::Type::While})) return whileStmt();
     if(match({Token::Type::If})) return ifStmt();
     if(match({Token::Type::LeftCurly})) return scope();
     return expressionStatement();
+  }
+
+  Statement::StatementUPtr whileStmt() {
+    Expression::ExpressionUPtr condition{expression()};
+    expect(Token::Type::LeftCurly, "Expected a '{' after if statment.");
+    Statement::StatementUPtr body{scope()};
+    return std::make_unique<Statement::For>(
+        nullptr, std::move(condition), nullptr, std::move(body));
   }
 
   Statement::StatementUPtr ifStmt() {
@@ -574,6 +605,15 @@ class Interpreter :
       execute(ifStmt.thenStmt.get(), env);
     else if(ifStmt.elseStmt) // If the else statement branch exists.
       execute(ifStmt.elseStmt.get(), env);
+  }
+
+  void visit(const Statement::For &forStmt, Environment *env) override {
+    std::unique_ptr<Environment> forEnv{std::make_unique<Environment>(env)};
+    if(forStmt.initializer) execute(forStmt.initializer.get(), forEnv.get());
+    while(isTrue(evaluate(forStmt.condition.get(), forEnv.get()))) {
+      if(forStmt.body) execute(forStmt.body.get(), forEnv.get());
+      if(forStmt.update) execute(forStmt.update.get(), forEnv.get());
+    }
   }
 
   void interpret(const std::vector<Statement::StatementUPtr> &statements) {

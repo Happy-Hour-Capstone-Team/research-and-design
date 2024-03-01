@@ -33,6 +33,7 @@ class Scanner {
       {"constant", Token::Type::Constant},
       {"if", Token::Type::If},
       {"else", Token::Type::Else},
+      {"for", Token::Type::For},
       {"while", Token::Type::While},
       {"or", Token::Type::Or},
       {"and", Token::Type::And},

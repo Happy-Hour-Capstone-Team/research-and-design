@@ -7,23 +7,33 @@ variable a = 1 + 2 + 3; // This should be 6.
 variable b = 1 * 2 * 3; // This should be 6.
 a = a / b; // This should be 1. 
 b = a * b; // This should be 6. 
+
+/:
 {
     a = 3.141; // Global a should now be 3.141
     variable b = 1.414; // Global b should be unaffected
 }
 
-if b == 6 { // If true, b should be 3.
+if b == 6 { // If true, b should be 2.
+    b = 2;
+} else if a == 3.141 { // If true, b should be 3.
     b = 3;
-} else if a == 3.141 { // If true, b should be 4.
+} else if 1 == 1 { // If true, b should be 4.
     b = 4;
-} else { // If true, b should be 5.
+} else { // Otherwise, set b to 5.
     b = 5;
+}
+
+a = 0;
+while a < 5 { // After this, a should be 5.
+    a = a + 1;
 }
 
 /:
 function gcf(a, b) {
-    if b == 0
+    if b == 0 {
         return a;
+    }
     return gcf(a, a mod b);
 }
 :/

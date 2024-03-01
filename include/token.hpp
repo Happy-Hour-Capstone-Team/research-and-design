@@ -16,6 +16,7 @@ struct Token {
     Constant,
     If,
     Else,
+    For,
     While,
     Or,
     And,
@@ -67,10 +68,10 @@ using Tokens = std::vector<Token>;
 std::ostream &operator<<(std::ostream &out, const Token::Type type);
 std::ostream &operator<<(std::ostream &out, const Token &token);
 
-const std::array<std::string, 35> tokenTypeNames{
-    "variable", "constant", "if",         "else",     "while",  "or",
-    "and",      "Boolean",  "Identifier", "Number",   "String", "begin",
-    "end",      "{",        "}",          ";",        "(",      ")",
-    "==",       "!=",       "<",          ">",        "<=",     ">=",
-    "=",        "*",        "/",          "+",        "-",      "!",
-    "%",        ",",        "^",          "Function", "Lambda"};
+const std::array<std::string, 36> tokenTypeNames{
+    "variable", "constant", "if",      "else",       "for",      "while",
+    "or",       "and",      "Boolean", "Identifier", "Number",   "String",
+    "begin",    "end",      "{",       "}",          ";",        "(",
+    ")",        "==",       "!=",      "<",          ">",        "<=",
+    ">=",       "=",        "*",       "/",          "+",        "-",
+    "!",        "%",        ",",       "^",          "Function", "Lambda"};
