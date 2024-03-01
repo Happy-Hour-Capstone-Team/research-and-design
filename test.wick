@@ -7,6 +7,10 @@ variable a = 1 + 2 + 3; // This should be 6.
 variable b = 1 * 2 * 3; // This should be 6.
 a = a / b; // This should be 1. 
 b = a * b; // This should be 6. 
+{
+    a = 3.141; // Global a should now be 3.141
+    variable b = 1.414; // Global b should be unaffected
+}
 
 /:
 function gcf(a, b) {
