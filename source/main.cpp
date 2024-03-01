@@ -274,8 +274,7 @@ class Parser {
   }
 
   Statement::StatementUPtr statement() {
-    if(match({Token::Type::LeftCurly})) 
-      return scope();
+    if(match({Token::Type::LeftCurly})) return scope();
     return expressionStatement();
   }
 
@@ -529,9 +528,8 @@ class Interpreter :
 
   void visit(const Statement::Scope &scope, Environment *env) override {
     std::unique_ptr<Environment> scopedEnv{std::make_unique<Environment>(env)};
-    for(std::size_t i{0}; i < scope.statements.size(); i++) 
+    for(std::size_t i{0}; i < scope.statements.size(); i++)
       execute(scope.statements[i].get(), scopedEnv.get());
-    
   }
 
   void interpret(const std::vector<Statement::StatementUPtr> &statements) {
