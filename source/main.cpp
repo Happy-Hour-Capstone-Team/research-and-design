@@ -12,7 +12,7 @@
  * STATEMENT -> EXPRESSION_STATEMENT | BLOCK | IF | WHILE
  * EXPRESSION_STATEMENT -> EXPRESSION ;
  * BLOCK -> ( begin DECLARATION* end ) | ( { DECLARATION* } )
- * IF -> if '(' EXPRESSION ')' STATEMENT ( else STATEMENT )?
+ * IF -> if EXPRESSION '{' STATEMENT '}' ( else IF? '{' STATEMENT '}' )?
  * WHILE_STATEMENT -> while '(' EXPRESSION ')' STATEMENT
  * EXPRESSION -> AND ( or AND )* // Will probably want to separate OR later.
  * AND -> EQUALITY ( and EQUALITY )*
@@ -168,6 +168,7 @@ namespace Statement {
 struct Expression;
 struct Variable;
 struct Scope;
+struct If;
 
 struct Statement {
   class Visitor {
@@ -175,6 +176,7 @@ struct Statement {
     virtual void visit(const Expression &expr, Environment *env) = 0;
     virtual void visit(const Variable &var, Environment *env) = 0;
     virtual void visit(const Scope &scope, Environment *env) = 0;
+    virtual void visit(const If &ifStmt, Environment *env) = 0;
   };
 
   virtual void accept(Visitor *visitor, Environment *env) = 0;
@@ -210,6 +212,23 @@ struct Scope : Statement {
   Scope(std::vector<StatementUPtr> iStatements) :
       statements{std::move(iStatements)} {}
   const std::vector<StatementUPtr> statements;
+
+  void accept(Visitor *visitor, Environment *env) override {
+    return visitor->visit(*this, env);
+  }
+};
+
+struct If : Statement {
+  If(::Expression::ExpressionUPtr iCondition,
+     StatementUPtr iThen,
+     StatementUPtr iElse) :
+      condition{std::move(iCondition)},
+      thenStmt{std::move(iThen)},
+      elseStmt{std::move(iElse)} {}
+
+  const ::Expression::ExpressionUPtr condition;
+  const StatementUPtr thenStmt;
+  const StatementUPtr elseStmt;
 
   void accept(Visitor *visitor, Environment *env) override {
     return visitor->visit(*this, env);
@@ -274,8 +293,26 @@ class Parser {
   }
 
   Statement::StatementUPtr statement() {
+    if(match({Token::Type::If})) return ifStmt();
     if(match({Token::Type::LeftCurly})) return scope();
     return expressionStatement();
+  }
+
+  Statement::StatementUPtr ifStmt() {
+    Expression::ExpressionUPtr condition{expression()};
+    expect(Token::Type::LeftCurly, "Expected a '{' after if statment.");
+    Statement::StatementUPtr thenStmt{scope()};
+    Statement::StatementUPtr elseStmt{nullptr};
+    if(match({Token::Type::Else})) {
+      if(match({Token::Type::If}))
+        elseStmt = ifStmt();
+      else {
+        expect(Token::Type::LeftCurly, "Expected a '{' after else statment.");
+        elseStmt = scope();
+      }
+    }
+    return std::make_unique<Statement::If>(
+        std::move(condition), std::move(thenStmt), std::move(elseStmt));
   }
 
   Statement::StatementUPtr scope() {
@@ -532,6 +569,13 @@ class Interpreter :
       execute(scope.statements[i].get(), scopedEnv.get());
   }
 
+  void visit(const Statement::If &ifStmt, Environment *env) override {
+    if(isTrue(evaluate(ifStmt.condition.get(), env)))
+      execute(ifStmt.thenStmt.get(), env);
+    else if(ifStmt.elseStmt) // If the else statement branch exists.
+      execute(ifStmt.elseStmt.get(), env);
+  }
+
   void interpret(const std::vector<Statement::StatementUPtr> &statements) {
     try {
       for(std::size_t i{0}; i < statements.size(); i++)
@@ -551,6 +595,19 @@ class Interpreter :
 
   void execute(Statement::Statement *statement, Environment *env) {
     statement->accept(this, env);
+  }
+
+  bool isTrue(const std::any &value) {
+    bool truth{false};
+    if(value.type() == typeid(bool) && std::any_cast<bool>(value))
+      truth = true;
+    else if(value.type() == typeid(long double) &&
+            std::any_cast<long double>(value) != 0.0)
+      truth = true;
+    else if(value.type() == typeid(std::string) &&
+            std::any_cast<std::string>(value) != "")
+      truth = true;
+    return truth;
   }
 };
 

@@ -12,6 +12,14 @@ b = a * b; // This should be 6.
     variable b = 1.414; // Global b should be unaffected
 }
 
+if b == 6 { // If true, b should be 3.
+    b = 3;
+} else if a == 3.141 { // If true, b should be 4.
+    b = 4;
+} else { // If true, b should be 5.
+    b = 5;
+}
+
 /:
 function gcf(a, b) {
     if b == 0
