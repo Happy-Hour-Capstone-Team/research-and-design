@@ -315,10 +315,25 @@ class Parser {
   }
 
   Statement::StatementUPtr statement() {
+    if(match({Token::Type::For})) return forStmt();
     if(match({Token::Type::While})) return whileStmt();
     if(match({Token::Type::If})) return ifStmt();
     if(match({Token::Type::LeftCurly})) return scope();
     return expressionStatement();
+  }
+
+  Statement::StatementUPtr forStmt() {
+    Statement::StatementUPtr initializer{variableDeclaration()};
+    Expression::ExpressionUPtr condition{expression()};
+    expect(Token::Type::Semicolon,
+           "Expected a ';' after variable declaration.");
+    Statement::StatementUPtr update{expressionStatement(false)};
+    expect(Token::Type::LeftCurly, "Expected a '{' after for statment.");
+    Statement::StatementUPtr body{scope()};
+    return std::make_unique<Statement::For>(std::move(initializer),
+                                            std::move(condition),
+                                            std::move(body),
+                                            std::move(update));
   }
 
   Statement::StatementUPtr whileStmt() {
@@ -326,7 +341,7 @@ class Parser {
     expect(Token::Type::LeftCurly, "Expected a '{' after if statment.");
     Statement::StatementUPtr body{scope()};
     return std::make_unique<Statement::For>(
-        nullptr, std::move(condition), nullptr, std::move(body));
+        nullptr, std::move(condition), std::move(body), nullptr);
   }
 
   Statement::StatementUPtr ifStmt() {
@@ -355,9 +370,10 @@ class Parser {
     return std::make_unique<Statement::Scope>(std::move(statements));
   }
 
-  Statement::StatementUPtr expressionStatement() {
+  Statement::StatementUPtr expressionStatement(bool expectSemicolon = true) {
     Expression::ExpressionUPtr expr = expression();
-    expect(Token::Type::Semicolon, "Expected a ';' after statement.");
+    if(expectSemicolon)
+      expect(Token::Type::Semicolon, "Expected a ';' after statement.");
     return std::make_unique<Statement::Expression>(std::move(expr));
   }
 

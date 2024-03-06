@@ -8,7 +8,6 @@ variable b = 1 * 2 * 3; // This should be 6.
 a = a / b; // This should be 1. 
 b = a * b; // This should be 6. 
 
-/:
 {
     a = 3.141; // Global a should now be 3.141
     variable b = 1.414; // Global b should be unaffected
@@ -27,6 +26,10 @@ if b == 6 { // If true, b should be 2.
 a = 0;
 while a < 5 { // After this, a should be 5.
     a = a + 1;
+}
+
+for i = 10; i >= 0; i = i - 1 {
+    b = i;
 }
 
 /:
