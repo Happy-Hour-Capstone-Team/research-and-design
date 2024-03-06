@@ -515,57 +515,25 @@ class Interpreter :
   std::any visit(const Expression::Binary &binary, Environment *env) override {
     std::any leftVal = binary.left->accept(this, env);
     std::any rightVal = binary.right->accept(this, env);
+    try {
+      if(leftVal.type() == typeid(std::string))
+        return stringOperation(std::any_cast<std::string>(leftVal),
+                               binary.op.type,
+                               std::any_cast<std::string>(rightVal));
+      else if(leftVal.type() == typeid(bool))
+        return booleanOperation(std::any_cast<bool>(leftVal),
+                                binary.op.type,
+                                std::any_cast<bool>(rightVal));
+      else if(leftVal.type() == typeid(long double))
+        return numericOperation(std::any_cast<long double>(leftVal),
+                                binary.op.type,
+                                std::any_cast<long double>(rightVal));
+    } catch(std::bad_any_cast) {
+      throw std::runtime_error("Type mismatch between operator!");
+    }
+
     const long double leftNumber{std::any_cast<long double>(leftVal)};
     const long double rightNumber{std::any_cast<long double>(rightVal)};
-    switch(binary.op.type) {
-      case Token::Type::NotEqualTo:
-        return std::any_cast<long double>(leftVal) !=
-               std::any_cast<long double>(rightVal);
-      case Token::Type::EqualTo:
-        return std::any_cast<long double>(leftVal) ==
-               std::any_cast<long double>(rightVal);
-      case Token::Type::LessThan:
-        return std::any_cast<long double>(leftVal) <
-               std::any_cast<long double>(rightVal);
-      case Token::Type::LessThanOrEqualTo:
-        return std::any_cast<long double>(leftVal) <=
-               std::any_cast<long double>(rightVal);
-      case Token::Type::GreaterThan:
-        return std::any_cast<long double>(leftVal) >
-               std::any_cast<long double>(rightVal);
-      case Token::Type::GreaterThanOrEqualTo:
-        return std::any_cast<long double>(leftVal) >=
-               std::any_cast<long double>(rightVal);
-      case Token::Type::Asterisk:
-        try {
-          return std::any_cast<long double>(leftVal) *
-                 std::any_cast<long double>(rightVal);
-        } catch(const std::bad_any_cast) {
-          throw std::runtime_error("Error");
-        }
-      case Token::Type::Plus:
-        try {
-          return std::any_cast<long double>(leftNumber) +
-                 std::any_cast<long double>(rightNumber);
-        } catch(const std::bad_any_cast) {
-          throw std::runtime_error("Error");
-        }
-      case Token::Type::Dash:
-        try {
-          return std::any_cast<long double>(leftVal) -
-                 std::any_cast<long double>(rightVal);
-        } catch(const std::bad_any_cast) {
-          throw std::runtime_error("Error");
-        }
-      case Token::Type::ForwardSlash:
-        try {
-          return std::any_cast<long double>(leftVal) /
-                 std::any_cast<long double>(rightVal);
-        } catch(const std::bad_any_cast &) {
-          throw std::runtime_error("Error");
-        }
-      default: throw std::runtime_error("Not a supported binary operator");
-    }
   }
 
   std::any visit(const Expression::Group &group, Environment *env) override {
@@ -648,6 +616,60 @@ class Interpreter :
             std::any_cast<std::string>(value) != "")
       truth = true;
     return truth;
+  }
+
+  std::string stringOperation(const std::string &left,
+                              const Token::Type op,
+                              const std::string &right) {
+    // + to concatenate strings
+    // == to compare strings character by character
+    // != to be opposite of above
+    // < alphanumerically lower a < b or aardvark < zoology
+    // >, <=, >= would be similar to the above
+  }
+
+  bool booleanOperation(const bool left,
+                        const Token::Type op,
+                        const bool right) {
+    // and, or, not, ==, !=
+  }
+
+  long double numericOperation(const long double left,
+                               const Token::Type op,
+                               const long double right) {
+    switch(op) {
+      case Token::Type::NotEqualTo:
+        return std::any_cast<long double>(left) !=
+               std::any_cast<long double>(right);
+      case Token::Type::EqualTo:
+        return std::any_cast<long double>(left) ==
+               std::any_cast<long double>(right);
+      case Token::Type::LessThan:
+        return std::any_cast<long double>(left) <
+               std::any_cast<long double>(right);
+      case Token::Type::LessThanOrEqualTo:
+        return std::any_cast<long double>(left) <=
+               std::any_cast<long double>(right);
+      case Token::Type::GreaterThan:
+        return std::any_cast<long double>(left) >
+               std::any_cast<long double>(right);
+      case Token::Type::GreaterThanOrEqualTo:
+        return std::any_cast<long double>(left) >=
+               std::any_cast<long double>(right);
+      case Token::Type::Asterisk:
+        return std::any_cast<long double>(left) *
+               std::any_cast<long double>(right);
+      case Token::Type::Plus:
+        return std::any_cast<long double>(left) +
+               std::any_cast<long double>(right);
+      case Token::Type::Dash:
+        return std::any_cast<long double>(left) -
+               std::any_cast<long double>(right);
+      case Token::Type::ForwardSlash:
+        return std::any_cast<long double>(left) /
+               std::any_cast<long double>(right);
+      default: throw std::runtime_error("Not a supported binary operator");
+    }
   }
 };
 

@@ -43,7 +43,7 @@ struct Token {
     Plus,
     Dash,
     Exclamation,
-    Percent,
+    Modulus,
     Comma,
     Caret,
     Function,
@@ -74,4 +74,4 @@ const std::array<std::string, 36> tokenTypeNames{
     "begin",    "end",      "{",       "}",          ";",        "(",
     ")",        "==",       "!=",      "<",          ">",        "<=",
     ">=",       "=",        "*",       "/",          "+",        "-",
-    "!",        "%",        ",",       "^",          "Function", "Lambda"};
+    "!",        "mod",      ",",       "^",          "Function", "Lambda"};
