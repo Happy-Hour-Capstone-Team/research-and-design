@@ -14,17 +14,18 @@
  * BLOCK -> ( begin DECLARATION* end ) | ( { DECLARATION* } )
  * IF -> if EXPRESSION '{' STATEMENT '}' ( else IF? '{' STATEMENT '}' )?
  * WHILE_STATEMENT -> while '(' EXPRESSION ')' STATEMENT
- * EXPRESSION -> AND ( or AND )* // Will probably want to separate OR later.
+ * EXPRESSION -> LAMBDA | AND ( or AND )*
+ * LAMBDA -> lambda '(' PARAMETERS ')' '{' STATEMENT* '}'
  * AND -> EQUALITY ( and EQUALITY )*
  * EQUALITY -> COMPARISON ( ( == | != ) COMPARISON )*
  * COMPARISON -> TERM ( ( < | <= | > | >= ) TERM )*
  * TERM -> FACTOR ( ( + | - ) FACTOR )*
  * FACTOR -> UNARY ( ( * | / ) UNARY )*
- * UNARY -> ( ! | - ) PRIMARY
+ * UNARY -> ( ! | - ) PRIMARY | CALL
  * PRIMARY -> true | false | Number | String | Identifier | '( EXPRESSION ')'
- * unary -> ( "!" | "-" ) unary | call ;
- * CALL -> primary ( "(" arguments? ")" )* ;
- * ARGUMENTS -> expression ( "," expression )* ;
+ * CALL -> PRIMARY ( "(" ARGUMENTS? ")" )*
+ * ARGUMENTS -> EXPRESSION ( "," EXPRESSION )*
+ * PARAMETERS -> IDENTIFIER ( ',' IDENTIFIER )*
  */
 
 #include <any>
@@ -69,6 +70,12 @@ class Environment {
   SymbolTable values;
 };
 
+// Forward declaration in order to implement functions.
+namespace Statement {
+struct Statement;
+using StatementUPtr = std::unique_ptr<Statement>;
+} // namespace Statement
+
 namespace Expression {
 
 // Forward declares in order to declare visit methods.
@@ -78,6 +85,8 @@ struct Binary;
 struct Group;
 struct Variable;
 struct Assignment;
+struct Call;
+struct Lambda;
 
 struct Expression {
   class Visitor {
@@ -88,6 +97,8 @@ struct Expression {
     virtual std::any visit(const Group &group, Environment *env) = 0;
     virtual std::any visit(const Variable &variable, Environment *env) = 0;
     virtual std::any visit(const Assignment &assignment, Environment *env) = 0;
+    virtual std::any visit(const Call &call, Environment *env) = 0;
+    virtual std::any visit(const Lambda &lambdaStmt, Environment *env) = 0;
   };
 
   virtual std::any accept(Visitor *visitor, Environment *env) = 0;
@@ -154,6 +165,35 @@ struct Assignment : Expression {
 
   const Token variable;
   const ExpressionUPtr value;
+
+  std::any accept(Visitor *visitor, Environment *env) override {
+    return visitor->visit(*this, env);
+  }
+};
+
+struct Call : Expression {
+  Call(ExpressionUPtr iCallee,
+       std::vector<ExpressionUPtr> iArgs,
+       const Token &iClosingParen) :
+      callee{std::move(iCallee)},
+      args{std::move(iArgs)},
+      closingParen{iClosingParen} {}
+
+  const ExpressionUPtr callee;
+  const std::vector<ExpressionUPtr> args;
+  const Token closingParen;
+
+  std::any accept(Visitor *visitor, Environment *env) override {
+    return visitor->visit(*this, env);
+  }
+};
+
+struct Lambda : Expression {
+  Lambda(const std::vector<Token> &iParams, ::Statement::StatementUPtr iBody) :
+      params{iParams}, body{std::move(iBody)} {}
+
+  const std::vector<Token> params;
+  const ::Statement::StatementUPtr body;
 
   std::any accept(Visitor *visitor, Environment *env) override {
     return visitor->visit(*this, env);
@@ -295,12 +335,20 @@ class Parser {
 
   Statement::StatementUPtr declaration() {
     try {
+      if(match({Token::Type::Function})) return functionDeclaration();
       if(match({Token::Type::Variable})) return variableDeclaration();
       return statement();
     } catch(ParserException e) {
       synchronize();
       return nullptr;
     }
+  }
+
+  Statement::StatementUPtr functionDeclaration() {
+    const Token name{
+        expect(Token::Type::Identifier, "Expected a function name.")};
+    Expression::ExpressionUPtr definition{lambda()};
+    return std::make_unique<Statement::Variable>(name, std::move(definition));
   }
 
   Statement::StatementUPtr variableDeclaration() {
@@ -378,7 +426,23 @@ class Parser {
   }
 
   Expression::ExpressionUPtr expression() {
+    if(match({Token::Type::Lambda})) return lambda();
     return assignment();
+  }
+
+  Expression::ExpressionUPtr lambda() {
+    expect(Token::Type::LeftParen, "Expected a '(' before parameters.");
+    std::vector<Token> params;
+    if(!check(Token::Type::RightParen)) {
+      do
+        params.push_back(expect(Token::Type::Identifier,
+                                "Expected an identifier for parameter."));
+      while(match({Token::Type::Comma}));
+    }
+    expect(Token::Type::RightParen, "Expected a ')' after parameters.");
+    expect(Token::Type::LeftCurly, "Expected a '{' before statements.");
+    Statement::StatementUPtr body{scope()};
+    return std::make_unique<Expression::Lambda>(params, std::move(body));
   }
 
   Expression::ExpressionUPtr assignment() {
@@ -451,7 +515,23 @@ class Parser {
       Expression::ExpressionUPtr right{primary()};
       return std::make_unique<Expression::Unary>(op, std::move(right));
     }
-    return primary();
+    return call();
+  }
+
+  Expression::ExpressionUPtr call() {
+    Expression::ExpressionUPtr expr{primary()};
+    while(match({Token::Type::LeftParen})) {
+      std::vector<Expression::ExpressionUPtr> args{};
+      if(!check({Token::Type::RightParen})) {
+        do args.push_back(expression());
+        while(match({Token::Type::Comma}));
+      }
+      const Token closingParen{expect(Token::Type::RightParen,
+                                      "Expected a ')' after call arguments.")};
+      expr = std::make_unique<Expression::Call>(
+          std::move(expr), std::move(args), closingParen);
+    }
+    return std::move(expr);
   }
 
   Expression::ExpressionUPtr primary() {
@@ -507,12 +587,52 @@ class Parser {
   int pos{0};
 };
 
+using Procedure = std::function<std::any(const std::vector<std::any> &args)>;
+
+struct Callable {
+  const std::size_t arity;
+  const Procedure procedure;
+};
+
+namespace native {
+std::any print(const std::vector<std::any> &args) {
+  std::any toPrint{args[0]};
+  if(toPrint.type() == typeid(std::string))
+    std::cout << std::any_cast<std::string>(toPrint) << '\n';
+  else if(toPrint.type() == typeid(bool))
+    std::cout << (std::any_cast<bool>(toPrint) ? "true" : "false") << '\n';
+  else if(toPrint.type() == typeid(long double))
+    std::cout << std::any_cast<long double>(toPrint) << '\n';
+  return toPrint;
+}
+
+std::any input(const std::vector<std::any> &args) {
+  if(args.size()) print(args);
+  std::string line;
+  std::getline(std::cin, line);
+  return line;
+}
+
+std::any time(const std::vector<std::any> &args) {
+  const std::chrono::time_point currentTime{std::chrono::system_clock::now()};
+  return static_cast<long double>(
+      std::chrono::system_clock::to_time_t(currentTime));
+}
+} // namespace native
+
 class Interpreter :
     public Expression::Expression::Visitor,
     public Statement::Statement::Visitor {
   public:
   Interpreter() {
     global = std::make_unique<Environment>();
+    using namespace std::placeholders;
+    global->define(Token{"print", Token::Type::Identifier},
+                   Callable{1, std::bind(native::print, _1)});
+    global->define(Token{"input", Token::Type::Identifier},
+                   Callable{1, std::bind(native::input, _1)});
+    global->define(Token{"time", Token::Type::Identifier},
+                   Callable{0, std::bind(native::time, _1)});
   }
   std::any visit(const Expression::Literal &literal,
                  Environment *env) override {
@@ -568,6 +688,37 @@ class Interpreter :
     return value;
   }
 
+  std::any visit(const Expression::Call &call, Environment *env) override {
+    std::any callee{evaluate(call.callee.get(), env)};
+    std::vector<std::any> args{};
+    for(std::size_t i{0}; i < call.args.size(); i++)
+      args.push_back(evaluate(call.args[i].get(), env));
+    try {
+      Callable callable{std::any_cast<Callable>(callee)};
+      if(args.size() != callable.arity)
+        throw std::runtime_error{"Method expected " +
+                                 std::to_string(callable.arity) +
+                                 " arguments."};
+      return callable.procedure(args);
+    } catch(std::bad_any_cast) {
+      throw std::runtime_error{"Only functions and objects may be called."};
+    }
+  }
+
+  std::any visit(const Expression::Lambda &lambda, Environment *env) override {
+    using namespace std::placeholders;
+    Procedure lambdaFn =
+        [&lambda, this, env](const std::vector<std::any> &args) {
+          std::unique_ptr<Environment> scopedEnv{
+              std::make_unique<Environment>(env)};
+          for(std::size_t i{0}; i < lambda.params.size(); i++)
+            scopedEnv->define(lambda.params[i], args[i]);
+          execute(lambda.body.get(), scopedEnv.get());
+          return std::make_any<long double>(0.0);
+        };
+    return Callable{lambda.params.size(), lambdaFn};
+  }
+
   void visit(const Statement::Expression &expr, Environment *env) override {
     evaluate(expr.expr.get(), env);
   }
@@ -587,7 +738,7 @@ class Interpreter :
   void visit(const Statement::If &ifStmt, Environment *env) override {
     if(isTrue(evaluate(ifStmt.condition.get(), env)))
       execute(ifStmt.thenStmt.get(), env);
-    else if(ifStmt.elseStmt) // If the else statement branch exists.
+    else if(ifStmt.elseStmt)
       execute(ifStmt.elseStmt.get(), env);
   }
 
@@ -609,8 +760,7 @@ class Interpreter :
     }
   }
 
-  // THIS SHOULD BE PRIVATE LATER!!!
-  // private:
+  private:
   std::unique_ptr<Environment> global;
 
   std::any evaluate(Expression::Expression *expr, Environment *env) {
@@ -690,6 +840,7 @@ class Interpreter :
 };
 
 int main(int argc, char *argv[]) {
+  std::cout << std::setprecision(20);
   if(argc != 2) {
     std::cerr << "Usage: " << argv[0] << " <file>\n";
     return 1;
@@ -704,17 +855,10 @@ int main(int argc, char *argv[]) {
   const std::unique_ptr<ErrorReporter> errorReporter{
       std::make_unique<ErrorReporter>()};
   Scanner scanner{expression, errorReporter.get()};
-  Scanner::printTokens(scanner.tokenize());
   Parser parser{scanner.tokenize(), errorReporter.get()};
   const std::vector<Statement::StatementUPtr> statements{parser.parse()};
   if(errorReporter->hadError()) return 1;
   Interpreter interpreter{};
   interpreter.interpret(statements);
-  std::cout << std::any_cast<long double>(
-                   interpreter.global->get(Token{"a", Token::Type::Identifier}))
-            << '\n';
-  std::cout << std::any_cast<long double>(
-                   interpreter.global->get(Token{"b", Token::Type::Identifier}))
-            << '\n';
   return 0;
 }

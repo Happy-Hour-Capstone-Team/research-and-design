@@ -32,6 +32,32 @@ for i = 10; i >= 0; i = i - 1 {
     b = i;
 }
 
+a = time();
+a = 3.14159265 + 2;
+print(a);
+print(b);
+print("Hello world!");
+/:variable c = input("What's your favorite color?");
+print(c);:/
+
+variable d = lambda(x) {
+    x();
+};
+
+function e(){
+    print("Yup, this is functional...");
+}
+
+d(e);
+d(lambda () { print("Very functional indeed..."); });
+
+function addThreeNumbers(a, b, c) {
+    variable sum = a + b + c;
+    print(sum);
+}
+
+addThreeNumbers(1, 2, 3);
+
 /:
 function gcf(a, b) {
     if b == 0 {
