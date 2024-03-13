@@ -43,6 +43,7 @@ class Scanner {
       {"end", Token::Type::End},
       {"mod", Token::Type::Modulus},
       {"function", Token::Type::Function},
-      {"lambda", Token::Type::Lambda}};
+      {"lambda", Token::Type::Lambda},
+      {"return", Token::Type::Return}};
   int pos{0}, line{1}, col{0};
 };

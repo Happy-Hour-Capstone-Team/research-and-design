@@ -210,6 +210,7 @@ struct Variable;
 struct Scope;
 struct If;
 struct For;
+struct Return;
 
 struct Statement {
   class Visitor {
@@ -219,6 +220,7 @@ struct Statement {
     virtual void visit(const Scope &scope, Environment *env) = 0;
     virtual void visit(const If &ifStmt, Environment *env) = 0;
     virtual void visit(const For &forStmt, Environment *env) = 0;
+    virtual void visit(const Return &returnStmt, Environment *env) = 0;
   };
 
   virtual void accept(Visitor *visitor, Environment *env) = 0;
@@ -297,6 +299,18 @@ struct For : Statement {
   }
 };
 
+struct Return : Statement {
+  Return(const Token &iKeyword, ::Expression::ExpressionUPtr iExpr) :
+      keyword{iKeyword}, expr{std::move(iExpr)} {}
+
+  const Token keyword;
+  const ::Expression::ExpressionUPtr expr;
+
+  void accept(Visitor *visitor, Environment *env) override {
+    return visitor->visit(*this, env);
+  }
+};
+
 } // namespace Statement
 
 class Parser {
@@ -367,6 +381,7 @@ class Parser {
     if(match({Token::Type::While})) return whileStmt();
     if(match({Token::Type::If})) return ifStmt();
     if(match({Token::Type::LeftCurly})) return scope();
+    if(match({Token::Type::Return})) return returnStmt();
     return expressionStatement();
   }
 
@@ -416,6 +431,14 @@ class Parser {
     }
     expect(Token::Type::RightCurly, "Expected a '}' after scope.");
     return std::make_unique<Statement::Scope>(std::move(statements));
+  }
+
+  Statement::StatementUPtr returnStmt() {
+    const Token keyword{tokens[pos - 1]};
+    Expression::ExpressionUPtr expr{nullptr};
+    if(!check({Token::Type::Semicolon})) expr = expression();
+    expect(Token::Type::Semicolon, "Expected a ';' after statement.");
+    return std::make_unique<Statement::Return>(keyword, std::move(expr));
   }
 
   Statement::StatementUPtr expressionStatement(bool expectSemicolon = true) {
@@ -713,7 +736,11 @@ class Interpreter :
               std::make_unique<Environment>(env)};
           for(std::size_t i{0}; i < lambda.params.size(); i++)
             scopedEnv->define(lambda.params[i], args[i]);
-          execute(lambda.body.get(), scopedEnv.get());
+          try {
+            execute(lambda.body.get(), scopedEnv.get());
+          } catch(std::any value) {
+            return value;
+          }
           return std::make_any<long double>(0.0);
         };
     return Callable{lambda.params.size(), lambdaFn};
@@ -749,6 +776,10 @@ class Interpreter :
       if(forStmt.body) execute(forStmt.body.get(), forEnv.get());
       if(forStmt.update) execute(forStmt.update.get(), forEnv.get());
     }
+  }
+
+  void visit(const Statement::Return &returnStmt, Environment *env) override {
+    if(returnStmt.expr) throw evaluate(returnStmt.expr.get(), env);
   }
 
   void interpret(const std::vector<Statement::StatementUPtr> &statements) {

@@ -48,6 +48,7 @@ struct Token {
     Caret,
     Function,
     Lambda,
+    Return,
     Error // Error needs to always be at the bottom of the list!
   } type;
   int line{-1};
@@ -68,10 +69,11 @@ using Tokens = std::vector<Token>;
 std::ostream &operator<<(std::ostream &out, const Token::Type type);
 std::ostream &operator<<(std::ostream &out, const Token &token);
 
-const std::array<std::string, 36> tokenTypeNames{
+const std::array<std::string, 37> tokenTypeNames{
     "variable", "constant", "if",      "else",       "for",      "while",
     "or",       "and",      "Boolean", "Identifier", "Number",   "String",
     "begin",    "end",      "{",       "}",          ";",        "(",
     ")",        "==",       "!=",      "<",          ">",        "<=",
     ">=",       "=",        "*",       "/",          "+",        "-",
-    "!",        "mod",      ",",       "^",          "Function", "Lambda"};
+    "!",        "mod",      ",",       "^",          "Function", "Lambda",
+    "return"};
