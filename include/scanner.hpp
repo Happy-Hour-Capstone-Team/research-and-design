@@ -33,6 +33,7 @@ class Scanner {
       {"constant", Token::Type::Constant},
       {"if", Token::Type::If},
       {"else", Token::Type::Else},
+      {"for", Token::Type::For},
       {"while", Token::Type::While},
       {"or", Token::Type::Or},
       {"and", Token::Type::And},
@@ -40,6 +41,7 @@ class Scanner {
       {"false", Token::Type::Boolean},
       {"begin", Token::Type::Begin},
       {"end", Token::Type::End},
+      {"mod", Token::Type::Modulus},
       {"function", Token::Type::Function},
       {"lambda", Token::Type::Lambda}};
   int pos{0}, line{1}, col{0};
