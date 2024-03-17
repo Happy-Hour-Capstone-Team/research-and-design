@@ -65,7 +65,7 @@ function fib(n) {
     return fib(n - 2) + fib(n - 1);
 }
 
-print(fib(3));
+print(fib(10));
 
 variable test = "global";
 {
@@ -77,3 +77,30 @@ variable test = "global";
     variable test = "block";
     showTest();
 }
+
+/:
+
+class Concept {
+    function implementMe() = nothing;
+
+    private variable id; 
+}
+
+class Person from Concept {
+    private variable name;
+
+    public Person(iName) {
+        name = iName;
+    }
+
+    public function implementMe() {
+        print("Now this has been overriden!");
+    }
+
+    public function intro() {
+        print("Hello, my name is " + name);
+    }
+}
+
+guy = Person("Joe");
+guy.intro();
