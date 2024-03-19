@@ -37,8 +37,6 @@ a = 3.14159265 + 2;
 print(a);
 print(b);
 print("Hello world!");
-/:variable c = input("What's your favorite color?");
-print(c);:/
 
 variable d = lambda(x) {
     x();
@@ -78,8 +76,16 @@ variable test = "global";
     showTest();
 }
 
-/:
+function defaultWorks(a, b, c = 1, d = fib(10)) {
+    print(a);
+    print(b);
+    print(c);
+    print(d);
+}
 
+defaultWorks(1, 2, 3);
+
+/:
 class Concept {
     function implementMe() = nothing;
 
