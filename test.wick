@@ -83,7 +83,11 @@ function defaultWorks(a, b, c = 1, d = fib(10)) {
     print(d);
 }
 
-defaultWorks(1, 2, 3);
+defaultWorks(1, 2);
+
+constant function constFunction() {
+    print("Test man.");
+}
 
 /:
 class Concept {

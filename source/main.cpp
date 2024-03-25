@@ -8,7 +8,9 @@
 
 /**
  * PROGRAM ->  DECLARATION*
- * DECLARATION -> VARIABLE | STATEMENT
+ * DECLARATION -> CONSTANT | VARIABLE | STATEMENT
+ * CONSTANT -> constant IDENTIFIER = EXPRESSION
+ * VARIABLE -> variable IDENTIFIER ( = EXPRESSION )?
  * STATEMENT -> EXPRESSION_STATEMENT | BLOCK | IF | WHILE
  * EXPRESSION_STATEMENT -> EXPRESSION ;
  * BLOCK -> ( begin DECLARATION* end ) | ( { DECLARATION* } )
@@ -77,6 +79,14 @@ class PersistentMap {
     return {};
   }
 
+  Entry getEntry(const KeyType &key) const {
+    const std::size_t hashIndex{std::hash<KeyType>{}(key) % N};
+    for(std::size_t i{0}; i < table[hashIndex].size(); i++) {
+      if(table[hashIndex][i]->first == key) return table[hashIndex][i];
+    }
+    return nullptr;
+  }
+
   private:
   Table table;
 };
@@ -102,7 +112,11 @@ class Environment {
   }
 
   void assign(const Token &variable, const std::any &value) {
-    if(table.get(variable)) {
+    auto entry = table.getEntry(variable);
+    if(entry && entry->first.constant)
+      throw std::runtime_error{"Can not assign to the constant " +
+                               variable.lexeme + "!"};
+    if(entry) {
       table = table.assign(variable, value).value();
       return;
     }
@@ -111,14 +125,6 @@ class Environment {
       return;
     }
     throw std::runtime_error{"Undefined variable \"" + variable.lexeme + "\"!"};
-  }
-
-  void defineOrAssign(const Token &variable, const std::any &value) {
-    try {
-      assign(variable, value);
-    } catch(std::runtime_error) {
-      define(variable, value);
-    }
   }
 
   std::any get(const Token &variable) {
@@ -425,6 +431,7 @@ class Parser {
     try {
       if(match({Token::Type::Function})) return functionDeclaration();
       if(match({Token::Type::Variable})) return variableDeclaration();
+      if(match({Token::Type::Constant})) return constantDeclaration();
       return statement();
     } catch(ParserException e) {
       synchronize();
@@ -440,14 +447,26 @@ class Parser {
   }
 
   Statement::StatementUPtr variableDeclaration() {
-    const Token variable{
+    Token variable{
         expect(Token::Type::Identifier, "Expected a variable name.")};
+    variable.constant = false;
     Expression::ExpressionUPtr variableInitializer{nullptr};
     if(match({Token::Type::Equal})) variableInitializer = expression();
     expect(Token::Type::Semicolon,
            "Expected a ';' after variable declaration.");
     return std::make_unique<Statement::Variable>(
         variable, std::move(variableInitializer));
+  }
+
+  Statement::StatementUPtr constantDeclaration() {
+    const Token constant{
+        expect(Token::Type::Identifier, "Expected a constant name.")};
+    expect(Token::Type::Equal, "Expected an initializer for constant value.");
+    Expression::ExpressionUPtr constantInitializer{expression()};
+    expect(Token::Type::Semicolon,
+           "Expected a ';' after constant declaration.");
+    return std::make_unique<Statement::Variable>(
+        constant, std::move(constantInitializer));
   }
 
   Statement::StatementUPtr statement() {
@@ -524,6 +543,7 @@ class Parser {
 
   Expression::ExpressionUPtr expression() {
     if(match({Token::Type::Lambda})) return lambda();
+    if(match({Token::Type::Class})) return anonymousClass();
     return assignment();
   }
 
@@ -550,6 +570,10 @@ class Parser {
     Statement::StatementUPtr body{scope()};
     return std::make_unique<Expression::Lambda>(
         params, std::move(defaultParams), std::move(body));
+  }
+
+  Expression::ExpressionUPtr anonymousClass() {
+
   }
 
   Expression::ExpressionUPtr assignment() {
@@ -847,6 +871,9 @@ class Interpreter :
                     lambdaFn,
                     std::make_shared<Environment>(env, true)};
   }
+
+  std::any visit(const Expression::Class &classStmt,
+                 Environment *env) override {}
 
   void visit(const Statement::Expression &expr, Environment *env) override {
     evaluate(expr.expr.get(), env);

@@ -44,6 +44,9 @@ class Scanner {
       {"mod", Token::Type::Modulus},
       {"function", Token::Type::Function},
       {"lambda", Token::Type::Lambda},
-      {"return", Token::Type::Return}};
+      {"return", Token::Type::Return},
+      {"class", Token::Type::Class},
+      {"public", Token::Type::Public},
+      {"private", Token::Type::Private}};
   int pos{0}, line{1}, col{0};
 };
