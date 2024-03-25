@@ -42,21 +42,21 @@ variable d = lambda(x) {
     x();
 };
 
-function e(){
+subroutine e(){
     print("Yup, this is functional...");
 }
 
 d(e);
 d(lambda () { print("Very functional indeed..."); });
 
-function addThreeNumbers(a, b, c) {
+subroutine addThreeNumbers(a, b, c) {
     variable sum = a + b + c;
     print(sum);
 }
 
 addThreeNumbers(1, 2, 3);
 
-function fib(n) {
+subroutine fib(n) {
     if(n <= 1) { 
         return n;
     }
@@ -67,7 +67,7 @@ print(fib(10));
 
 variable test = "global";
 {
-    function showTest() {
+    subroutine showTest() {
         print(test);
     }
 
@@ -76,7 +76,7 @@ variable test = "global";
     showTest();
 }
 
-function defaultWorks(a, b, c = 1, d = fib(10)) {
+subroutine defaultWorks(a, b, c = 1, d = fib(10)) {
     print(a);
     print(b);
     print(c);
@@ -85,16 +85,44 @@ function defaultWorks(a, b, c = 1, d = fib(10)) {
 
 defaultWorks(1, 2);
 
-constant function constFunction() {
+subroutine constFunction() {
+    return;
     print("Test man.");
 }
 
-/:
-class Concept {
-    function implementMe() = nothing;
+constFunction();
 
-    private variable id; 
+/:
+class Test1 {
+public:
+    Test() {}
+    subroutine doSomething() {}
+    subroutine doSomethingElse() {}
+    variable publicVar;
+private:
+    subroutine variable id; 
+    variable privateVar;
 }
+
+class Test2 from Test1 {
+public:
+    Test2() {}
+    subroutine doSomething() {}
+    subroutine doSomethingElse() {}
+    variable publicVar;
+}
+
+class Test3 from Test2 {
+public:
+    Test3() {}
+private:
+    subroutine doSomething() {}
+    subroutine doSomethingElse() {}
+    variable publicVar;
+}
+
+variable Test3 = class from Test2 { /: Stuff goes here :/ };
+
 
 class Person from Concept {
     private variable name;
@@ -103,11 +131,11 @@ class Person from Concept {
         name = iName;
     }
 
-    public function implementMe() {
+    public subroutine implementMe() {
         print("Now this has been overriden!");
     }
 
-    public function intro() {
+    public subroutine intro() {
         print("Hello, my name is " + name);
     }
 }

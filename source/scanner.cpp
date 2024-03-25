@@ -117,7 +117,7 @@ void Scanner::identifier() {
 
 void Scanner::addToken(const std::string &lexeme, Token::Type type) {
   if(type == Token::Type::Error && errorReporter)
-    errorReporter->report({lexeme, type, line, col}, "Unrecognized token.");
+    errorReporter->report({lexeme, type, true, line, col}, "Unrecognized token.");
   tokens.push_back({lexeme, type, true, line, col});
   // Subtract one to account for for-loop increment.
   incPosCol(lexeme.length() - 1);

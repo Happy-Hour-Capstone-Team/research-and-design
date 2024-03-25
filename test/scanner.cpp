@@ -209,7 +209,7 @@ TEST_SUITE("Scanner") {
         "or and true false thisIsATest1\n"
         "123 1.23 \"Testing here!\" begin\n"
         "end { } ; ( ) == != < > <= >= =\n"
-        "* / + - ! % , ^ mod function lambda private public class"};
+        "* / + - ! % , ^ mod subroutine lambda private public class from"};
     Tokens results = Scanner{input}.tokenize();
     Tokens expected = {{"variable", Token::Type::Variable, true, 1, 1},
                        {"constant", Token::Type::Constant, true, 1, 10},
@@ -246,11 +246,12 @@ TEST_SUITE("Scanner") {
                        {",", Token::Type::Comma, true, 5, 13},
                        {"^", Token::Type::Caret, true, 5, 15},
                        {"mod", Token::Type::Modulus, true, 5, 17},
-                       {"function", Token::Type::Function, true, 5, 21},
-                       {"lambda", Token::Type::Lambda, true, 5, 30},
-                       {"private", Token::Type::Private, true, 5, 37},
-                       {"public", Token::Type::Public, true, 5, 45},
-                       {"class", Token::Type::Class, true, 5, 52}};
+                       {"subroutine", Token::Type::Subroutine, true, 5, 21},
+                       {"lambda", Token::Type::Lambda, true, 5, 32},
+                       {"private", Token::Type::Private, true, 5, 39},
+                       {"public", Token::Type::Public, true, 5, 47},
+                       {"class", Token::Type::Class, true, 5, 54},
+                       {"from", Token::Type::From, true, 5, 60}};
     Scanner::printTokens(results);
     sameAs(results, expected);
   }

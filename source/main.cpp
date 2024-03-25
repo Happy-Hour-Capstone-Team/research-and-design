@@ -139,9 +139,10 @@ class Environment {
   SymbolTable table{};
 };
 
-// Forward declaration in order to implement functions.
+// Forward declaration in order to implement functions/classes.
 namespace Statement {
 struct Statement;
+struct Variable;
 using StatementUPtr = std::unique_ptr<Statement>;
 } // namespace Statement
 
@@ -161,18 +162,28 @@ struct Class;
 struct Expression {
   class Visitor {
     public:
-    virtual std::any visit(const Literal &literal, Environment *env) = 0;
-    virtual std::any visit(const Unary &unary, Environment *env) = 0;
-    virtual std::any visit(const Binary &binary, Environment *env) = 0;
-    virtual std::any visit(const Group &group, Environment *env) = 0;
-    virtual std::any visit(const Variable &variable, Environment *env) = 0;
-    virtual std::any visit(const Assignment &assignment, Environment *env) = 0;
-    virtual std::any visit(const Call &call, Environment *env) = 0;
-    virtual std::any visit(const Lambda &lambdaStmt, Environment *env) = 0;
-    virtual std::any visit(const Class &classStmt, Environment *env) = 0;
+    virtual std::optional<std::any> visit(const Literal &literal,
+                                          Environment *env) = 0;
+    virtual std::optional<std::any> visit(const Unary &unary,
+                                          Environment *env) = 0;
+    virtual std::optional<std::any> visit(const Binary &binary,
+                                          Environment *env) = 0;
+    virtual std::optional<std::any> visit(const Group &group,
+                                          Environment *env) = 0;
+    virtual std::optional<std::any> visit(const Variable &variable,
+                                          Environment *env) = 0;
+    virtual std::optional<std::any> visit(const Assignment &assignment,
+                                          Environment *env) = 0;
+    virtual std::optional<std::any> visit(const Call &call,
+                                          Environment *env) = 0;
+    virtual std::optional<std::any> visit(const Lambda &lambdaStmt,
+                                          Environment *env) = 0;
+    virtual std::optional<std::any> visit(const Class &classStmt,
+                                          Environment *env) = 0;
   };
 
-  virtual std::any accept(Visitor *visitor, Environment *env) = 0;
+  virtual std::optional<std::any> accept(Visitor *visitor,
+                                         Environment *env) = 0;
 
   // Need to free memory in children.
   virtual ~Expression() = default;
@@ -184,7 +195,7 @@ struct Literal : Expression {
   explicit Literal(const std::any &iValue) : value{iValue} {}
   const std::any value;
 
-  std::any accept(Visitor *visitor, Environment *env) override {
+  std::optional<std::any> accept(Visitor *visitor, Environment *env) override {
     return visitor->visit(*this, env);
   }
 };
@@ -195,7 +206,7 @@ struct Unary : Expression {
   const Token op;
   const ExpressionUPtr right;
 
-  std::any accept(Visitor *visitor, Environment *env) override {
+  std::optional<std::any> accept(Visitor *visitor, Environment *env) override {
     return visitor->visit(*this, env);
   }
 };
@@ -207,7 +218,7 @@ struct Binary : Expression {
   const Token op;
   const ExpressionUPtr right;
 
-  std::any accept(Visitor *visitor, Environment *env) override {
+  std::optional<std::any> accept(Visitor *visitor, Environment *env) override {
     return visitor->visit(*this, env);
   }
 };
@@ -215,7 +226,7 @@ struct Binary : Expression {
 struct Group : Expression {
   const ExpressionUPtr expr;
 
-  std::any accept(Visitor *visitor, Environment *env) override {
+  std::optional<std::any> accept(Visitor *visitor, Environment *env) override {
     return visitor->visit(*this, env);
   }
 };
@@ -225,7 +236,7 @@ struct Variable : Expression {
 
   const Token variable;
 
-  std::any accept(Visitor *visitor, Environment *env) override {
+  std::optional<std::any> accept(Visitor *visitor, Environment *env) override {
     return visitor->visit(*this, env);
   }
 };
@@ -237,7 +248,7 @@ struct Assignment : Expression {
   const Token variable;
   const ExpressionUPtr value;
 
-  std::any accept(Visitor *visitor, Environment *env) override {
+  std::optional<std::any> accept(Visitor *visitor, Environment *env) override {
     return visitor->visit(*this, env);
   }
 };
@@ -254,7 +265,7 @@ struct Call : Expression {
   const std::vector<ExpressionUPtr> args;
   const Token closingParen;
 
-  std::any accept(Visitor *visitor, Environment *env) override {
+  std::optional<std::any> accept(Visitor *visitor, Environment *env) override {
     return visitor->visit(*this, env);
   }
 };
@@ -271,13 +282,24 @@ struct Lambda : Expression {
   const std::vector<std::pair<Token, ExpressionUPtr>> defaultParams;
   const ::Statement::StatementUPtr body;
 
-  std::any accept(Visitor *visitor, Environment *env) override {
+  std::optional<std::any> accept(Visitor *visitor, Environment *env) override {
     return visitor->visit(*this, env);
   }
 };
 
 struct Class : Expression {
-  // TODO
+  Class(
+      std::unique_ptr<::Statement::Variable> iParent,
+      std::vector<std::unique_ptr<::Statement::Variable>> iPublicProperties,
+      std::vector<std::unique_ptr<::Statement::Variable>> iPrivateProperties) :
+      parent{std::move(iParent)},
+      publicProperties{std::move(iPublicProperties)},
+      privateProperties{std::move(iPrivateProperties)} {}
+
+  const Token name;
+  const std::unique_ptr<::Statement::Variable> parent;
+  const std::vector<std::unique_ptr<::Statement::Variable>> publicProperties;
+  const std::vector<std::unique_ptr<::Statement::Variable>> privateProperties;
 };
 
 } // namespace Expression
@@ -418,7 +440,7 @@ class Parser {
     while(pos < tokens.size()) {
       if(tokens[pos - 1].type == Token::Type::Semicolon) return;
       switch(tokens[pos].type) {
-        case Token::Type::Function:
+        case Token::Type::Subroutine:
         case Token::Type::Variable:
         case Token::Type::If:
         case Token::Type::While: return;
@@ -429,7 +451,7 @@ class Parser {
 
   Statement::StatementUPtr declaration() {
     try {
-      if(match({Token::Type::Function})) return functionDeclaration();
+      if(match({Token::Type::Subroutine})) return functionDeclaration();
       if(match({Token::Type::Variable})) return variableDeclaration();
       if(match({Token::Type::Constant})) return constantDeclaration();
       return statement();
@@ -572,7 +594,27 @@ class Parser {
         params, std::move(defaultParams), std::move(body));
   }
 
-  Expression::ExpressionUPtr anonymousClass() {}
+  /*
+  Class(std::unique_ptr<::Statement::Variable> iParent,
+        std::vector<std::unique_ptr<::Statement::Variable>> iPublicProperties,
+        std::vector<std::unique_ptr<::Statement::Variable>> iPrivateProperties)
+  : name{iName}, parent{std::move(iParent)},
+        publicProperties{std::move(iPublicProperties)},
+        privateProperties{std::move(iPrivateProperties)} {}
+        */
+  Expression::ExpressionUPtr anonymousClass() {
+    std::unique_ptr<Statement::Variable> parent;
+    if(match({Token::Type::From})) {
+      const Token parentName{
+          expect(Token::Type::Identifier, "Expected a class to inherit from!")};
+      parent = std::make_unique<Statement::Variable>(parentName, nullptr);
+    }
+    if(match({Token::Type::Public})) {
+      while(!check(Token::Type::Private) ) {
+        statements.push_back(declaration());
+      }
+    }
+  }
 
   Expression::ExpressionUPtr assignment() {
     Expression::ExpressionUPtr expr = equality();
@@ -716,8 +758,9 @@ class Parser {
   int pos{0};
 };
 
-using Procedure = std::function<std::any(const std::vector<std::any> &args,
-                                         Environment *fnEnv)>;
+using Procedure =
+    std::function<std::optional<std::any>(const std::vector<std::any> &args,
+                                          Environment *fnEnv)>;
 
 struct Callable {
   const std::size_t minArity;
@@ -727,7 +770,8 @@ struct Callable {
 };
 
 namespace native {
-std::any print(const std::vector<std::any> &args, Environment *fnEnv) {
+std::optional<std::any> print(const std::vector<std::any> &args,
+                              Environment *fnEnv) {
   std::any toPrint{args[0]};
   if(toPrint.type() == typeid(std::string))
     std::cout << std::any_cast<std::string>(toPrint) << '\n';
@@ -735,17 +779,19 @@ std::any print(const std::vector<std::any> &args, Environment *fnEnv) {
     std::cout << (std::any_cast<bool>(toPrint) ? "true" : "false") << '\n';
   else if(toPrint.type() == typeid(long double))
     std::cout << std::any_cast<long double>(toPrint) << '\n';
-  return toPrint;
+  return {};
 }
 
-std::any input(const std::vector<std::any> &args, Environment *fnEnv) {
+std::optional<std::any> input(const std::vector<std::any> &args,
+                              Environment *fnEnv) {
   if(args.size()) print(args, fnEnv);
   std::string line;
   std::getline(std::cin, line);
   return line;
 }
 
-std::any time(const std::vector<std::any> &args, Environment *fnEnv) {
+std::optional<std::any> time(const std::vector<std::any> &args,
+                             Environment *fnEnv) {
   const std::chrono::time_point currentTime{std::chrono::system_clock::now()};
   return static_cast<long double>(
       std::chrono::system_clock::to_time_t(currentTime));
@@ -767,13 +813,14 @@ class Interpreter :
                    Callable{0, 0, std::bind(native::time, _1, _2), global});
   }
 
-  std::any visit(const Expression::Literal &literal,
-                 Environment *env) override {
+  std::optional<std::any> visit(const Expression::Literal &literal,
+                                Environment *env) override {
     return literal.value;
   }
 
-  std::any visit(const Expression::Unary &unary, Environment *env) override {
-    std::any rightVal = unary.right->accept(this, env);
+  std::optional<std::any> visit(const Expression::Unary &unary,
+                                Environment *env) override {
+    std::any rightVal = evaluate(unary.right.get(), env);
     switch(unary.op.type) {
       case Token::Type::Exclamation: return !std::any_cast<bool>(rightVal);
       case Token::Type::Dash: return -std::any_cast<long double>(rightVal);
@@ -781,9 +828,10 @@ class Interpreter :
     }
   }
 
-  std::any visit(const Expression::Binary &binary, Environment *env) override {
-    std::any leftVal = binary.left->accept(this, env);
-    std::any rightVal = binary.right->accept(this, env);
+  std::optional<std::any> visit(const Expression::Binary &binary,
+                                Environment *env) override {
+    std::any leftVal = evaluate(binary.left.get(), env);
+    std::any rightVal = evaluate(binary.right.get(), env);
     try {
       if(leftVal.type() == typeid(std::string))
         return stringOperation(std::any_cast<std::string>(leftVal),
@@ -802,23 +850,25 @@ class Interpreter :
     }
   }
 
-  std::any visit(const Expression::Group &group, Environment *env) override {
-    return group.expr->accept(this, env);
+  std::optional<std::any> visit(const Expression::Group &group,
+                                Environment *env) override {
+    return evaluate(group.expr.get(), env);
   }
 
-  std::any visit(const Expression::Variable &variable,
-                 Environment *env) override {
+  std::optional<std::any> visit(const Expression::Variable &variable,
+                                Environment *env) override {
     return env->get(variable.variable);
   }
 
-  std::any visit(const Expression::Assignment &assignment,
-                 Environment *env) override {
+  std::optional<std::any> visit(const Expression::Assignment &assignment,
+                                Environment *env) override {
     std::any value = evaluate(assignment.value.get(), env);
     env->assign(assignment.variable, value);
     return value;
   }
 
-  std::any visit(const Expression::Call &call, Environment *env) override {
+  std::optional<std::any> visit(const Expression::Call &call,
+                                Environment *env) override {
     std::any callee{evaluate(call.callee.get(), env)};
     std::vector<std::any> args{};
     for(std::size_t i{0}; i < call.args.size(); i++)
@@ -837,7 +887,8 @@ class Interpreter :
     }
   }
 
-  std::any visit(const Expression::Lambda &lambda, Environment *env) override {
+  std::optional<std::any> visit(const Expression::Lambda &lambda,
+                                Environment *env) override {
     Procedure lambdaFn = [&lambda, this](const std::vector<std::any> &args,
                                          Environment *fnEnv) {
       std::unique_ptr<Environment> scopedEnv{
@@ -859,10 +910,10 @@ class Interpreter :
       }
       try {
         execute(lambda.body.get(), scopedEnv.get());
-      } catch(std::any value) {
+      } catch(std::optional<std::any> value) {
         return value;
       }
-      return std::make_any<long double>(0.0);
+      return std::make_optional<std::any>({});
     };
     return Callable{lambda.params.size(),
                     lambda.params.size() + lambda.defaultParams.size(),
@@ -870,11 +921,13 @@ class Interpreter :
                     std::make_shared<Environment>(env, true)};
   }
 
-  std::any visit(const Expression::Class &classStmt,
-                 Environment *env) override {}
+  std::optional<std::any> visit(const Expression::Class &classStmt,
+                                Environment *env) override {
+    return {};
+  }
 
   void visit(const Statement::Expression &expr, Environment *env) override {
-    evaluate(expr.expr.get(), env);
+    optEvaluate(expr.expr.get(), env);
   }
 
   void visit(const Statement::Variable &variable, Environment *env) override {
@@ -909,7 +962,8 @@ class Interpreter :
   }
 
   void visit(const Statement::Return &returnStmt, Environment *env) override {
-    if(returnStmt.expr) throw evaluate(returnStmt.expr.get(), env);
+    if(returnStmt.expr) throw optEvaluate(returnStmt.expr.get(), env);
+    throw std::make_optional<std::any>({});
   }
 
   void interpret(const std::vector<Statement::StatementUPtr> &statements) {
@@ -917,7 +971,7 @@ class Interpreter :
       for(std::size_t i{0}; i < statements.size(); i++)
         execute(statements[i].get(), global.get());
     } catch(std::runtime_error e) {
-      std::cerr << e.what() << '\n'; // Add proper error logging here later...
+      std::cout << e.what() << '\n'; // Add proper error logging here later...
     }
   }
 
@@ -925,6 +979,14 @@ class Interpreter :
   std::shared_ptr<Environment> global;
 
   std::any evaluate(Expression::Expression *expr, Environment *env) {
+    std::optional<std::any> optValue{expr->accept(this, env)};
+    if(!optValue.has_value())
+      throw std::runtime_error{"Expected a non-null value!"};
+    return optValue.value();
+  }
+
+  std::optional<std::any> optEvaluate(Expression::Expression *expr,
+                                      Environment *env) {
     return expr->accept(this, env);
   }
 

@@ -46,10 +46,11 @@ struct Token {
     Modulus,
     Comma,
     Caret,
-    Function,
+    Subroutine,
     Lambda,
     Return,
     Class,
+    From,
     Public,
     Private,
     Error // Error needs to always be at the bottom of the list!
@@ -73,11 +74,11 @@ using Tokens = std::vector<Token>;
 std::ostream &operator<<(std::ostream &out, const Token::Type type);
 std::ostream &operator<<(std::ostream &out, const Token &token);
 
-const std::array<std::string, 40> tokenTypeNames{
-    "variable", "constant", "if",      "else",       "for",      "while",
-    "or",       "and",      "Boolean", "Identifier", "Number",   "String",
-    "begin",    "end",      "{",       "}",          ";",        "(",
-    ")",        "==",       "!=",      "<",          ">",        "<=",
-    ">=",       "=",        "*",       "/",          "+",        "-",
-    "!",        "mod",      ",",       "^",          "Function", "Lambda",
-    "return",   "class",    "public",  "private"};
+const std::array<std::string, 41> tokenTypeNames{
+    "variable", "constant", "if",      "else",       "for",        "while",
+    "or",       "and",      "Boolean", "Identifier", "Number",     "String",
+    "begin",    "end",      "{",       "}",          ";",          "(",
+    ")",        "==",       "!=",      "<",          ">",          "<=",
+    ">=",       "=",        "*",       "/",          "+",          "-",
+    "!",        "mod",      ",",       "^",          "Subroutine", "Lambda",
+    "return",   "class",    "from",    "public",     "private"};
