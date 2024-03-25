@@ -572,9 +572,7 @@ class Parser {
         params, std::move(defaultParams), std::move(body));
   }
 
-  Expression::ExpressionUPtr anonymousClass() {
-
-  }
+  Expression::ExpressionUPtr anonymousClass() {}
 
   Expression::ExpressionUPtr assignment() {
     Expression::ExpressionUPtr expr = equality();
