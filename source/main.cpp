@@ -610,7 +610,7 @@ class Parser {
       parent = std::make_unique<Statement::Variable>(parentName, nullptr);
     }
     if(match({Token::Type::Public})) {
-      while(!check(Token::Type::Private) ) {
+      while(!check(Token::Type::Private)) {
         statements.push_back(declaration());
       }
     }
