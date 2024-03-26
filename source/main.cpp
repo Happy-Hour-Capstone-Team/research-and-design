@@ -786,7 +786,7 @@ struct Classifiable {
   const std::size_t maxArity{0};
   const std::shared_ptr<Environment> publicEnv;
   const std::shared_ptr<Environment> privateEnv;
-  const bool 
+  const bool
 };
 
 namespace native {
