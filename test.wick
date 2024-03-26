@@ -92,6 +92,15 @@ subroutine constFunction() {
 
 constFunction();
 
+variable anonClass = class { 
+public:
+    subroutine doSomething() {}
+    variable test;
+private:
+    subroutine somethingPrivate() {}
+    variable privateTest;
+};
+
 /:
 class Test1 {
 public:
@@ -121,7 +130,7 @@ private:
     variable publicVar;
 }
 
-variable Test3 = class from Test2 { /: Stuff goes here :/ };
+variable Test3 = class from Test2 { };
 
 
 class Person from Concept {

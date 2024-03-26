@@ -288,18 +288,20 @@ struct Lambda : Expression {
 };
 
 struct Class : Expression {
-  Class(
-      std::unique_ptr<::Statement::Variable> iParent,
-      std::vector<std::unique_ptr<::Statement::Variable>> iPublicProperties,
-      std::vector<std::unique_ptr<::Statement::Variable>> iPrivateProperties) :
+  Class(std::unique_ptr<::Statement::Variable> iParent,
+        std::vector<Statement::StatementUPtr> iPublicProperties,
+        std::vector<Statement::StatementUPtr> iPrivateProperties) :
       parent{std::move(iParent)},
       publicProperties{std::move(iPublicProperties)},
       privateProperties{std::move(iPrivateProperties)} {}
 
-  const Token name;
   const std::unique_ptr<::Statement::Variable> parent;
-  const std::vector<std::unique_ptr<::Statement::Variable>> publicProperties;
-  const std::vector<std::unique_ptr<::Statement::Variable>> privateProperties;
+  const std::vector<Statement::StatementUPtr> publicProperties;
+  const std::vector<Statement::StatementUPtr> privateProperties;
+
+  std::optional<std::any> accept(Visitor *visitor, Environment *env) override {
+    return visitor->visit(*this, env);
+  }
 };
 
 } // namespace Expression
@@ -449,12 +451,12 @@ class Parser {
     }
   }
 
-  Statement::StatementUPtr declaration() {
+  Statement::StatementUPtr declaration(bool disallowStatements = false) {
     try {
       if(match({Token::Type::Subroutine})) return functionDeclaration();
       if(match({Token::Type::Variable})) return variableDeclaration();
       if(match({Token::Type::Constant})) return constantDeclaration();
-      return statement();
+      if(!disallowStatements) return statement();
     } catch(ParserException e) {
       synchronize();
       return nullptr;
@@ -541,9 +543,7 @@ class Parser {
 
   Statement::StatementUPtr scope() {
     std::vector<Statement::StatementUPtr> statements{};
-    while(!check(Token::Type::RightCurly)) {
-      statements.push_back(declaration());
-    }
+    while(!check(Token::Type::RightCurly)) statements.push_back(declaration());
     expect(Token::Type::RightCurly, "Expected a '}' after scope.");
     return std::make_unique<Statement::Scope>(std::move(statements));
   }
@@ -603,17 +603,29 @@ class Parser {
         privateProperties{std::move(iPrivateProperties)} {}
         */
   Expression::ExpressionUPtr anonymousClass() {
+    expect(Token::Type::LeftCurly, "Expected a '{' after class declaration!");
     std::unique_ptr<Statement::Variable> parent;
     if(match({Token::Type::From})) {
       const Token parentName{
           expect(Token::Type::Identifier, "Expected a class to inherit from!")};
       parent = std::make_unique<Statement::Variable>(parentName, nullptr);
     }
+    std::vector<Statement::StatementUPtr> publicProperties{};
     if(match({Token::Type::Public})) {
-      while(!check(Token::Type::Private)) {
-        statements.push_back(declaration());
-      }
+      expect(Token::Type::Colon, "Expected a ':' after \"public\"!");
+      while(!check(Token::Type::Private) && !check(Token::Type::RightCurly))
+        publicProperties.push_back(declaration(true));
     }
+    std::vector<Statement::StatementUPtr> privateProperties{};
+    if(match({Token::Type::Private})) {
+      expect(Token::Type::Colon, "Expected a ':' after \"private\"!");
+      while(!check(Token::Type::RightCurly))
+        privateProperties.push_back(declaration(true));
+    }
+    expect(Token::Type::RightCurly, "Expected a '}' after class definition!");
+    return std::make_unique<Expression::Class>(std::move(parent),
+                                               std::move(publicProperties),
+                                               std::move(privateProperties));
   }
 
   Expression::ExpressionUPtr assignment() {
@@ -767,6 +779,14 @@ struct Callable {
   const std::size_t maxArity;
   const Procedure procedure;
   const std::shared_ptr<Environment> fnEnv;
+};
+
+struct Classifiable {
+  const std::size_t minArity{0};
+  const std::size_t maxArity{0};
+  const std::shared_ptr<Environment> publicEnv;
+  const std::shared_ptr<Environment> privateEnv;
+  const bool 
 };
 
 namespace native {
