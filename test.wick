@@ -37,32 +37,143 @@ a = 3.14159265 + 2;
 print(a);
 print(b);
 print("Hello world!");
-/:variable c = input("What's your favorite color?");
-print(c);:/
 
 variable d = lambda(x) {
     x();
 };
 
-function e(){
+subroutine e(){
     print("Yup, this is functional...");
 }
 
 d(e);
 d(lambda () { print("Very functional indeed..."); });
 
-function addThreeNumbers(a, b, c) {
+subroutine addThreeNumbers(a, b, c) {
     variable sum = a + b + c;
     print(sum);
 }
 
 addThreeNumbers(1, 2, 3);
 
-/:
-function gcf(a, b) {
-    if b == 0 {
-        return a;
+subroutine fib(n) {
+    if(n <= 1) { 
+        return n;
     }
-    return gcf(a, a mod b);
+    return fib(n - 2) + fib(n - 1);
 }
-:/
+
+print(fib(10));
+
+variable test = "global";
+{
+    subroutine showTest() {
+        print(test);
+    }
+
+    showTest();
+    variable test = "block";
+    showTest();
+}
+
+subroutine defaultWorks(a, b, c = 1, d = fib(10)) {
+    print(a);
+    print(b);
+    print(c);
+    print(d);
+}
+
+defaultWorks(1, 2, 3);
+
+subroutine constFunction() {
+    return;
+    print("Test man.");
+} 
+
+constFunction();
+
+variable ternaryTest = lambda(a, b) { print(a + b); } if 1 == 1 else lambda(a, b) { print(a - b); };
+
+ternaryTest(1, 1);
+
+variable protoTest = prototype { 
+public: 
+    variable publicVar = 0;
+
+    subroutine doSomething() { 
+        print("Hello OOP world!"); 
+    } 
+
+    subroutine printAndIncrementValue() {
+        print(value);
+        value = value + 1;
+    }
+    
+private:
+    variable value = 0;
+
+    subroutine cantRunThis() {
+        print("You will never run this!");
+    }
+};
+
+variable derivTest = prototype from protoTest {};
+
+protoTest.doSomething();
+// protoTest.cantRunThis();
+protoTest.printAndIncrementValue();
+protoTest.printAndIncrementValue();
+protoTest.printAndIncrementValue();
+derivTest.doSomething();
+derivTest.printAndIncrementValue();
+
+/:
+class Test1 {
+public:
+    Test() {}
+    subroutine doSomething() {}
+    subroutine doSomethingElse() {}
+    variable publicVar;
+private:
+    subroutine variable id; 
+    variable privateVar;
+}
+
+class Test2 from Test1 {
+public:
+    Test2() {}
+    subroutine doSomething() {}
+    subroutine doSomethingElse() {}
+    variable publicVar;
+}
+
+class Test3 from Test2 {
+public:
+    Test3() {}
+private:
+    subroutine doSomething() {}
+    subroutine doSomethingElse() {}
+    variable publicVar;
+}
+
+variable Test3 = class from Test2 { };
+
+
+class Person from Concept {
+    private variable name;
+
+    public Person(iName) {
+        name = iName;
+    }
+
+    public subroutine implementMe() {
+        print("Now this has been overriden!");
+    }
+
+    public subroutine intro() {
+        print("Hello, my name is " + name);
+    }
+}
+
+guy = Person("Joe");
+guy.intro();

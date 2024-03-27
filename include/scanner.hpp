@@ -42,7 +42,12 @@ class Scanner {
       {"begin", Token::Type::Begin},
       {"end", Token::Type::End},
       {"mod", Token::Type::Modulus},
-      {"function", Token::Type::Function},
-      {"lambda", Token::Type::Lambda}};
+      {"subroutine", Token::Type::Subroutine},
+      {"lambda", Token::Type::Lambda},
+      {"return", Token::Type::Return},
+      {"prototype", Token::Type::Prototype},
+      {"from", Token::Type::From},
+      {"public", Token::Type::Public},
+      {"private", Token::Type::Private}};
   int pos{0}, line{1}, col{0};
 };
