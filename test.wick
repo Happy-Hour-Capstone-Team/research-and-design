@@ -83,18 +83,49 @@ subroutine defaultWorks(a, b, c = 1, d = fib(10)) {
     print(d);
 }
 
-defaultWorks(1, 2);
+defaultWorks(1, 2, 3);
 
 subroutine constFunction() {
     return;
     print("Test man.");
-}
+} 
 
 constFunction();
 
-variable ternaryTest = lambda(a, b) { print(a + b); } if 1 != 1 else lambda(a, b) { print(a - b); };
+variable ternaryTest = lambda(a, b) { print(a + b); } if 1 == 1 else lambda(a, b) { print(a - b); };
 
 ternaryTest(1, 1);
+
+variable protoTest = prototype { 
+public: 
+    variable publicVar = 0;
+
+    subroutine doSomething() { 
+        print("Hello OOP world!"); 
+    } 
+
+    subroutine printAndIncrementValue() {
+        print(value);
+        value = value + 1;
+    }
+    
+private:
+    variable value = 0;
+
+    subroutine cantRunThis() {
+        print("You will never run this!");
+    }
+};
+
+variable derivTest = prototype from protoTest {};
+
+protoTest.doSomething();
+// protoTest.cantRunThis();
+protoTest.printAndIncrementValue();
+protoTest.printAndIncrementValue();
+protoTest.printAndIncrementValue();
+derivTest.doSomething();
+derivTest.printAndIncrementValue();
 
 /:
 class Test1 {

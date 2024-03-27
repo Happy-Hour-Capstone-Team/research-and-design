@@ -32,120 +32,12 @@
  * )*
  */
 
-#include <any>
+#include <chrono>
 #include <fstream>
-#include <memory>
-#include <optional>
-#include <string>
-
-template <typename KeyType, typename ValueType, std::size_t N = 1024>
-class PersistentMap {
-  public:
-  using Entry = std::shared_ptr<std::pair<KeyType, ValueType>>;
-
-  using Table = std::array<std::vector<Entry>, N>;
-
-  PersistentMap() = default;
-
-  PersistentMap(const Table &iTable) : table{iTable} {}
-
-  PersistentMap insert(const KeyType &key, const ValueType &value) {
-    Table newTable{table};
-    const std::size_t hashIndex{std::hash<KeyType>{}(key) % N};
-    newTable[hashIndex].push_back(
-        std::make_shared<std::pair<KeyType, ValueType>>(
-            std::make_pair(key, value)));
-    return PersistentMap{newTable};
-  }
-
-  std::optional<PersistentMap> assign(const KeyType &key,
-                                      const ValueType &value) {
-    Table newTable{table};
-    const std::size_t hashIndex{std::hash<KeyType>{}(key) % N};
-    for(std::size_t i{0}; i < newTable[hashIndex].size(); i++) {
-      if(newTable[hashIndex][i]->first == key) {
-        newTable[hashIndex][i]->second = value;
-        return PersistentMap{newTable};
-      }
-    }
-    return {};
-  }
-
-  std::optional<ValueType> get(const KeyType &key) const {
-    const std::size_t hashIndex{std::hash<KeyType>{}(key) % N};
-    for(std::size_t i{0}; i < table[hashIndex].size(); i++) {
-      if(table[hashIndex][i]->first == key) return table[hashIndex][i]->second;
-    }
-    return {};
-  }
-
-  Entry getEntry(const KeyType &key) const {
-    const std::size_t hashIndex{std::hash<KeyType>{}(key) % N};
-    for(std::size_t i{0}; i < table[hashIndex].size(); i++) {
-      if(table[hashIndex][i]->first == key) return table[hashIndex][i];
-    }
-    return nullptr;
-  }
-
-  private:
-  Table table;
-};
-
-class Environment {
-  public:
-  using SymbolTable = PersistentMap<Token, std::any>;
-
-  Environment() = default;
-
-  Environment(const Environment &iEnv) : outer{iEnv.outer}, table{iEnv.table} {}
-
-  Environment(Environment *iEnv, const bool persist = false) {
-    outer = iEnv;
-    if(persist) {
-      outer = outer->outer;
-      table = iEnv->table;
-    }
-  }
-
-  void define(const Token &variable, const std::any &value) {
-    table = table.insert(variable, value);
-  }
-
-  void assign(const Token &variable, const std::any &value) {
-    auto entry = table.getEntry(variable);
-    if(entry && entry->first.constant)
-      throw std::runtime_error{"Can not assign to the constant " +
-                               variable.lexeme + "!"};
-    if(entry) {
-      table = table.assign(variable, value).value();
-      return;
-    }
-    if(outer) {
-      outer->assign(variable, value);
-      return;
-    }
-    throw std::runtime_error{"Undefined variable \"" + variable.lexeme + "\"!"};
-  }
-
-  void defineOrAssign(const Token &variable, const std::any &value) {
-    try {
-      assign(variable, value);
-    } catch(std::runtime_error) {
-      define(variable, value);
-    }
-  }
-
-  std::any get(const Token &variable) {
-    std::optional<std::any> value{table.get(variable)};
-    if(!value && outer) value = outer->get(variable);
-    if(value) return value.value();
-    throw std::runtime_error{"Undefined variable!"};
-  }
-
-  private:
-  Environment *outer{nullptr};
-  SymbolTable table{};
-};
+#include <functional>
+#include <iomanip>
+#include <iostream>
+#include <limits>
 
 // Forward declaration in order to implement functions/classes.
 namespace Statement {
@@ -510,12 +402,15 @@ class Parser {
     }
   }
 
-  Statement::StatementUPtr declaration(bool disallowStatements = false) {
+  Statement::StatementUPtr declaration(bool allowStatements = true) {
     try {
       if(match({Token::Type::Subroutine})) return functionDeclaration();
       if(match({Token::Type::Variable})) return variableDeclaration();
       if(match({Token::Type::Constant})) return constantDeclaration();
-      if(!disallowStatements) return statement();
+      if(allowStatements)
+        return statement();
+      else
+        error(tokens[pos], "Statement not allowed here.");
     } catch(ParserException e) {
       synchronize();
       return nullptr;
@@ -667,23 +562,24 @@ class Parser {
   }
 
   Expression::ExpressionUPtr anonymousPrototype() {
-    expect(Token::Type::LeftCurly,
-           "Expected a '{' after prototype declaration!");
     std::optional<Token> parent;
     if(match({Token::Type::From}))
       parent = expect(Token::Type::Identifier,
                       "Expected a prototype to inherit from.");
+    expect(Token::Type::LeftCurly,
+           "Expected a '{' after prototype declaration!");
     std::vector<Statement::StatementUPtr> publicProperties{};
     if(match({Token::Type::Public})) {
       expect(Token::Type::Colon, "Expected a ':' after \"public\".");
-      while(!check(Token::Type::Private) && !check(Token::Type::RightCurly))
-        publicProperties.push_back(declaration(true));
+      while(!check(Token::Type::Private) && !check(Token::Type::RightCurly)) {
+        publicProperties.push_back(declaration(false));
+      }
     }
     std::vector<Statement::StatementUPtr> privateProperties{};
     if(match({Token::Type::Private})) {
       expect(Token::Type::Colon, "Expected a ':' after \"private\".");
       while(!check(Token::Type::RightCurly))
-        privateProperties.push_back(declaration(true));
+        privateProperties.push_back(declaration(false));
     }
     expect(Token::Type::RightCurly,
            "Expected a '}' after prototype definition.");
@@ -854,12 +750,13 @@ struct Callable {
   const std::size_t minArity;
   const std::size_t maxArity;
   const Procedure procedure;
-  const std::shared_ptr<Environment> fnEnv;
+  std::shared_ptr<Environment> fnEnv;
 };
 
 struct Prototypable {
   const std::size_t minArity{0};
   const std::size_t maxArity{0};
+  const std::shared_ptr<Environment> surroundingEnv;
   const std::shared_ptr<Environment> publicEnv;
   const std::shared_ptr<Environment> privateEnv;
 };
@@ -1023,9 +920,39 @@ class Interpreter :
                     std::make_shared<Environment>(env, true)};
   }
 
+  /*
+  Expression::Prototype
+  const std::optional<Token> parent;
+  const std::vector<Statement::StatementUPtr> publicProperties;
+  const std::vector<Statement::StatementUPtr> privateProperties;
+
+  Prototypable
+  const std::size_t minArity{0};
+  const std::size_t maxArity{0};
+  const std::shared_ptr<Environment> publicEnv;
+  const std::shared_ptr<Environment> privateEnv;
+  */
   std::optional<std::any> visit(const Expression::Prototype &prototype,
                                 Environment *env) override {
-    return {};
+    std::shared_ptr<Environment> surroundingEnv{
+        std::make_shared<Environment>(env, true)};
+    std::shared_ptr<Environment> publicEnv{std::make_shared<Environment>()};
+    std::shared_ptr<Environment> privateEnv{std::make_shared<Environment>()};
+    if(prototype.parent) {
+      try {
+        std::any parent{env->get(prototype.parent.value())};
+        Prototypable parentPrototype{std::any_cast<Prototypable>(parent)};
+        privateEnv->copyOver(parentPrototype.privateEnv.get());
+        publicEnv->copyOver(parentPrototype.publicEnv.get());
+      } catch(...) {
+        throw std::runtime_error{"Can only inherit from other prototypes."};
+      }
+    }
+    for(std::size_t i{0}; i < prototype.publicProperties.size(); i++)
+      execute(prototype.publicProperties[i].get(), publicEnv.get());
+    for(std::size_t i{0}; i < prototype.privateProperties.size(); i++)
+      execute(prototype.privateProperties[i].get(), privateEnv.get());
+    return Prototypable{0, 0, surroundingEnv, publicEnv, privateEnv};
   }
 
   virtual std::optional<std::any> visit(const Expression::Set &set,
@@ -1053,16 +980,28 @@ class Interpreter :
   virtual std::optional<std::any> visit(const Expression::Get &get,
                                         Environment *env) override {
     std::any object{evaluate(get.object.get(), env)};
+    std::any value;
     try {
       Prototypable prototype{std::any_cast<Prototypable>(object)};
       try {
-        return prototype.publicEnv->get(get.property);
+        value = prototype.publicEnv->get(get.property);
+        try {
+          Callable callable{std::any_cast<Callable>(value)};
+          callable.fnEnv =
+              Environment::unionize({prototype.surroundingEnv.get(),
+                                     prototype.publicEnv.get(),
+                                     prototype.privateEnv.get()});
+          return callable;
+        } catch(std::bad_any_cast) {
+          return value;
+        }
       } catch(std::runtime_error) {
         try {
-          prototype.privateEnv->get(get.property);
-          throw std::runtime_error{"Requested property is private."};
+          throw prototype.privateEnv->get(get.property);
         } catch(std::runtime_error) {
           throw std::runtime_error{"Property not found in prototype."};
+        } catch(std::any) {
+          throw std::runtime_error{"Requested property is private."};
         }
       }
     } catch(std::bad_any_cast) {
