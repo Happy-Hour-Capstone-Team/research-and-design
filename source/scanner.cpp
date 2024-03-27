@@ -27,6 +27,7 @@ void Scanner::scanToken() {
     case '-': addToken("-", Token::Type::Dash); break;
     case ',': addToken(",", Token::Type::Comma); break;
     case '^': addToken("^", Token::Type::Caret); break;
+    case '.': addToken(".", Token::Type::Dot); break;
     case ':': addToken(":", Token::Type::Colon); break;
     case '!':
       if(text[pos + 1] == '=')

@@ -92,14 +92,9 @@ subroutine constFunction() {
 
 constFunction();
 
-variable anonClass = class { 
-public:
-    subroutine doSomething() {}
-    variable test;
-private:
-    subroutine somethingPrivate() {}
-    variable privateTest;
-};
+variable ternaryTest = lambda(a, b) { print(a + b); } if 1 != 1 else lambda(a, b) { print(a - b); };
+
+ternaryTest(1, 1);
 
 /:
 class Test1 {

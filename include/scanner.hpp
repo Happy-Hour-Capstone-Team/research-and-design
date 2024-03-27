@@ -45,7 +45,7 @@ class Scanner {
       {"subroutine", Token::Type::Subroutine},
       {"lambda", Token::Type::Lambda},
       {"return", Token::Type::Return},
-      {"class", Token::Type::Class},
+      {"prototype", Token::Type::Prototype},
       {"from", Token::Type::From},
       {"public", Token::Type::Public},
       {"private", Token::Type::Private}};

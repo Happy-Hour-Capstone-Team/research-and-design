@@ -204,12 +204,12 @@ TEST_SUITE("Scanner") {
   }
 
   TEST_CASE("Every token type can be detected.") {
-    std::string input{
-        "variable constant if else while\n"
-        "or and true false thisIsATest1\n"
-        "123 1.23 \"Testing here!\" begin\n"
-        "end { } ; ( ) == != < > <= >= =\n"
-        "* / + - ! % , ^ mod subroutine lambda private public class from"};
+    std::string input{"variable constant if else while\n"
+                      "or and true false thisIsATest1\n"
+                      "123 1.23 \"Testing here!\" begin\n"
+                      "end { } ; ( ) == != < > <= >= =\n"
+                      "* / + - ! % , ^ . mod subroutine lambda private public "
+                      "prototype from"};
     Tokens results = Scanner{input}.tokenize();
     Tokens expected = {{"variable", Token::Type::Variable, true, 1, 1},
                        {"constant", Token::Type::Constant, true, 1, 10},
@@ -245,13 +245,14 @@ TEST_SUITE("Scanner") {
                        {"!", Token::Type::Exclamation, true, 5, 9},
                        {",", Token::Type::Comma, true, 5, 13},
                        {"^", Token::Type::Caret, true, 5, 15},
-                       {"mod", Token::Type::Modulus, true, 5, 17},
-                       {"subroutine", Token::Type::Subroutine, true, 5, 21},
-                       {"lambda", Token::Type::Lambda, true, 5, 32},
-                       {"private", Token::Type::Private, true, 5, 39},
-                       {"public", Token::Type::Public, true, 5, 47},
-                       {"class", Token::Type::Class, true, 5, 54},
-                       {"from", Token::Type::From, true, 5, 60}};
+                       {".", Token::Type::Dot, true, 5, 17},
+                       {"mod", Token::Type::Modulus, true, 5, 19},
+                       {"subroutine", Token::Type::Subroutine, true, 5, 23},
+                       {"lambda", Token::Type::Lambda, true, 5, 34},
+                       {"private", Token::Type::Private, true, 5, 41},
+                       {"public", Token::Type::Public, true, 5, 49},
+                       {"prototype", Token::Type::Prototype, true, 5, 56},
+                       {"from", Token::Type::From, true, 5, 66}};
     Scanner::printTokens(results);
     sameAs(results, expected);
   }
