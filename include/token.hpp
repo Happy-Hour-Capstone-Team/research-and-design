@@ -46,10 +46,18 @@ struct Token {
     Modulus,
     Comma,
     Caret,
-    Function,
+    Dot,
+    Subroutine,
     Lambda,
+    Return,
+    Prototype,
+    From,
+    Public,
+    Private,
+    Colon,
     Error // Error needs to always be at the bottom of the list!
   } type;
+  bool constant{true};
   int line{-1};
   int col{-1};
   bool operator==(const Type rhs) const;
@@ -68,10 +76,12 @@ using Tokens = std::vector<Token>;
 std::ostream &operator<<(std::ostream &out, const Token::Type type);
 std::ostream &operator<<(std::ostream &out, const Token &token);
 
-const std::array<std::string, 36> tokenTypeNames{
-    "variable", "constant", "if",      "else",       "for",      "while",
-    "or",       "and",      "Boolean", "Identifier", "Number",   "String",
-    "begin",    "end",      "{",       "}",          ";",        "(",
-    ")",        "==",       "!=",      "<",          ">",        "<=",
-    ">=",       "=",        "*",       "/",          "+",        "-",
-    "!",        "mod",      ",",       "^",          "Function", "Lambda"};
+const std::array<std::string, 43> tokenTypeNames{
+    "variable", "constant", "if",        "else",       "for",    "while",
+    "or",       "and",      "Boolean",   "Identifier", "Number", "String",
+    "begin",    "end",      "{",         "}",          ";",      "(",
+    ")",        "==",       "!=",        "<",          ">",      "<=",
+    ">=",       "=",        "*",         "/",          "+",      "-",
+    "!",        "mod",      ",",         "^",          ".",      "Subroutine",
+    "Lambda",   "return",   "prototype", "from",       "public", "private",
+    ":"};

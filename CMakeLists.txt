@@ -3,9 +3,15 @@ project(wick LANGUAGES CXX)
 
 include_directories(include)
 set(FILES
-    scanner.cpp
-    token.cpp
+    environment.cpp
     errorReporter.cpp
+    expression.cpp
+    interpreter.cpp
+    parser.cpp
+    persistentMap.cpp
+    scanner.cpp
+    statement.cpp
+    token.cpp
     # Add other source files here.
 )
 

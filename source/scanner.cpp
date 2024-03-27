@@ -27,6 +27,8 @@ void Scanner::scanToken() {
     case '-': addToken("-", Token::Type::Dash); break;
     case ',': addToken(",", Token::Type::Comma); break;
     case '^': addToken("^", Token::Type::Caret); break;
+    case '.': addToken(".", Token::Type::Dot); break;
+    case ':': addToken(":", Token::Type::Colon); break;
     case '!':
       if(text[pos + 1] == '=')
         addToken("!=", Token::Type::NotEqualTo);
@@ -117,8 +119,9 @@ void Scanner::identifier() {
 
 void Scanner::addToken(const std::string &lexeme, Token::Type type) {
   if(type == Token::Type::Error && errorReporter)
-    errorReporter->report({lexeme, type, line, col}, "Unrecognized token.");
-  tokens.push_back({lexeme, type, line, col});
+    errorReporter->report({lexeme, type, true, line, col},
+                          "Unrecognized token.");
+  tokens.push_back({lexeme, type, true, line, col});
   // Subtract one to account for for-loop increment.
   incPosCol(lexeme.length() - 1);
 }
