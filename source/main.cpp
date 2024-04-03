@@ -6,7 +6,6 @@
 
 #include "main.hpp"
 
-
 /**
  * PROGRAM ->  DECLARATION*
  * DECLARATION -> CONSTANT | VARIABLE | STATEMENT
@@ -39,7 +38,6 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
-
 
 // Forward declaration in order to implement functions/classes.
 namespace Statement {
@@ -111,8 +109,7 @@ struct Literal : Expression {
 
 struct Unary : Expression {
   Unary(const Token &iOp, ExpressionUPtr iRight) :
-      op{iOp},
-      right{std::move(iRight)} {}
+      op{iOp}, right{std::move(iRight)} {}
   const Token op;
   const ExpressionUPtr right;
 
@@ -123,9 +120,7 @@ struct Unary : Expression {
 
 struct Binary : Expression {
   Binary(ExpressionUPtr iLeft, const Token &iOp, ExpressionUPtr iRight) :
-      left{std::move(iLeft)},
-      op{iOp},
-      right{std::move(iRight)} {}
+      left{std::move(iLeft)}, op{iOp}, right{std::move(iRight)} {}
   const ExpressionUPtr left;
   const Token op;
   const ExpressionUPtr right;
@@ -172,8 +167,7 @@ struct Variable : Expression {
 
 struct Assignment : Expression {
   Assignment(const Token &iVariable, ExpressionUPtr iValue) :
-      variable{iVariable},
-      value{std::move(iValue)} {}
+      variable{iVariable}, value{std::move(iValue)} {}
 
   const Token variable;
   const ExpressionUPtr value;
@@ -251,8 +245,7 @@ struct Set : Expression {
 
 struct Get : Expression {
   Get(ExpressionUPtr iObject, const Token &iProperty) :
-      object{std::move(iObject)},
-      property{iProperty} {}
+      object{std::move(iObject)}, property{iProperty} {}
 
   ExpressionUPtr object; // Not constant to support conversion to Set.
   const Token property;
@@ -305,8 +298,7 @@ struct Expression : Statement {
 
 struct Variable : Statement {
   Variable(const Token &iVariable, ::Expression::ExpressionUPtr iInitializer) :
-      variable{iVariable},
-      initializer{std::move(iInitializer)} {}
+      variable{iVariable}, initializer{std::move(iInitializer)} {}
   const Token variable;
   const ::Expression::ExpressionUPtr initializer;
 
@@ -364,8 +356,7 @@ struct For : Statement {
 
 struct Return : Statement {
   Return(const Token &iKeyword, ::Expression::ExpressionUPtr iExpr) :
-      keyword{iKeyword},
-      expr{std::move(iExpr)} {}
+      keyword{iKeyword}, expr{std::move(iExpr)} {}
 
   const Token keyword;
   const ::Expression::ExpressionUPtr expr;
@@ -380,12 +371,10 @@ struct Return : Statement {
 class Parser {
   public:
   Parser(const Tokens &iTokens, ErrorReporter *const iErrorReporter = nullptr) :
-      tokens{iTokens},
-      errorReporter{iErrorReporter} {}
+      tokens{iTokens}, errorReporter{iErrorReporter} {}
   Parser(std::initializer_list<Token> iTokens,
          ErrorReporter *const iErrorReporter = nullptr) :
-      tokens{iTokens},
-      errorReporter{iErrorReporter} {}
+      tokens{iTokens}, errorReporter{iErrorReporter} {}
 
   std::vector<Statement::StatementUPtr> parse() {
     std::vector<Statement::StatementUPtr> statements{};
@@ -705,8 +694,7 @@ class Parser {
       if(match({Token::Type::LeftParen})) {
         std::vector<Expression::ExpressionUPtr> args{};
         if(!check({Token::Type::RightParen})) {
-          do
-            args.push_back(expression());
+          do args.push_back(expression());
           while(match({Token::Type::Comma}));
         }
         const Token closingParen{expect(

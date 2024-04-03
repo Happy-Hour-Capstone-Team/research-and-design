@@ -1,11 +1,9 @@
 #include "environment.hpp"
 
-
 Environment::Environment(const SymbolTable &iTable) : table{iTable} {}
 
 Environment::Environment(const Environment &iEnv) :
-    outer{iEnv.outer},
-    table{iEnv.table} {}
+    outer{iEnv.outer}, table{iEnv.table} {}
 
 Environment::Environment(Environment *iEnv, const bool persist) {
   outer = iEnv;
