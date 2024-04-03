@@ -6,6 +6,7 @@
 
 #include "main.hpp"
 
+
 /**
  * PROGRAM ->  DECLARATION*
  * DECLARATION -> CONSTANT | VARIABLE | STATEMENT
@@ -38,6 +39,7 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+
 
 // Forward declaration in order to implement functions/classes.
 namespace Statement {
@@ -109,7 +111,8 @@ struct Literal : Expression {
 
 struct Unary : Expression {
   Unary(const Token &iOp, ExpressionUPtr iRight) :
-      op{iOp}, right{std::move(iRight)} {}
+      op{iOp},
+      right{std::move(iRight)} {}
   const Token op;
   const ExpressionUPtr right;
 
@@ -120,7 +123,9 @@ struct Unary : Expression {
 
 struct Binary : Expression {
   Binary(ExpressionUPtr iLeft, const Token &iOp, ExpressionUPtr iRight) :
-      left{std::move(iLeft)}, op{iOp}, right{std::move(iRight)} {}
+      left{std::move(iLeft)},
+      op{iOp},
+      right{std::move(iRight)} {}
   const ExpressionUPtr left;
   const Token op;
   const ExpressionUPtr right;
@@ -167,7 +172,8 @@ struct Variable : Expression {
 
 struct Assignment : Expression {
   Assignment(const Token &iVariable, ExpressionUPtr iValue) :
-      variable{iVariable}, value{std::move(iValue)} {}
+      variable{iVariable},
+      value{std::move(iValue)} {}
 
   const Token variable;
   const ExpressionUPtr value;
@@ -245,7 +251,8 @@ struct Set : Expression {
 
 struct Get : Expression {
   Get(ExpressionUPtr iObject, const Token &iProperty) :
-      object{std::move(iObject)}, property{iProperty} {}
+      object{std::move(iObject)},
+      property{iProperty} {}
 
   ExpressionUPtr object; // Not constant to support conversion to Set.
   const Token property;
@@ -298,7 +305,8 @@ struct Expression : Statement {
 
 struct Variable : Statement {
   Variable(const Token &iVariable, ::Expression::ExpressionUPtr iInitializer) :
-      variable{iVariable}, initializer{std::move(iInitializer)} {}
+      variable{iVariable},
+      initializer{std::move(iInitializer)} {}
   const Token variable;
   const ::Expression::ExpressionUPtr initializer;
 
@@ -356,7 +364,8 @@ struct For : Statement {
 
 struct Return : Statement {
   Return(const Token &iKeyword, ::Expression::ExpressionUPtr iExpr) :
-      keyword{iKeyword}, expr{std::move(iExpr)} {}
+      keyword{iKeyword},
+      expr{std::move(iExpr)} {}
 
   const Token keyword;
   const ::Expression::ExpressionUPtr expr;
@@ -371,10 +380,12 @@ struct Return : Statement {
 class Parser {
   public:
   Parser(const Tokens &iTokens, ErrorReporter *const iErrorReporter = nullptr) :
-      tokens{iTokens}, errorReporter{iErrorReporter} {}
+      tokens{iTokens},
+      errorReporter{iErrorReporter} {}
   Parser(std::initializer_list<Token> iTokens,
          ErrorReporter *const iErrorReporter = nullptr) :
-      tokens{iTokens}, errorReporter{iErrorReporter} {}
+      tokens{iTokens},
+      errorReporter{iErrorReporter} {}
 
   std::vector<Statement::StatementUPtr> parse() {
     std::vector<Statement::StatementUPtr> statements{};
@@ -611,8 +622,30 @@ class Parser {
   }
 
   Expression::ExpressionUPtr equality() {
-    Expression::ExpressionUPtr left{comparison()};
+    Expression::ExpressionUPtr left{andExpr()};
     while(match({Token::Type::NotEqualTo, Token::Type::EqualTo})) {
+      const Token op{tokens[pos - 1]};
+      Expression::ExpressionUPtr right{andExpr()};
+      left = std::make_unique<Expression::Binary>(
+          std::move(left), op, std::move(right));
+    }
+    return std::move(left);
+  }
+
+  Expression::ExpressionUPtr andExpr() {
+    Expression::ExpressionUPtr left{orExpr()};
+    while(match({Token::Type::And})) {
+      const Token op{tokens[pos - 1]};
+      Expression::ExpressionUPtr right{orExpr()};
+      left = std::make_unique<Expression::Binary>(
+          std::move(left), op, std::move(right));
+    }
+    return std::move(left);
+  }
+
+  Expression::ExpressionUPtr orExpr() {
+    Expression::ExpressionUPtr left{comparison()};
+    while(match({Token::Type::Or})) {
       const Token op{tokens[pos - 1]};
       Expression::ExpressionUPtr right{comparison()};
       left = std::make_unique<Expression::Binary>(
@@ -672,7 +705,8 @@ class Parser {
       if(match({Token::Type::LeftParen})) {
         std::vector<Expression::ExpressionUPtr> args{};
         if(!check({Token::Type::RightParen})) {
-          do args.push_back(expression());
+          do
+            args.push_back(expression());
           while(match({Token::Type::Comma}));
         }
         const Token closingParen{expect(
@@ -788,6 +822,67 @@ std::optional<std::any> time(const std::vector<std::any> &args,
   return static_cast<long double>(
       std::chrono::system_clock::to_time_t(currentTime));
 }
+
+std::any min(const std::vector<std::any> &args, Environment *fnEnv) {
+  std::any minVal = args[0];
+  for(const auto &arg : args) {
+    if(std::any_cast<long double>(arg) < std::any_cast<long double>(minVal)) {
+      minVal = arg;
+    }
+  }
+  return minVal;
+}
+
+std::any max(const std::vector<std::any> &args, Environment *fnEnv) {
+  std::any maxVal = args[0];
+  for(const auto &arg : args) {
+    if(std::any_cast<long double>(arg) > std::any_cast<long double>(maxVal)) {
+      maxVal = arg;
+    }
+  }
+  return maxVal;
+}
+
+std::optional<std::any> abs(const std::vector<std::any> &args,
+                            Environment *fnEnv) {
+  long double number = std::any_cast<long double>(args[0]);
+  if(number < 0) {
+    return -number;
+  } else {
+    return number;
+  }
+}
+
+std::optional<std::any> assert(const std::vector<std::any> &args,
+                               Environment *fnEnv) {
+  bool conditon = std::any_cast<bool>(args[0]);
+  return {};
+}
+
+std::optional<std::any> floor(const std::vector<std::any> &args,
+                              Environment *fnEnv) {
+  long double number = std::any_cast<long double>(args[0]);
+  int result = static_cast<int>(number);
+}
+
+std::optional<std::any> ceiling(const std::vector<std::any> &args,
+                                Environment *fnEnv) {
+  long double number = std::any_cast<long double>(args[0]);
+  int result;
+  if(number >= 0) {
+    result = static_cast<int>(number);
+    if(number - result > 0) {
+      result += 1;
+    }
+  } else {
+    result = static_cast<int>(number);
+  }
+  return result;
+}
+
+std::optional<std::any> truncate(const std::vector<std::any> &args,
+                                 Environment *fnEnv) {}
+
 } // namespace native
 
 class Interpreter :
@@ -800,9 +895,21 @@ class Interpreter :
     global->define(Token{"print", Token::Type::Identifier},
                    Callable{1, 1, std::bind(native::print, _1, _2), global});
     global->define(Token{"input", Token::Type::Identifier},
-                   Callable{1, 1, std::bind(native::input, _1, _2), global});
+                   Callable{0, 1, std::bind(native::input, _1, _2), global});
     global->define(Token{"time", Token::Type::Identifier},
                    Callable{0, 0, std::bind(native::time, _1, _2), global});
+    global->define(Token{"min", Token::Type::Identifier},
+                   Callable{1, 1, std::bind(native::min, _1, _2), global});
+    global->define(Token{"max", Token::Type::Identifier},
+                   Callable{1, 1, std::bind(native::max, _1, _2), global});
+    global->define(Token{"abs", Token::Type::Identifier},
+                   Callable{1, 1, std::bind(native::abs, _1, _2), global});
+    global->define(Token{"assert", Token::Type::Identifier},
+                   Callable{2, 2, std::bind(native::assert, _1, _2), global});
+    global->define(Token{"floor", Token::Type::Identifier},
+                   Callable{1, 1, std::bind(native::floor, _1, _2), global});
+    global->define(Token{"ceiling", Token::Type::Identifier},
+                   Callable{1, 1, std::bind(native::ceiling, _1, _2), global});
   }
 
   std::optional<std::any> visit(const Expression::Literal &literal,
@@ -1090,9 +1197,19 @@ class Interpreter :
     return truth;
   }
 
-  std::string stringOperation(const std::string &left,
-                              const Token::Type op,
-                              const std::string &right) {
+  std::any stringOperation(const std::string left,
+                           const Token::Type op,
+                           const std::string right) {
+    switch(op) {
+      case Token::Type::Plus: return left + right;
+      case Token::Type::EqualTo: return left == right;
+      case Token::Type::NotEqualTo: return left != right;
+      case Token::Type::LessThan: return left < right;
+      case Token::Type::GreaterThan: return left > right;
+      case Token::Type::LessThanOrEqualTo: return left <= right;
+      case Token::Type::GreaterThanOrEqualTo: return left >= right;
+      default: throw std::runtime_error("Not a supported string operator");
+    }
     // + to concatenate strings
     // == to compare strings character by character
     // != to be opposite of above
@@ -1100,46 +1217,33 @@ class Interpreter :
     // >, <=, >= would be similar to the above
   }
 
-  bool booleanOperation(const bool left,
-                        const Token::Type op,
-                        const bool right) {
+  std::any booleanOperation(const bool left,
+                            const Token::Type op,
+                            const bool right) {
+    switch(op) {
+      case Token::Type::And: return left && right;
+      case Token::Type::Or: return left || right;
+      case Token::Type::EqualTo: return left == right;
+      case Token::Type::NotEqualTo: return left != right;
+      default: throw std::runtime_error("");
+    }
     // and, or, not, ==, !=
   }
 
-  long double numericOperation(const long double left,
-                               const Token::Type op,
-                               const long double right) {
+  std::any numericOperation(const long double left,
+                            const Token::Type op,
+                            const long double right) {
     switch(op) {
-      case Token::Type::NotEqualTo:
-        return std::any_cast<long double>(left) !=
-               std::any_cast<long double>(right);
-      case Token::Type::EqualTo:
-        return std::any_cast<long double>(left) ==
-               std::any_cast<long double>(right);
-      case Token::Type::LessThan:
-        return std::any_cast<long double>(left) <
-               std::any_cast<long double>(right);
-      case Token::Type::LessThanOrEqualTo:
-        return std::any_cast<long double>(left) <=
-               std::any_cast<long double>(right);
-      case Token::Type::GreaterThan:
-        return std::any_cast<long double>(left) >
-               std::any_cast<long double>(right);
-      case Token::Type::GreaterThanOrEqualTo:
-        return std::any_cast<long double>(left) >=
-               std::any_cast<long double>(right);
-      case Token::Type::Asterisk:
-        return std::any_cast<long double>(left) *
-               std::any_cast<long double>(right);
-      case Token::Type::Plus:
-        return std::any_cast<long double>(left) +
-               std::any_cast<long double>(right);
-      case Token::Type::Dash:
-        return std::any_cast<long double>(left) -
-               std::any_cast<long double>(right);
-      case Token::Type::ForwardSlash:
-        return std::any_cast<long double>(left) /
-               std::any_cast<long double>(right);
+      case Token::Type::NotEqualTo: return left != right;
+      case Token::Type::EqualTo: return left == right;
+      case Token::Type::LessThan: return left < right;
+      case Token::Type::LessThanOrEqualTo: return left <= right;
+      case Token::Type::GreaterThan: return left > right;
+      case Token::Type::GreaterThanOrEqualTo: return left >= right;
+      case Token::Type::Asterisk: return left * right;
+      case Token::Type::Plus: return left + right;
+      case Token::Type::Dash: return left - right;
+      case Token::Type::ForwardSlash: return left / right;
       default: throw std::runtime_error("Not a supported binary operator");
     }
   }

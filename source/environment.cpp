@@ -1,9 +1,11 @@
 #include "environment.hpp"
 
+
 Environment::Environment(const SymbolTable &iTable) : table{iTable} {}
 
 Environment::Environment(const Environment &iEnv) :
-    outer{iEnv.outer}, table{iEnv.table} {}
+    outer{iEnv.outer},
+    table{iEnv.table} {}
 
 Environment::Environment(Environment *iEnv, const bool persist) {
   outer = iEnv;
@@ -14,7 +16,11 @@ Environment::Environment(Environment *iEnv, const bool persist) {
 }
 
 void Environment::define(const Token &variable, const std::any &value) {
-  table = table.insert(variable, value);
+  try {
+    assign(variable, value);
+  } catch(std::runtime_error) {
+    table = table.insert(variable, value);
+  }
 }
 
 void Environment::assign(const Token &variable, const std::any &value) {

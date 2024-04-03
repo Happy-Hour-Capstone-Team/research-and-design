@@ -96,36 +96,41 @@ variable ternaryTest = lambda(a, b) { print(a + b); } if 1 == 1 else lambda(a, b
 
 ternaryTest(1, 1);
 
-variable protoTest = prototype { 
-public: 
-    variable publicVar = 0;
+variable str1 = "Hello";
+variable str2 = "World";
+variable result = str1 + str2; // should be helloworld
+print (result);
 
-    subroutine doSomething() { 
-        print("Hello OOP world!"); 
-    } 
 
-    subroutine printAndIncrementValue() {
-        print(value);
-        value = value + 1;
-    }
-    
-private:
-    variable value = 0;
+variable a = 5;
+variable b = 10;
+variable isEqual = a == b; // should be false
+print (isEqual);
 
-    subroutine cantRunThis() {
-        print("You will never run this!");
-    }
-};
+variable c = true;
+variable d = false;
+variable result = c and d;
+print (result);
 
-variable derivTest = prototype from protoTest {};
+variable e = true;
+variable f = false;
+variable result = e or f;
+print (result);
 
-protoTest.doSomething();
-// protoTest.cantRunThis();
-protoTest.printAndIncrementValue();
-protoTest.printAndIncrementValue();
-protoTest.printAndIncrementValue();
-derivTest.doSomething();
-derivTest.printAndIncrementValue();
+variable g = 15;
+variable h = 20;
+variable isGreater = g > h;
+print (isGreater);
+
+variable i = 25;
+variable j = 30;
+variable isLess = i < j;
+
+print (isLess);
+print (1 <= 2);
+print (1 >= 2);
+print (1 == 2);
+print (2 != 3);
 
 /:
 class Test1 {
@@ -177,3 +182,4 @@ class Person from Concept {
 
 guy = Person("Joe");
 guy.intro();
+
