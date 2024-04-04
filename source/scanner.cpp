@@ -110,7 +110,7 @@ void Scanner::number() {
 
 void Scanner::identifier() {
   std::string lexeme{""};
-  for(int i{0}; std::isalnum(text[pos + i]); i++) lexeme += text[pos + i];
+  for(int i{0}; std::isalnum(text[pos + i]) || text[pos + i] == '_'; i++) lexeme += text[pos + i];
   if(auto search = keywords.find(lexeme); search != keywords.end())
     addToken(lexeme, search->second);
   else
