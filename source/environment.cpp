@@ -14,7 +14,11 @@ Environment::Environment(Environment *iEnv, const bool persist) {
 }
 
 void Environment::define(const Token &variable, const std::any &value) {
-  table = table.insert(variable, value);
+  try {
+    assign(variable, value);
+  } catch(std::runtime_error) {
+    table = table.insert(variable, value);
+  }
 }
 
 void Environment::assign(const Token &variable, const std::any &value) {
