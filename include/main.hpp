@@ -9,3 +9,5 @@
 #include "scanner.hpp"
 #include "statement.hpp"
 #include "token.hpp"
+
+#include <cmath>

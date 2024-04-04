@@ -96,42 +96,6 @@ variable ternaryTest = lambda(a, b) { print(a + b); } if 1 == 1 else lambda(a, b
 
 ternaryTest(1, 1);
 
-variable str1 = "Hello";
-variable str2 = "World";
-variable result = str1 + str2; // should be helloworld
-print (result);
-
-
-variable a = 5;
-variable b = 10;
-variable isEqual = a == b; // should be false
-print (isEqual);
-
-variable c = true;
-variable d = false;
-variable result = c and d;
-print (result);
-
-variable e = true;
-variable f = false;
-variable result = e or f;
-print (result);
-
-variable g = 15;
-variable h = 20;
-variable isGreater = g > h;
-print (isGreater);
-
-variable i = 25;
-variable j = 30;
-variable isLess = i < j;
-
-print (isLess);
-print (1 <= 2);
-print (1 >= 2);
-print (1 == 2);
-print (2 != 3);
-
 /:
 class Test1 {
 public:
