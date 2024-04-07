@@ -209,7 +209,7 @@ std::optional<std::any>
       privateEnv->copyOver(parentPrototype.privateEnv.get());
       publicEnv->copyOver(parentPrototype.publicEnv.get());
       surroundingEnv->define(Token{"parent", Token::Type::Identifier, true},
-                         parentPrototype);
+                             parentPrototype);
     } catch(...) {
       throw std::runtime_error{"Can only inherit from other prototypes."};
     }
@@ -220,7 +220,7 @@ std::optional<std::any>
     execute(prototype.privateProperties[i].get(), privateEnv.get());
   Prototypable anonymousPrototype{0, 0, surroundingEnv, publicEnv, privateEnv};
   surroundingEnv->define(Token{"this", Token::Type::Identifier, true},
-                     anonymousPrototype);
+                         anonymousPrototype);
   return anonymousPrototype;
 }
 
