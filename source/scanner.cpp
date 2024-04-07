@@ -91,7 +91,7 @@ void Scanner::string() {
 void Scanner::longTokens() {
   if(std::isdigit(text[pos]))
     number();
-  else if(std::isalpha(text[pos]))
+  else if(idChar(text[pos]))
     identifier();
   else
     addToken(std::string{text[pos]}, Token::Type::Error);
@@ -110,8 +110,7 @@ void Scanner::number() {
 
 void Scanner::identifier() {
   std::string lexeme{""};
-  for(int i{0}; std::isalnum(text[pos + i]) || text[pos + i] == '_'; i++)
-    lexeme += text[pos + i];
+  for(int i{0}; idChar(text[pos + i]); i++) lexeme += text[pos + i];
   if(auto search = keywords.find(lexeme); search != keywords.end())
     addToken(lexeme, search->second);
   else
@@ -135,6 +134,10 @@ void Scanner::newLine() {
 void Scanner::incPosCol(int i) {
   pos += i;
   col += i;
+}
+
+bool Scanner::idChar(const char c) {
+  return std::isalnum(c) || c == '_';
 }
 
 void Scanner::printTokens(const Tokens &tokens) {

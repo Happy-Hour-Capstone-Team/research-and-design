@@ -24,6 +24,7 @@ class Scanner {
   void addToken(const std::string &lexeme, Token::Type type);
   void newLine();
   void incPosCol(int i = 1);
+  bool idChar(const char c);
 
   ErrorReporter *const errorReporter;
   std::string text;
@@ -48,6 +49,8 @@ class Scanner {
       {"prototype", Token::Type::Prototype},
       {"from", Token::Type::From},
       {"public", Token::Type::Public},
-      {"private", Token::Type::Private}};
+      {"private", Token::Type::Private},
+      {"this", Token::Type::This},
+      {"parent", Token::Type::Parent}};
   int pos{0}, line{1}, col{0};
 };

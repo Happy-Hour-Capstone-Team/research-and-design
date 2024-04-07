@@ -96,10 +96,14 @@ variable ternaryTest = lambda(a, b) { print(a + b); } if 1 == 1 else lambda(a, b
 
 ternaryTest(1, 1);
 
+print(isnan(NaN));
+
+variable _test_underscore = 1;
+
 /:
 class Test1 {
 public:
-    Test() {}
+    Test1() {}
     subroutine doSomething() {}
     subroutine doSomethingElse() {}
     variable publicVar;

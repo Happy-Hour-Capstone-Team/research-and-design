@@ -7,6 +7,7 @@ set(FILES
     errorReporter.cpp
     expression.cpp
     interpreter.cpp
+    native.cpp
     parser.cpp
     persistentMap.cpp
     scanner.cpp
@@ -16,7 +17,12 @@ set(FILES
 )
 
 list(TRANSFORM FILES PREPEND "source/" OUTPUT_VARIABLE SOURCE)
-list(TRANSFORM FILES PREPEND "test/" OUTPUT_VARIABLE TEST)
+
+set(TEST_FILES
+    scannerTest.cpp
+    tokenTest.cpp)
+    
+list(TRANSFORM TEST_FILES PREPEND "test/" OUTPUT_VARIABLE TEST)
 
 enable_testing()
 

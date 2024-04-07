@@ -54,6 +54,8 @@ struct Token {
     From,
     Public,
     Private,
+    This,
+    Parent,
     Colon,
     Error // Error needs to always be at the bottom of the list!
   } type;
@@ -76,7 +78,7 @@ using Tokens = std::vector<Token>;
 std::ostream &operator<<(std::ostream &out, const Token::Type type);
 std::ostream &operator<<(std::ostream &out, const Token &token);
 
-const std::array<std::string, 43> tokenTypeNames{
+const std::array<std::string, 45> tokenTypeNames{
     "variable", "constant", "if",        "else",       "for",    "while",
     "or",       "and",      "Boolean",   "Identifier", "Number", "String",
     "begin",    "end",      "{",         "}",          ";",      "(",
@@ -84,4 +86,4 @@ const std::array<std::string, 43> tokenTypeNames{
     ">=",       "=",        "*",         "/",          "+",      "-",
     "!",        "mod",      ",",         "^",          ".",      "Subroutine",
     "Lambda",   "return",   "prototype", "from",       "public", "private",
-    ":"};
+    "this",     "parent",   ":"};
