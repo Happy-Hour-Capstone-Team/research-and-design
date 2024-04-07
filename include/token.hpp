@@ -4,11 +4,6 @@
 #include <iostream>
 #include <vector>
 
-/**
- * KEY WORDS AND SYMBOLS
- * variable, constant, begin, end, if, else, while, or, and, true, false, {, },
- * ;, (, ), ==, !=, <, >, <=, >=, +, =, -, *, /, ! %, ,, ^, function, lambda
- */
 struct Token {
   std::string lexeme;
   enum class Type {
@@ -45,7 +40,6 @@ struct Token {
     Exclamation,
     Modulus,
     Comma,
-    Caret,
     Dot,
     Subroutine,
     Lambda,
@@ -54,8 +48,6 @@ struct Token {
     From,
     Public,
     Private,
-    This,
-    Parent,
     Colon,
     Error // Error needs to always be at the bottom of the list!
   } type;
@@ -78,12 +70,11 @@ using Tokens = std::vector<Token>;
 std::ostream &operator<<(std::ostream &out, const Token::Type type);
 std::ostream &operator<<(std::ostream &out, const Token &token);
 
-const std::array<std::string, 45> tokenTypeNames{
-    "variable", "constant", "if",        "else",       "for",    "while",
-    "or",       "and",      "Boolean",   "Identifier", "Number", "String",
-    "begin",    "end",      "{",         "}",          ";",      "(",
-    ")",        "==",       "!=",        "<",          ">",      "<=",
-    ">=",       "=",        "*",         "/",          "+",      "-",
-    "!",        "mod",      ",",         "^",          ".",      "Subroutine",
-    "Lambda",   "return",   "prototype", "from",       "public", "private",
-    "this",     "parent",   ":"};
+const std::array<std::string, 42> tokenTypeNames{
+    "variable", "constant",  "if",      "else",       "for",        "while",
+    "or",       "and",       "Boolean", "Identifier", "Number",     "String",
+    "begin",    "end",       "{",       "}",          ";",          "(",
+    ")",        "==",        "!=",      "<",          ">",          "<=",
+    ">=",       "=",         "*",       "/",          "+",          "-",
+    "!",        "mod",       ",",       ".",          "Subroutine", "Lambda",
+    "return",   "prototype", "from",    "public",     "private",    ":"};

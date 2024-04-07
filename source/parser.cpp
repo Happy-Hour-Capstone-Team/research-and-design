@@ -33,8 +33,9 @@ void Parser::synchronize() {
 Statement::StatementUPtr Parser::declaration(bool allowStatements) {
   try {
     if(match({Token::Type::Subroutine})) return functionDeclaration();
-    if(match({Token::Type::Variable})) return variableDeclaration();
-    if(match({Token::Type::Constant})) return constantDeclaration();
+    if(match({Token::Type::Prototype})) return prototypeDeclaration();
+    if(match({Token::Type::Variable})) return variableDeclaration(false);
+    if(match({Token::Type::Constant})) return variableDeclaration(true);
     if(allowStatements)
       return statement();
     else
@@ -46,15 +47,22 @@ Statement::StatementUPtr Parser::declaration(bool allowStatements) {
 }
 
 Statement::StatementUPtr Parser::functionDeclaration() {
-  const Token name{
-      expect(Token::Type::Identifier, "Expected a function name.")};
+  Token name{expect(Token::Type::Identifier, "Expected a function name.")};
+  name.constant = false;
   Expression::ExpressionUPtr definition{lambda()};
   return std::make_unique<Statement::Variable>(name, std::move(definition));
 }
 
-Statement::StatementUPtr Parser::variableDeclaration() {
+Statement::StatementUPtr Parser::prototypeDeclaration() {
+  const Token name{
+      expect(Token::Type::Identifier, "Expected a prototype name.")};
+  Expression::ExpressionUPtr definition{anonymousPrototype()};
+  return std::make_unique<Statement::Variable>(name, std::move(definition));
+}
+
+Statement::StatementUPtr Parser::variableDeclaration(const bool constant) {
   Token variable{expect(Token::Type::Identifier, "Expected a variable name.")};
-  variable.constant = false;
+  variable.constant = constant;
   Expression::ExpressionUPtr variableInitializer{nullptr};
   if(match({Token::Type::Equal})) variableInitializer = expression();
   expect(Token::Type::Semicolon, "Expected a ';' after variable declaration.");
@@ -82,7 +90,7 @@ Statement::StatementUPtr Parser::statement() {
 }
 
 Statement::StatementUPtr Parser::forStmt() {
-  Statement::StatementUPtr initializer{variableDeclaration()};
+  Statement::StatementUPtr initializer{variableDeclaration(false)};
   Expression::ExpressionUPtr condition{expression()};
   expect(Token::Type::Semicolon, "Expected a ';' after variable declaration.");
   Statement::StatementUPtr update{expressionStatement(false)};
@@ -197,6 +205,7 @@ Expression::ExpressionUPtr Parser::anonymousPrototype() {
       publicProperties.push_back(declaration(false));
     }
   }
+
   std::vector<Statement::StatementUPtr> privateProperties{};
   if(match({Token::Type::Private})) {
     expect(Token::Type::Colon, "Expected a ':' after \"private\".");
@@ -218,12 +227,12 @@ Expression::ExpressionUPtr Parser::assignment() {
           static_cast<Expression::Variable *>(expr.get())->variable};
       return std::make_unique<Expression::Assignment>(variable,
                                                       std::move(value));
-    } catch(...) {
+    } catch(std::bad_cast) {
       try {
         Expression::Get *get{static_cast<Expression::Get *>(expr.get())};
         return std::make_unique<Expression::Set>(
             std::move(get->object), get->property, std::move(value));
-      } catch(...) {
+      } catch(std::bad_cast) {
         error(equal, "Can not assign to this token.");
       }
     }

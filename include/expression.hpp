@@ -181,4 +181,5 @@ struct Get : Expression {
 
   std::optional<std::any> accept(Visitor *visitor, Environment *env) override;
 };
+
 } // namespace Expression

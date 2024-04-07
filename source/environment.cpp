@@ -37,14 +37,6 @@ void Environment::assign(const Token &variable, const std::any &value) {
   throw std::runtime_error{"Undefined variable \"" + variable.lexeme + "\"!"};
 }
 
-void Environment::defineOrAssign(const Token &variable, const std::any &value) {
-  try {
-    assign(variable, value);
-  } catch(std::runtime_error) {
-    define(variable, value);
-  }
-}
-
 std::any Environment::get(const Token &variable) {
   std::optional<std::any> value{table.get(variable)};
   if(!value && outer) value = outer->get(variable);

@@ -20,8 +20,6 @@ class Environment {
 
   virtual void assign(const Token &variable, const std::any &value);
 
-  virtual void defineOrAssign(const Token &variable, const std::any &value);
-
   virtual std::any get(const Token &variable);
 
   virtual void copyOver(Environment *other);

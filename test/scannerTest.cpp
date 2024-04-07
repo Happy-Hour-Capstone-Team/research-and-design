@@ -208,7 +208,7 @@ TEST_SUITE("Scanner") {
                       "or and true false thisIsATest1\n"
                       "123 1.23 \"Testing here!\" begin\n"
                       "end { } ; ( ) == != < > <= >= =\n"
-                      "* / + - ! % , ^ . mod subroutine lambda private public "
+                      "* / + - ! % , . mod subroutine lambda private public "
                       "prototype from"};
     Tokens results = Scanner{input}.tokenize();
     Tokens expected = {{"variable", Token::Type::Variable, true, 1, 1},
@@ -244,15 +244,14 @@ TEST_SUITE("Scanner") {
                        {"-", Token::Type::Dash, true, 5, 7},
                        {"!", Token::Type::Exclamation, true, 5, 9},
                        {",", Token::Type::Comma, true, 5, 13},
-                       {"^", Token::Type::Caret, true, 5, 15},
-                       {".", Token::Type::Dot, true, 5, 17},
-                       {"mod", Token::Type::Modulus, true, 5, 19},
-                       {"subroutine", Token::Type::Subroutine, true, 5, 23},
-                       {"lambda", Token::Type::Lambda, true, 5, 34},
-                       {"private", Token::Type::Private, true, 5, 41},
-                       {"public", Token::Type::Public, true, 5, 49},
-                       {"prototype", Token::Type::Prototype, true, 5, 56},
-                       {"from", Token::Type::From, true, 5, 66}};
+                       {".", Token::Type::Dot, true, 5, 15},
+                       {"mod", Token::Type::Modulus, true, 5, 17},
+                       {"subroutine", Token::Type::Subroutine, true, 5, 21},
+                       {"lambda", Token::Type::Lambda, true, 5, 32},
+                       {"private", Token::Type::Private, true, 5, 39},
+                       {"public", Token::Type::Public, true, 5, 47},
+                       {"prototype", Token::Type::Prototype, true, 5, 54},
+                       {"from", Token::Type::From, true, 5, 64}};
     Scanner::printTokens(results);
     sameAs(results, expected);
   }

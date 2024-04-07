@@ -24,7 +24,9 @@ class Parser {
 
   Statement::StatementUPtr functionDeclaration();
 
-  Statement::StatementUPtr variableDeclaration();
+  Statement::StatementUPtr prototypeDeclaration();
+
+  Statement::StatementUPtr variableDeclaration(const bool constant);
 
   Statement::StatementUPtr constantDeclaration();
 

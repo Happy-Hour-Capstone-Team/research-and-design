@@ -100,6 +100,41 @@ print(isnan(NaN));
 
 variable _test_underscore = 1;
 
+prototype Person {
+public:
+    subroutine saySomething() {
+        print("Hello, my name is " + name + ".");
+    }
+
+    subroutine setName(iName) {
+        name = iName;
+    }
+
+    subroutine getName() {
+        return name;
+    }
+
+    subroutine getInstance() {
+        return this;
+    }
+
+private:
+    variable name;
+}
+
+prototype Doctor from Person {
+public:
+    subroutine saySomething() {
+        parent.saySomething();
+        print("I am a doctor.");
+    }
+}
+
+Person.setName("Joe");
+Person.getInstance().saySomething();
+Doctor.setName("Jane");
+Doctor.saySomething();
+
 /:
 class Test1 {
 public:

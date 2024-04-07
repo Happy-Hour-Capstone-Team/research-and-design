@@ -102,4 +102,5 @@ Get::Get(ExpressionUPtr iObject, const ::Token &iProperty) :
 std::optional<std::any> Get::accept(Visitor *visitor, Environment *env) {
   return visitor->visit(*this, env);
 }
+
 } // namespace Expression

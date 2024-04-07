@@ -40,11 +40,11 @@ class Interpreter :
   std::optional<std::any> visit(const Expression::Prototype &prototype,
                                 Environment *env) override;
 
-  virtual std::optional<std::any> visit(const Expression::Set &set,
-                                        Environment *env) override;
+  std::optional<std::any> visit(const Expression::Set &set,
+                                Environment *env) override;
 
-  virtual std::optional<std::any> visit(const Expression::Get &get,
-                                        Environment *env) override;
+  std::optional<std::any> visit(const Expression::Get &get,
+                                Environment *env) override;
 
   void visit(const Statement::Expression &expr, Environment *env) override;
 

@@ -195,18 +195,6 @@ std::optional<std::any> Interpreter::visit(const Expression::Lambda &lambda,
                   std::make_shared<Environment>(env, true)};
 }
 
-/*
-Expression::Prototype
-const std::optional<Token> parent;
-const std::vector<Statement::StatementUPtr> publicProperties;
-const std::vector<Statement::StatementUPtr> privateProperties;
-
-Prototypable
-const std::size_t minArity{0};
-const std::size_t maxArity{0};
-const std::shared_ptr<Environment> publicEnv;
-const std::shared_ptr<Environment> privateEnv;
-*/
 std::optional<std::any>
     Interpreter::visit(const Expression::Prototype &prototype,
                        Environment *env) {
@@ -220,6 +208,8 @@ std::optional<std::any>
       Prototypable parentPrototype{std::any_cast<Prototypable>(parent)};
       privateEnv->copyOver(parentPrototype.privateEnv.get());
       publicEnv->copyOver(parentPrototype.publicEnv.get());
+      surroundingEnv->define(Token{"parent", Token::Type::Identifier, true},
+                         parentPrototype);
     } catch(...) {
       throw std::runtime_error{"Can only inherit from other prototypes."};
     }
@@ -228,7 +218,10 @@ std::optional<std::any>
     execute(prototype.publicProperties[i].get(), publicEnv.get());
   for(std::size_t i{0}; i < prototype.privateProperties.size(); i++)
     execute(prototype.privateProperties[i].get(), privateEnv.get());
-  return Prototypable{0, 0, surroundingEnv, publicEnv, privateEnv};
+  Prototypable anonymousPrototype{0, 0, surroundingEnv, publicEnv, privateEnv};
+  surroundingEnv->define(Token{"this", Token::Type::Identifier, true},
+                     anonymousPrototype);
+  return anonymousPrototype;
 }
 
 std::optional<std::any> Interpreter::visit(const Expression::Set &set,
