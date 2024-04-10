@@ -244,8 +244,8 @@ std::optional<std::any>
   if(prototype.constructor)
     anonymousPrototype.constructor = std::any_cast<Callable>(evaluate(
         prototype.constructor.get(), anonymousPrototype.methodEnv.get()));
-  anonymousPrototype.methodEnv->define(Token{"this", Token::Type::Identifier, true},
-                         anonymousPrototype);
+  anonymousPrototype.methodEnv->define(
+      Token{"this", Token::Type::Identifier, true}, anonymousPrototype);
   return anonymousPrototype;
 }
 
