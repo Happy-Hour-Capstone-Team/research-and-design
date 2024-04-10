@@ -1,6 +1,30 @@
 #include "native.hpp"
 
+Prototypable Prototypable::copy() {
+  Callable newConstructor = constructor;
+  std::shared_ptr<Environment> newSurroundingEnv{
+      std::make_shared<Environment>()};
+  newSurroundingEnv->copyOver(surroundingEnv.get());
+  std::shared_ptr<Environment> newPublicEnv{std::make_shared<Environment>()};
+  newPublicEnv->copyOver(publicEnv.get());
+  std::shared_ptr<Environment> newPrivateEnv{std::make_shared<Environment>()};
+  newPrivateEnv->copyOver(privateEnv.get());
+  return Prototypable{
+      constructor,
+      newSurroundingEnv,
+      newPublicEnv,
+      newPrivateEnv,
+      Environment::unionize(
+          {newSurroundingEnv.get(), newPublicEnv.get(), newPrivateEnv.get()})};
+}
+
 namespace native {
+
+std::optional<std::any> doNothing(const std::vector<std::any> &args,
+                                  Environment *fnEnv) {
+  return {};
+}
+
 std::optional<std::any> print(const std::vector<std::any> &args,
                               Environment *fnEnv) {
   std::any toPrint{args[0]};

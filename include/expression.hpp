@@ -142,20 +142,22 @@ struct Call : Expression {
 struct Lambda : Expression {
   Lambda(const std::vector<Token> &iParams,
          std::vector<std::pair<Token, ExpressionUPtr>> iDefaultParams,
-         ::Statement::StatementUPtr iBody);
+         Statement::StatementUPtr iBody);
 
   const std::vector<Token> params;
   const std::vector<std::pair<Token, ExpressionUPtr>> defaultParams;
-  const ::Statement::StatementUPtr body;
+  const Statement::StatementUPtr body;
 
   std::optional<std::any> accept(Visitor *visitor, Environment *env) override;
 };
 
 struct Prototype : Expression {
-  Prototype(const std::optional<Token> &iParent,
+  Prototype(ExpressionUPtr iConstructor,
+            const std::optional<Token> &iParent,
             std::vector<Statement::StatementUPtr> iPublicProperties,
             std::vector<Statement::StatementUPtr> iPrivateProperties);
 
+  const ExpressionUPtr constructor;
   const std::optional<Token> parent;
   const std::vector<Statement::StatementUPtr> publicProperties;
   const std::vector<Statement::StatementUPtr> privateProperties;

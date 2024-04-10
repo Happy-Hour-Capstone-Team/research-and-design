@@ -75,10 +75,11 @@ std::optional<std::any> Lambda::accept(Visitor *visitor, Environment *env) {
   return visitor->visit(*this, env);
 }
 
-Prototype::Prototype(
-    const std::optional<::Token> &iParent,
-    std::vector<::Statement::StatementUPtr> iPublicProperties,
-    std::vector<::Statement::StatementUPtr> iPrivateProperties) :
+Prototype::Prototype(ExpressionUPtr iConstructor,
+                     const std::optional<Token> &iParent,
+                     std::vector<Statement::StatementUPtr> iPublicProperties,
+                     std::vector<Statement::StatementUPtr> iPrivateProperties) :
+    constructor{std::move(iConstructor)},
     parent{iParent},
     publicProperties{std::move(iPublicProperties)},
     privateProperties{std::move(iPrivateProperties)} {}

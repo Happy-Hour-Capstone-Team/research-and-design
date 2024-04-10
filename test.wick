@@ -123,10 +123,15 @@ private:
 }
 
 prototype Doctor from Person {
+constructor(iName) {
+    print("Testing!");
+    name = iName;
+    print(name);
+}
 public:
     subroutine saySomething() {
         parent.saySomething();
-        print("I am a doctor.");
+        print("Hello, I am Dr. " + name);
     }
 }
 
@@ -134,55 +139,5 @@ Person.setName("Joe");
 Person.getInstance().saySomething();
 Doctor.setName("Jane");
 Doctor.saySomething();
-
-/:
-class Test1 {
-public:
-    Test1() {}
-    subroutine doSomething() {}
-    subroutine doSomethingElse() {}
-    variable publicVar;
-private:
-    subroutine variable id; 
-    variable privateVar;
-}
-
-class Test2 from Test1 {
-public:
-    Test2() {}
-    subroutine doSomething() {}
-    subroutine doSomethingElse() {}
-    variable publicVar;
-}
-
-class Test3 from Test2 {
-public:
-    Test3() {}
-private:
-    subroutine doSomething() {}
-    subroutine doSomethingElse() {}
-    variable publicVar;
-}
-
-variable Test3 = class from Test2 { };
-
-
-class Person from Concept {
-    private variable name;
-
-    public Person(iName) {
-        name = iName;
-    }
-
-    public subroutine implementMe() {
-        print("Now this has been overriden!");
-    }
-
-    public subroutine intro() {
-        print("Hello, my name is " + name);
-    }
-}
-
-guy = Person("Joe");
-guy.intro();
-
+variable johnson = Doctor("Johnson");
+johnson.saySomething();

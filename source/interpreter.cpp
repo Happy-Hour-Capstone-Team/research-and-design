@@ -3,6 +3,8 @@
 Interpreter::Interpreter() {
   global = std::make_shared<Environment>();
   using namespace std::placeholders;
+  global->define(Token{"doNothing", Token::Type::Identifier},
+                 Callable{0, 0, std::bind(native::doNothing, _1, _2), global});
   global->define(Token{"print", Token::Type::Identifier},
                  Callable{1, 1, std::bind(native::print, _1, _2), global});
   global->define(Token{"input", Token::Type::Identifier},
@@ -157,7 +159,23 @@ std::optional<std::any> Interpreter::visit(const Expression::Call &call,
           " arguments."};
     return callable.procedure(args, callable.fnEnv.get());
   } catch(std::bad_any_cast) {
-    throw std::runtime_error{"Only functions and objects may be called."};
+    try {
+      Prototypable prototype{std::any_cast<Prototypable>(callee)};
+      Prototypable newPrototype{prototype.copy()};
+      if(args.size() < newPrototype.constructor.minArity ||
+         args.size() > newPrototype.constructor.maxArity)
+        throw std::runtime_error{
+            "Constructor expected at least " +
+            std::to_string(newPrototype.constructor.minArity) +
+            " arguments, at most " +
+            std::to_string(newPrototype.constructor.maxArity) +
+            " arguments, and received " + std::to_string(args.size()) +
+            " arguments."};
+      newPrototype.constructor.procedure(args, newPrototype.methodEnv.get());
+      return newPrototype;
+    } catch(std::bad_any_cast) {
+      throw std::runtime_error{"Only functions and prototypes may be called."};
+    }
   }
 }
 
@@ -218,8 +236,15 @@ std::optional<std::any>
     execute(prototype.publicProperties[i].get(), publicEnv.get());
   for(std::size_t i{0}; i < prototype.privateProperties.size(); i++)
     execute(prototype.privateProperties[i].get(), privateEnv.get());
-  Prototypable anonymousPrototype{0, 0, surroundingEnv, publicEnv, privateEnv};
-  surroundingEnv->define(Token{"this", Token::Type::Identifier, true},
+  Callable constructor{0, 0, native::doNothing, surroundingEnv};
+  Prototypable anonymousPrototype{
+      constructor, surroundingEnv, publicEnv, privateEnv, nullptr};
+  anonymousPrototype.methodEnv = Environment::unionize(
+      {surroundingEnv.get(), publicEnv.get(), privateEnv.get()});
+  if(prototype.constructor)
+    anonymousPrototype.constructor = std::any_cast<Callable>(evaluate(
+        prototype.constructor.get(), anonymousPrototype.methodEnv.get()));
+  anonymousPrototype.methodEnv->define(Token{"this", Token::Type::Identifier, true},
                          anonymousPrototype);
   return anonymousPrototype;
 }
@@ -255,9 +280,7 @@ std::optional<std::any> Interpreter::visit(const Expression::Get &get,
       value = prototype.publicEnv->get(get.property);
       try {
         Callable callable{std::any_cast<Callable>(value)};
-        callable.fnEnv = Environment::unionize({prototype.surroundingEnv.get(),
-                                                prototype.publicEnv.get(),
-                                                prototype.privateEnv.get()});
+        callable.fnEnv = prototype.methodEnv;
         return callable;
       } catch(std::bad_any_cast) {
         return value;

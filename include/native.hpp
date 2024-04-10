@@ -12,21 +12,25 @@ using Procedure =
                                           Environment *fnEnv)>;
 
 struct Callable {
-  const std::size_t minArity;
-  const std::size_t maxArity;
-  const Procedure procedure;
+  std::size_t minArity;
+  std::size_t maxArity;
+  Procedure procedure;
   std::shared_ptr<Environment> fnEnv;
 };
 
 struct Prototypable {
-  const std::size_t minArity{0};
-  const std::size_t maxArity{0};
-  const std::shared_ptr<Environment> surroundingEnv;
-  const std::shared_ptr<Environment> publicEnv;
-  const std::shared_ptr<Environment> privateEnv;
+  Callable constructor;
+  std::shared_ptr<Environment> surroundingEnv;
+  std::shared_ptr<Environment> publicEnv;
+  std::shared_ptr<Environment> privateEnv;
+  std::shared_ptr<Environment> methodEnv;
+  Prototypable copy();
 };
 
 namespace native {
+std::optional<std::any> doNothing(const std::vector<std::any> &args,
+                                  Environment *fnEnv);
+
 std::optional<std::any> print(const std::vector<std::any> &args,
                               Environment *fnEnv);
 

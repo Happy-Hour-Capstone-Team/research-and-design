@@ -198,6 +198,13 @@ Expression::ExpressionUPtr Parser::anonymousPrototype() {
     parent = expect(Token::Type::Identifier,
                     "Expected a prototype to inherit from.");
   expect(Token::Type::LeftCurly, "Expected a '{' after prototype declaration!");
+  Expression::ExpressionUPtr constructor;
+  if(match({Token::Type::Identifier})) {
+    if(tokens[pos - 1].lexeme != "constructor")
+      error(tokens[pos - 1], "Constructor must be named \"constructor\".");
+    else
+      constructor = lambda();
+  }
   std::vector<Statement::StatementUPtr> publicProperties{};
   if(match({Token::Type::Public})) {
     expect(Token::Type::Colon, "Expected a ':' after \"public\".");
@@ -213,8 +220,10 @@ Expression::ExpressionUPtr Parser::anonymousPrototype() {
       privateProperties.push_back(declaration(false));
   }
   expect(Token::Type::RightCurly, "Expected a '}' after prototype definition.");
-  return std::make_unique<Expression::Prototype>(
-      parent, std::move(publicProperties), std::move(privateProperties));
+  return std::make_unique<Expression::Prototype>(std::move(constructor),
+                                                 parent,
+                                                 std::move(publicProperties),
+                                                 std::move(privateProperties));
 }
 
 Expression::ExpressionUPtr Parser::assignment() {
