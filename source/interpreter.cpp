@@ -317,8 +317,7 @@ void Interpreter::visit(const Statement::Variable &variable, Environment *env) {
 }
 
 void Interpreter::visit(const Statement::Scope &scope, Environment *env) {
-  std::unique_ptr<Environment> scopedEnv{
-      std::make_unique<Environment>(env)};
+  std::unique_ptr<Environment> scopedEnv{std::make_unique<Environment>(env)};
   for(std::size_t i{0}; i < scope.statements.size(); i++)
     execute(scope.statements[i].get(), scopedEnv.get());
 }
