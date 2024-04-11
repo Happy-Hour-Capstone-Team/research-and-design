@@ -1,0 +1,24 @@
+variable x = PI;
+print(cos(x));
+print(sin(x));
+print(tan(x));
+
+
+
+print(min(-10, 10));
+print(max(-10, 10));
+
+
+
+constant a = 1;
+constant b = 1;
+print(hypotenuse(a, b));
+
+
+
+print(time());
+
+
+
+variable y = sqrt(-1);
+print(isnan(y));

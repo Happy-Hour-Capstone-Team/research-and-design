@@ -1,0 +1,48 @@
+subroutine callASubroutine(routine) {
+    routine();
+}
+
+subroutine named() {
+    print("This is from a named subroutine.");
+}
+
+variable anon = lambda () { 
+    print("This is from an anonymous subroutine -- a lambda expression."); 
+};
+
+named();
+callASubroutine(named);
+anon();
+callASubroutine(anon);
+
+
+
+subroutine f(x, y = 2) {
+    return x + 2 * y;
+}
+
+print(f(1)); // Should print 5.
+print(f(1, 3)); // Should print 7.
+
+
+
+subroutine gcf(x, y) {
+    if y == 0 {
+        return x;
+    }
+    return gcf(y, x mod y);
+}
+
+print(gcf(1071, 462)); // Should print 21.
+
+
+
+subroutine onlyPrintIfOne(x) {
+    if(x != 1) {
+        return;
+    }
+    print("It's 1!!!");
+}
+
+onlyPrintIfOne(0);
+onlyPrintIfOne(1);

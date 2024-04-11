@@ -1,0 +1,21 @@
+constant a = 1;
+// a = 2;
+constant b = 1;
+constant c = a * a + b * b; // Should be two. 
+print(c);
+
+
+
+variable x = c / 4;
+x = x * 4;
+x = x mod 4; // Should be two.
+print(x);
+
+
+
+// Nested scopes may contain shadowed variables. 
+{
+    variable x = 4; // Local x.
+    print(x);
+}
+print(x); // Local x goes out of scope and global x is printed (two).

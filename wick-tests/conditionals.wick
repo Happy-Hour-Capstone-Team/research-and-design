@@ -1,0 +1,26 @@
+constant oneEqualsOne = 1 == 1;
+if oneEqualsOne {
+    print("One does equal one.");
+}
+
+
+
+constant eEqualsPi = E_V == PI;
+if !eEqualsPi {
+    print("Pi doesn't equal e.");
+}
+
+
+
+if !oneEqualsOne {
+    print("This will never run...");
+} else if(eEqualsPi) {
+    print("This will also never run...");
+} else {
+    print("This will always run.");
+}
+
+
+
+variable x = 1 if true else -1;
+print(x);

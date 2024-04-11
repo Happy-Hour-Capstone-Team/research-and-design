@@ -14,11 +14,14 @@ Environment::Environment(Environment *iEnv, const bool persist) {
 }
 
 void Environment::define(const Token &variable, const std::any &value) {
-  try {
-    assign(variable, value);
-  } catch(std::runtime_error) {
+  if(allowAssign) {
+    try {
+      assign(variable, value);
+    } catch(std::runtime_error) {
+      table = table.insert(variable, value);
+    }
+  } else
     table = table.insert(variable, value);
-  }
 }
 
 void Environment::assign(const Token &variable, const std::any &value) {
@@ -46,6 +49,10 @@ std::any Environment::get(const Token &variable) {
 
 void Environment::copyOver(Environment *other) {
   table = table.copyOver(other->table);
+}
+
+void Environment::defineOrAssign(const bool iAllowAssign) {
+  allowAssign = iAllowAssign;
 }
 
 std::shared_ptr<Environment>

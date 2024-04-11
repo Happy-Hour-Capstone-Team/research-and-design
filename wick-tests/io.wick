@@ -1,0 +1,11 @@
+/:
+Hello, this is a multiline comment! It doesn't execute
+any code and is for documentation purposes. This file
+will print "Hello world!" and greet someone based on 
+a given name. 
+:/
+
+print("Hello world!");
+variable name = input("What's your name?");
+print("Hello " + name + ".");
+print("Nice to meet you!");

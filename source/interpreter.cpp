@@ -232,10 +232,14 @@ std::optional<std::any>
       throw std::runtime_error{"Can only inherit from other prototypes."};
     }
   }
+  privateEnv->defineOrAssign(true);
+  publicEnv->defineOrAssign(true);
   for(std::size_t i{0}; i < prototype.publicProperties.size(); i++)
     execute(prototype.publicProperties[i].get(), publicEnv.get());
   for(std::size_t i{0}; i < prototype.privateProperties.size(); i++)
     execute(prototype.privateProperties[i].get(), privateEnv.get());
+  privateEnv->defineOrAssign(false);
+  publicEnv->defineOrAssign(false);
   Callable constructor{0, 0, native::doNothing, surroundingEnv};
   Prototypable anonymousPrototype{
       constructor, surroundingEnv, publicEnv, privateEnv, nullptr};
@@ -244,8 +248,8 @@ std::optional<std::any>
   if(prototype.constructor)
     anonymousPrototype.constructor = std::any_cast<Callable>(evaluate(
         prototype.constructor.get(), anonymousPrototype.methodEnv.get()));
-  anonymousPrototype.methodEnv->define(Token{"this", Token::Type::Identifier, true},
-                         anonymousPrototype);
+  anonymousPrototype.methodEnv->define(
+      Token{"this", Token::Type::Identifier, true}, anonymousPrototype);
   return anonymousPrototype;
 }
 
@@ -313,7 +317,8 @@ void Interpreter::visit(const Statement::Variable &variable, Environment *env) {
 }
 
 void Interpreter::visit(const Statement::Scope &scope, Environment *env) {
-  std::unique_ptr<Environment> scopedEnv{std::make_unique<Environment>(env)};
+  std::unique_ptr<Environment> scopedEnv{
+      std::make_unique<Environment>(env)};
   for(std::size_t i{0}; i < scope.statements.size(); i++)
     execute(scope.statements[i].get(), scopedEnv.get());
 }

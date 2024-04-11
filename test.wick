@@ -73,6 +73,7 @@ variable test = "global";
 
     showTest();
     variable test = "block";
+    print(test);
     showTest();
 }
 

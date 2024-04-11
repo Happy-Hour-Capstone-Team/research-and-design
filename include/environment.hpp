@@ -24,10 +24,13 @@ class Environment {
 
   virtual void copyOver(Environment *other);
 
+  void defineOrAssign(const bool iAllowAssign);
+
   static std::shared_ptr<Environment>
       unionize(const std::vector<Environment *> &envs);
 
   private:
   Environment *outer{nullptr};
   SymbolTable table{};
+  bool allowAssign{false};
 };

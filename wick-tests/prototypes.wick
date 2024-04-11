@@ -1,0 +1,80 @@
+prototype Person {
+constructor(iName) {
+    name = iName;
+}
+public:
+    subroutine introduce() {
+        print("Hello, my name is " + name + ".");
+    }
+
+private:
+    variable name;
+}
+
+variable everett = Person("Everett");
+variable preston = Person("Preston");
+everett.introduce();
+preston.introduce();
+
+
+
+prototype Doctor from Person {
+constructor(iName) {
+    name = iName;
+}
+public:
+    subroutine introduce() {
+        print("Salutations, my name is Dr. " + name + ".");
+    }
+}
+
+variable ghosh = Doctor("Ghosh");
+ghosh.introduce();
+
+
+
+prototype Lawyer from Person {
+constructor(iName) {
+    name = iName;
+}
+public:
+    subroutine introduce() {
+        print("Objection! My name is " + name + "! Attorney-at-law, " + name + ".");
+    }
+}
+
+variable goodman = Lawyer("Goodman");
+goodman.introduce();
+
+subroutine introducePerson(person) {
+    person.introduce();
+}
+introducePerson(everett);
+introducePerson(preston);
+introducePerson(ghosh);
+introducePerson(goodman);
+
+
+
+introducePerson(prototype from Person { 
+public: 
+    subroutine introduce() {
+        print("Here's an anonymous prototype in action!");
+    }
+});
+
+
+
+prototype Wrapper from goodman {
+public:
+    subroutine introduce() {
+        print("Here we are!");
+        parent.introduce();
+    }
+
+    subroutine getInstance() {
+        return this;
+    }
+}
+
+Wrapper.getInstance().introduce();
