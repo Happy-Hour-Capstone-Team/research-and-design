@@ -49,6 +49,7 @@ goodman.introduce();
 subroutine introducePerson(person) {
     person.introduce();
 }
+
 introducePerson(everett);
 introducePerson(preston);
 introducePerson(ghosh);
@@ -59,8 +60,10 @@ introducePerson(goodman);
 introducePerson(prototype from Person { 
 public: 
     subroutine introduce() {
-        print("Here's an anonymous prototype in action!");
+        print("Hi, I'm " + name + " and I'm in witness protection!");
     }
+private:
+    variable name = "[REDACTED]";
 });
 
 

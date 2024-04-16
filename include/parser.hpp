@@ -54,11 +54,11 @@ class Parser {
 
   Expression::ExpressionUPtr assignment();
 
-  Expression::ExpressionUPtr equality();
-
   Expression::ExpressionUPtr andExpr();
 
   Expression::ExpressionUPtr orExpr();
+
+  Expression::ExpressionUPtr equality();
 
   Expression::ExpressionUPtr comparison();
 

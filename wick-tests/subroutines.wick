@@ -1,19 +1,28 @@
-subroutine callASubroutine(routine) {
-    routine();
-}
-
 subroutine named() {
     print("This is from a named subroutine.");
 }
 
-variable anon = lambda () { 
-    print("This is from an anonymous subroutine -- a lambda expression."); 
+named();
+
+
+
+variable storedLambda = lambda () { 
+    print("This is from a stored lambda expression."); 
 };
 
-named();
+storedLambda();
+
+
+
+subroutine callASubroutine(routine) {
+    routine();
+}
+
 callASubroutine(named);
-anon();
-callASubroutine(anon);
+callASubroutine(storedLambda);
+callASubroutine(lambda () { 
+    print("This is from a truly anonymous subroutine -- a lambda expression."); 
+});
 
 
 
@@ -38,10 +47,10 @@ print(gcf(1071, 462)); // Should print 21.
 
 
 subroutine onlyPrintIfOne(x) {
-    if(x != 1) {
+    if x != 1 {
         return;
     }
-    print("It's 1!!!");
+    print("It's 1!");
 }
 
 onlyPrintIfOne(0);

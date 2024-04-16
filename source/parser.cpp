@@ -227,7 +227,7 @@ Expression::ExpressionUPtr Parser::anonymousPrototype() {
 }
 
 Expression::ExpressionUPtr Parser::assignment() {
-  Expression::ExpressionUPtr expr = equality();
+  Expression::ExpressionUPtr expr = andExpr();
   if(match({Token::Type::Equal})) {
     const Token equal{tokens[pos - 1]};
     Expression::ExpressionUPtr value{assignment()};
@@ -249,17 +249,6 @@ Expression::ExpressionUPtr Parser::assignment() {
   return std::move(expr);
 }
 
-Expression::ExpressionUPtr Parser::equality() {
-  Expression::ExpressionUPtr left{andExpr()};
-  while(match({Token::Type::NotEqualTo, Token::Type::EqualTo})) {
-    const Token op{tokens[pos - 1]};
-    Expression::ExpressionUPtr right{andExpr()};
-    left = std::make_unique<Expression::Binary>(
-        std::move(left), op, std::move(right));
-  }
-  return std::move(left);
-}
-
 Expression::ExpressionUPtr Parser::andExpr() {
   Expression::ExpressionUPtr left{orExpr()};
   while(match({Token::Type::And})) {
@@ -272,8 +261,19 @@ Expression::ExpressionUPtr Parser::andExpr() {
 }
 
 Expression::ExpressionUPtr Parser::orExpr() {
-  Expression::ExpressionUPtr left{comparison()};
+  Expression::ExpressionUPtr left{equality()};
   while(match({Token::Type::Or})) {
+    const Token op{tokens[pos - 1]};
+    Expression::ExpressionUPtr right{equality()};
+    left = std::make_unique<Expression::Binary>(
+        std::move(left), op, std::move(right));
+  }
+  return std::move(left);
+}
+
+Expression::ExpressionUPtr Parser::equality() {
+  Expression::ExpressionUPtr left{comparison()};
+  while(match({Token::Type::NotEqualTo, Token::Type::EqualTo})) {
     const Token op{tokens[pos - 1]};
     Expression::ExpressionUPtr right{comparison()};
     left = std::make_unique<Expression::Binary>(
@@ -323,7 +323,7 @@ Expression::ExpressionUPtr Parser::factor() {
 Expression::ExpressionUPtr Parser::unary() {
   if(match({Token::Type::Exclamation, Token::Type::Dash})) {
     const Token op{tokens[pos - 1]};
-    Expression::ExpressionUPtr right{primary()};
+    Expression::ExpressionUPtr right{call()};
     return std::make_unique<Expression::Unary>(op, std::move(right));
   }
   return call();

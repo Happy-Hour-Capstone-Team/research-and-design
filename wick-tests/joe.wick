@@ -1,0 +1,232 @@
+
+prototype Named {
+constructor(iName) {
+    name = iName;
+}
+public:
+    subroutine getName() {
+        return name;
+    }
+
+private:
+    variable name;
+}
+
+constant NA = Named("NA");
+
+prototype Choice from Named {
+constructor(iName, iSituation, iEnding, iChoiceA = NA, iChoiceB = NA, iChoiceC = NA) {
+    name = iName;
+    situation = iSituation;
+    ending = iEnding;
+    choiceA = iChoiceA;
+    choiceB = iChoiceB;
+    choiceC = iChoiceC;
+}
+public:
+    subroutine getSituation() {
+       return situation;
+    }
+
+    subroutine isEnding() {
+        return ending;
+    }
+
+    subroutine whatWillYouDo() {
+        print("~~~~~~~~~~~~~~~~~~ WHAT WILL YOU DO NOW, JOE WICK? ~~~~~~~~~~~~~~~~~~");
+        print("[A] " + choiceA.getName());
+        print("[B] " + choiceB.getName());
+        if choiceC.getName() != "NA" {
+            print("[C] " + choiceC.getName());
+        }
+        variable answer = "NA";
+        while answer != "A" and answer != "B" and (choiceC.getName() == "NA" or answer != "C") {
+            answer = input();
+        }
+        if answer == "A" { return choiceA; }
+        return choiceB if answer == "B" else choiceC;
+    }
+
+private:
+    variable name;
+    variable situation;
+    variable ending;
+    variable choiceA;
+    variable choiceB;
+    variable choiceC;
+}
+
+constant discuss2 = Choice(
+"Pour out your heart and soul.",
+"You make a plea for the generosity of your fellow man that would rival Webster pleading
+to the jury of the damned. Your eloquent words giving rise to goosebumps in even the most
+hardened hearts of your audience. 
+They, of course, don't give you the priceless diamond, but they give you a pat on the back
+and a free shirt. 
+This is considered an acceptable outcome by all and the opportunity to express yourself has
+inspired you to take a new career path.
+You make great fortunes serving as an inspirational speaker at elementary, middle, and even
+high schools around the country.",
+true
+);
+
+constant fight2 = Choice(
+"Try to fight them all.",
+"If you weren't confident fighting a handful of guards, what makes you think you could fight
+a battalions worth? You are quickly overwhelmed and beaten senseless. 
+You awaken in a hospital. Though your wounds will heal, you will probably remain chronically dim-witted, to your detriment",
+true
+);
+
+
+constant discuss1 = Choice(
+"Discuss your sorry circumstances with the guards.",
+"You remember your high school rhetoric classes and begin to elucidate your need for the 
+jewel they guard. You recount your every pain, regret, malady, and ailment. You weave a web
+of weary and woeful words. Shockingly, the guards seemed touched and decide to let you pass.
+Now you enter a facility filled with additional security and personnel. 
+You've gotten this far, you can either make a desperate plea for the The Big Rock or try and
+fight to get it.",
+false,
+discuss2,
+fight2
+);
+
+constant fight1 = Choice(
+"Try to fight the guards.",
+"You don't even land a punch on them before they clock you. You wake up in a hospital.
+What were you thinking? They are professionally-trained individuals and you are just you.
+Joe. Joe Wick. 
+A regular Joe.",
+true
+);
+
+constant guards = Choice(
+"Test your luck with the guards.",
+"You are now standing directly in front of the guards. They seem to take notice of you, but aren't sure what to think.
+You can either try and fight your way through them, or go with a diplomatic method.",
+false,
+discuss1, 
+fight1
+);
+
+constant stealth = Choice(
+"Go with stealth.",
+"You manage to rappel into the room, grab the diamond, and climb back into the vent without
+anyone noticing. Flabbergasted and disconcerted by the abysmal security of this supposedly
+safe building. You return home with the diamond. 
+Though, with no one to buy the piece, you are back at square one.
+Except with international authorities interested in your whereabouts. 
+Great work, Joe.",
+true
+);
+
+constant plunge = Choice(
+"Plunge in there.",
+"You were never one for environmental awareness, were you? 
+As you leap the cogs of your mind begin to turn and -- right before The Big Rock pierces your side -- you realize this course of action
+may be somewhat flawed in some areas. The guards provide first aid for you before you are placed in an ambulance. 
+In the end, technically you did make it out of the compound with the diamond, 
+though you will have to return it following the operation...",
+true
+);
+
+
+constant vent = Choice(
+"Go through the vent.",
+"The grating on the vent comes off easily and you are soon crawling in the 
+ventilation systems of the facility. You eventually make your way above the chamber with 
+The Big Rock. Pointed upwards, its sharp silhouette casting reflections all about the room. 
+You can either try to stealthily snatch it, or plunge in there.",
+false,
+plunge,
+stealth
+);
+
+constant door = Choice(
+"Try to break down the door.",
+"After a firm kick, you learn that the door possesses exceptional manufacturing quality. 
+You try again.
+And again. 
+And again, and again, and again...
+Some guards notice the ruckus, but are so humored by your determination that they simply chuckle before leaving you to your devices.
+Defeated, your ego bruised, you return home with not but a sore leg.",
+true
+);
+
+constant stairs = Choice(
+"Try to take the stairs.",
+"Because you aren't a particularly adventurous individual, you decide to simply take the stairs.
+You are now faced with a door that you are convinced you can kick down; and a vent.",
+false,
+vent, 
+door
+);
+
+constant climb = Choice(
+"Try to climb the roof.",
+"You quickly learn that some skills require consistent commitment to maintain as 
+you make it half-way up the building before getting stuck. You remain there until a
+passerby spots you and firemen come to your rescue. Out of shame, you rethink your plans
+to achieve financial security.",
+true
+);
+
+constant jump = Choice(
+"Try to jump on the roof.",
+"You jump as hard as you can.
+Maybe, like, two feet in the air?
+...
+...
+You decide to go home and rethink your life.",
+true
+);
+
+constant roof = Choice(
+"Try to gain access through the roof.",
+"You decide to try and scale the side of the compound to gain access to the roof.
+You picked up wall climbing a few years ago, but stopped paying for lessons months ago;
+you might be able to climb up. You also think the building isn't THAT high and you could
+potentially jump up to the roof. Finally there are some stairs you could take, I guess...",
+false,
+climb,
+stairs,
+jump
+);
+
+constant giveUp = Choice(
+"Give up.",
+"Why even bother? You're just you. 
+Joe. 
+A regular Joe.
+You return safely home and begin filing applications for a part-time job. 
+Somewhere classy...
+Like a Cracker Barrel or something...",
+true
+);
+
+constant start = Choice(
+"Start", 
+"You are at the compound. You see a group of guards at the front entrance. You think
+you might be able to gain access through the roof, or you can simply test your luck
+with the guards. It also isn't too late to give up...", 
+false, 
+roof,
+guards,
+giveUp
+);
+
+print("~~~~~~~~~~~~~~~~~~ MISSION BRIEFING ~~~~~~~~~~~~~~~~~~");
+print("Your name is Joe. Joe Wick.");
+print("You're short on cash and have decided to steal The Big Rock, the world's largest diamond.");
+print("You're just a regular guy. A real regular Joe.");
+print("Good luck!");
+variable current = start;
+while !current.isEnding() { 
+    print(" ~~~~~~~~~~~~~~~~~~ CURRENT SITUATION ~~~~~~~~~~~~~~~~~~");
+    print(current.getSituation());
+    current = current.whatWillYouDo();
+}
+print("~~~~~~~~~~~~~~~~~~ ENDING ~~~~~~~~~~~~~~~~~~");
+print(current.getSituation());
+

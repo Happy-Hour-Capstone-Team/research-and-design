@@ -1,7 +1,6 @@
 #include "interpreter.hpp"
 
-Interpreter::Interpreter() {
-  global = std::make_shared<Environment>();
+Interpreter::Interpreter() : global{std::make_shared<Environment>()} {
   using namespace std::placeholders;
   global->define(Token{"doNothing", Token::Type::Identifier},
                  Callable{0, 0, std::bind(native::doNothing, _1, _2), global});
@@ -202,7 +201,7 @@ std::optional<std::any> Interpreter::visit(const Expression::Lambda &lambda,
     }
     try {
       execute(lambda.body.get(), scopedEnv.get());
-    } catch(std::optional<std::any> value) {
+    } catch(std::optional<std::any> &value) {
       return value;
     }
     return std::make_optional<std::any>({});
@@ -348,7 +347,7 @@ void Interpreter::interpret(
   try {
     for(std::size_t i{0}; i < statements.size(); i++)
       execute(statements[i].get(), global.get());
-  } catch(std::runtime_error e) {
+  } catch(std::runtime_error &e) {
     std::cout << e.what() << '\n'; // Add proper error logging here later...
   }
 }
