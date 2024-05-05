@@ -181,12 +181,12 @@ struct If : Statement {
  */
 struct For : Statement {
   /**
-   * @brief Constructs a new for statement. 
-   * 
-   * @param iInitializer 
-   * @param iCondition 
-   * @param iBody 
-   * @param iUpdate 
+   * @brief Constructs a new for statement.
+   *
+   * @param iInitializer
+   * @param iCondition
+   * @param iBody
+   * @param iUpdate
    */
   For(StatementUPtr iInitializer,
       ::Expression::ExpressionUPtr iCondition,
