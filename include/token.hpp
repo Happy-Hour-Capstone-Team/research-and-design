@@ -4,8 +4,17 @@
 #include <iostream>
 #include <vector>
 
+/**
+ * @brief Structure for representing Wick tokens.
+ *
+ */
 struct Token {
   std::string lexeme;
+
+  /**
+   * @brief The complete list of types of Wick tokens.
+   *
+   */
   enum class Type {
     Variable = 0,
     Constant,
@@ -54,10 +63,31 @@ struct Token {
   bool constant{true};
   int line{-1};
   int col{-1};
+
+  /**
+   * @brief Returns true if the type matches the tokens type.
+   *
+   * @param rhs
+   * @return true
+   * @return false
+   */
   bool operator==(const Type rhs) const;
+
+  /**
+   * @brief Returns true if the lexeme and types are the same.
+   *
+   * @param rhs
+   * @return true
+   * @return false
+   */
   bool operator==(const Token &rhs) const;
 };
 
+/**
+ * @brief Used to hash tokens for the PersistentMap implementation.
+ *
+ * @tparam
+ */
 template <>
 struct std::hash<Token> {
   std::size_t operator()(const Token &token) const noexcept {
@@ -67,9 +97,28 @@ struct std::hash<Token> {
 
 using Tokens = std::vector<Token>;
 
+/**
+ * @brief Prints out a tokens type.
+ *
+ * @param out
+ * @param type
+ * @return std::ostream&
+ */
 std::ostream &operator<<(std::ostream &out, const Token::Type type);
+
+/**
+ * @brief Prints out a token.
+ *
+ * @param out
+ * @param token
+ * @return std::ostream&
+ */
 std::ostream &operator<<(std::ostream &out, const Token &token);
 
+/**
+ * @brief The text representation of all different Wick token types.
+ *
+ */
 const std::array<std::string, 42> tokenTypeNames{
     "variable", "constant",  "if",      "else",       "for",        "while",
     "or",       "and",       "Boolean", "Identifier", "Number",     "String",
