@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.7"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>The Wick Interpreter: C:/Users/Braden Pierce/Documents/GitHub/wick-interpreter/source/environment.cpp Source File</title>
+<title>The Wick Interpreter: source/environment.cpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -156,7 +156,7 @@ $(document).ready(function(){initNavTree('environment_8cpp_source.html',''); ini
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>  <span class="keywordflow">for</span>(<a class="code hl_class" href="class_environment.html">Environment</a> *env : envs) tables.push_back(env-&gt;table);</div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>  <span class="keywordflow">return</span> std::make_shared&lt;Environment&gt;(<a class="code hl_function" href="class_persistent_map.html#a598bd39d4b48ee8718c24d2d5669f353">SymbolTable::unionize</a>(tables));</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>}</div>
-<div class="ttc" id="aclass_environment_html"><div class="ttname"><a href="class_environment.html">Environment</a></div><div class="ttdoc">This class deals with memory environments; where variables, constants, and subroutines are associated...</div><div class="ttdef"><b>Definition</b> <a href="environment_8hpp_source.html#l00012">environment.hpp:12</a></div></div>
+<div class="ttc" id="aclass_environment_html"><div class="ttname"><a href="class_environment.html">Environment</a></div><div class="ttdoc">This class deals with memory environments; where variables, constants, and subroutines are associated...</div><div class="ttdef"><b>Definition</b> <a href="environment_8hpp_source.html#l00013">environment.hpp:13</a></div></div>
 <div class="ttc" id="aclass_environment_html_a0f4b8b2e96756ac631bfd50089fbb878"><div class="ttname"><a href="class_environment.html#a0f4b8b2e96756ac631bfd50089fbb878">Environment::define</a></div><div class="ttdeci">virtual void define(const Token &amp;variable, const std::any &amp;value)</div><div class="ttdoc">Defines a variable in the environment with a value. Throws error if variable doesn't exist and allowA...</div><div class="ttdef"><b>Definition</b> <a href="environment_8cpp_source.html#l00016">environment.cpp:16</a></div></div>
 <div class="ttc" id="aclass_environment_html_a5ec60bc420d1c8837fa0c429c7da7eef"><div class="ttname"><a href="class_environment.html#a5ec60bc420d1c8837fa0c429c7da7eef">Environment::Environment</a></div><div class="ttdeci">Environment()=default</div><div class="ttdoc">Constructs a new environment.</div></div>
 <div class="ttc" id="aclass_environment_html_a86de24a06977e7b556198736d7edea7b"><div class="ttname"><a href="class_environment.html#a86de24a06977e7b556198736d7edea7b">Environment::unionize</a></div><div class="ttdeci">static std::shared_ptr&lt; Environment &gt; unionize(const std::vector&lt; Environment * &gt; &amp;envs)</div><div class="ttdoc">Creates a new environment that combines the symbol tables of the given environments.</div><div class="ttdef"><b>Definition</b> <a href="environment_8cpp_source.html#l00059">environment.cpp:59</a></div></div>

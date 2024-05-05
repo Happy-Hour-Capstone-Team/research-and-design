@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.7"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>The Wick Interpreter: C:/Users/Braden Pierce/Documents/GitHub/wick-interpreter/include/errorReporter.hpp Source File</title>
+<title>The Wick Interpreter: include/errorReporter.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -97,19 +97,18 @@ $(document).ready(function(){initNavTree('error_reporter_8hpp_source.html',''); 
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;token.hpp&quot;</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="class_error_reporter.html">    9</a></span><span class="keyword">class </span><a class="code hl_class" href="class_error_reporter.html">ErrorReporter</a> {</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>  <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="class_error_reporter.html#a6c2a7f644f8c11547a890d639f7ad01a">report</a>(<span class="keyword">const</span> <a class="code hl_struct" href="struct_token.html">Token</a> &amp;token, <span class="keyword">const</span> std::string &amp;msg);</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>  </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="class_error_reporter.html#a6c2a7f644f8c11547a890d639f7ad01a">report</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> line, <span class="keyword">const</span> <span class="keywordtype">int</span> col, <span class="keyword">const</span> std::string &amp;msg);</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>  <span class="keywordtype">bool</span> <a class="code hl_function" href="class_error_reporter.html#acd62467a2dff3cd4d820135dfed71d9a">hadError</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>  <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>  <span class="keyword">static</span> <span class="keywordtype">bool</span> error;</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>};</div>
-<div class="ttc" id="aclass_error_reporter_html"><div class="ttname"><a href="class_error_reporter.html">ErrorReporter</a></div><div class="ttdoc">Provides support for error reporting in all the components of the Wick interpreter.</div><div class="ttdef"><b>Definition</b> <a href="error_reporter_8hpp_source.html#l00009">errorReporter.hpp:9</a></div></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="class_error_reporter.html">   10</a></span><span class="keyword">class </span><a class="code hl_class" href="class_error_reporter.html">ErrorReporter</a> {</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>  <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="class_error_reporter.html#a6c2a7f644f8c11547a890d639f7ad01a">report</a>(<span class="keyword">const</span> <a class="code hl_struct" href="struct_token.html">Token</a> &amp;token, <span class="keyword">const</span> std::string &amp;msg);</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="class_error_reporter.html#a6c2a7f644f8c11547a890d639f7ad01a">report</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> line, <span class="keyword">const</span> <span class="keywordtype">int</span> col, <span class="keyword">const</span> std::string &amp;msg);</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>  <span class="keywordtype">bool</span> <a class="code hl_function" href="class_error_reporter.html#acd62467a2dff3cd4d820135dfed71d9a">hadError</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>  <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>  <span class="keyword">static</span> <span class="keywordtype">bool</span> error;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>};</div>
+<div class="ttc" id="aclass_error_reporter_html"><div class="ttname"><a href="class_error_reporter.html">ErrorReporter</a></div><div class="ttdoc">Provides support for error reporting in all the components of the Wick interpreter.</div><div class="ttdef"><b>Definition</b> <a href="error_reporter_8hpp_source.html#l00010">errorReporter.hpp:10</a></div></div>
 <div class="ttc" id="aclass_error_reporter_html_a6c2a7f644f8c11547a890d639f7ad01a"><div class="ttname"><a href="class_error_reporter.html#a6c2a7f644f8c11547a890d639f7ad01a">ErrorReporter::report</a></div><div class="ttdeci">virtual void report(const Token &amp;token, const std::string &amp;msg)</div><div class="ttdoc">Reports an error with given information from the token and message given. Sets error to true.</div><div class="ttdef"><b>Definition</b> <a href="error_reporter_8cpp_source.html#l00003">errorReporter.cpp:3</a></div></div>
 <div class="ttc" id="aclass_error_reporter_html_acd62467a2dff3cd4d820135dfed71d9a"><div class="ttname"><a href="class_error_reporter.html#acd62467a2dff3cd4d820135dfed71d9a">ErrorReporter::hadError</a></div><div class="ttdeci">bool hadError() const</div><div class="ttdoc">Returns if an error has been detected.</div><div class="ttdef"><b>Definition</b> <a href="error_reporter_8cpp_source.html#l00016">errorReporter.cpp:16</a></div></div>
 <div class="ttc" id="astruct_token_html"><div class="ttname"><a href="struct_token.html">Token</a></div><div class="ttdoc">Structure for representing Wick tokens.</div><div class="ttdef"><b>Definition</b> <a href="token_8hpp_source.html#l00011">token.hpp:11</a></div></div>

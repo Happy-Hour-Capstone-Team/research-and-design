@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.7"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>The Wick Interpreter: C:/Users/Braden Pierce/Documents/GitHub/wick-interpreter/source/parser.cpp Source File</title>
+<title>The Wick Interpreter: source/parser.cpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -322,7 +322,7 @@ $(document).ready(function(){initNavTree('parser_8cpp_source.html',''); initResi
 <div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>}</div>
 <div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span> </div>
 <div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>Expression::ExpressionUPtr Parser::assignment() {</div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>  Expression::ExpressionUPtr expr = equality();</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>  Expression::ExpressionUPtr expr = andExpr();</div>
 <div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>  <span class="keywordflow">if</span>(match({Token::Type::Equal})) {</div>
 <div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>    <span class="keyword">const</span> <a class="code hl_struct" href="struct_token.html">Token</a> equal{tokens[pos - 1]};</div>
 <div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>    Expression::ExpressionUPtr value{assignment()};</div>
@@ -344,31 +344,31 @@ $(document).ready(function(){initNavTree('parser_8cpp_source.html',''); initResi
 <div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>  <span class="keywordflow">return</span> std::move(expr);</div>
 <div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>}</div>
 <div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span> </div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>Expression::ExpressionUPtr Parser::equality() {</div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>  Expression::ExpressionUPtr left{andExpr()};</div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>  <span class="keywordflow">while</span>(match({Token::Type::NotEqualTo, Token::Type::EqualTo})) {</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>Expression::ExpressionUPtr Parser::andExpr() {</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>  Expression::ExpressionUPtr left{orExpr()};</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>  <span class="keywordflow">while</span>(match({Token::Type::And})) {</div>
 <div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>    <span class="keyword">const</span> <a class="code hl_struct" href="struct_token.html">Token</a> op{tokens[pos - 1]};</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    Expression::ExpressionUPtr right{andExpr()};</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    Expression::ExpressionUPtr right{orExpr()};</div>
 <div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    left = std::make_unique&lt;Expression::Binary&gt;(</div>
 <div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>        std::move(left), op, std::move(right));</div>
 <div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>  }</div>
 <div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>  <span class="keywordflow">return</span> std::move(left);</div>
 <div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>}</div>
 <div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span> </div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>Expression::ExpressionUPtr Parser::andExpr() {</div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>  Expression::ExpressionUPtr left{orExpr()};</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>  <span class="keywordflow">while</span>(match({Token::Type::And})) {</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>Expression::ExpressionUPtr Parser::orExpr() {</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>  Expression::ExpressionUPtr left{equality()};</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>  <span class="keywordflow">while</span>(match({Token::Type::Or})) {</div>
 <div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>    <span class="keyword">const</span> <a class="code hl_struct" href="struct_token.html">Token</a> op{tokens[pos - 1]};</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    Expression::ExpressionUPtr right{orExpr()};</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    Expression::ExpressionUPtr right{equality()};</div>
 <div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    left = std::make_unique&lt;Expression::Binary&gt;(</div>
 <div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>        std::move(left), op, std::move(right));</div>
 <div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>  }</div>
 <div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>  <span class="keywordflow">return</span> std::move(left);</div>
 <div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>}</div>
 <div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span> </div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>Expression::ExpressionUPtr Parser::orExpr() {</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>Expression::ExpressionUPtr Parser::equality() {</div>
 <div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>  Expression::ExpressionUPtr left{comparison()};</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>  <span class="keywordflow">while</span>(match({Token::Type::Or})) {</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>  <span class="keywordflow">while</span>(match({Token::Type::NotEqualTo, Token::Type::EqualTo})) {</div>
 <div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    <span class="keyword">const</span> <a class="code hl_struct" href="struct_token.html">Token</a> op{tokens[pos - 1]};</div>
 <div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    Expression::ExpressionUPtr right{comparison()};</div>
 <div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    left = std::make_unique&lt;Expression::Binary&gt;(</div>
@@ -418,7 +418,7 @@ $(document).ready(function(){initNavTree('parser_8cpp_source.html',''); initResi
 <div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>Expression::ExpressionUPtr Parser::unary() {</div>
 <div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>  <span class="keywordflow">if</span>(match({Token::Type::Exclamation, Token::Type::Dash})) {</div>
 <div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>    <span class="keyword">const</span> <a class="code hl_struct" href="struct_token.html">Token</a> op{tokens[pos - 1]};</div>
-<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>    Expression::ExpressionUPtr right{primary()};</div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>    Expression::ExpressionUPtr right{call()};</div>
 <div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>    <span class="keywordflow">return</span> std::make_unique&lt;Expression::Unary&gt;(op, std::move(right));</div>
 <div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>  }</div>
 <div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>  <span class="keywordflow">return</span> call();</div>
@@ -495,7 +495,7 @@ $(document).ready(function(){initNavTree('parser_8cpp_source.html',''); initResi
 <div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span>  <span class="keywordflow">if</span>(errorReporter) errorReporter-&gt;<a class="code hl_function" href="class_error_reporter.html#a6c2a7f644f8c11547a890d639f7ad01a">report</a>(token, msg);</div>
 <div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span>  <span class="keywordflow">return</span> ParserException{};</div>
 <div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span>}</div>
-<div class="ttc" id="aclass_error_reporter_html"><div class="ttname"><a href="class_error_reporter.html">ErrorReporter</a></div><div class="ttdoc">Provides support for error reporting in all the components of the Wick interpreter.</div><div class="ttdef"><b>Definition</b> <a href="error_reporter_8hpp_source.html#l00009">errorReporter.hpp:9</a></div></div>
+<div class="ttc" id="aclass_error_reporter_html"><div class="ttname"><a href="class_error_reporter.html">ErrorReporter</a></div><div class="ttdoc">Provides support for error reporting in all the components of the Wick interpreter.</div><div class="ttdef"><b>Definition</b> <a href="error_reporter_8hpp_source.html#l00010">errorReporter.hpp:10</a></div></div>
 <div class="ttc" id="aclass_error_reporter_html_a6c2a7f644f8c11547a890d639f7ad01a"><div class="ttname"><a href="class_error_reporter.html#a6c2a7f644f8c11547a890d639f7ad01a">ErrorReporter::report</a></div><div class="ttdeci">virtual void report(const Token &amp;token, const std::string &amp;msg)</div><div class="ttdoc">Reports an error with given information from the token and message given. Sets error to true.</div><div class="ttdef"><b>Definition</b> <a href="error_reporter_8cpp_source.html#l00003">errorReporter.cpp:3</a></div></div>
 <div class="ttc" id="aclass_parser_html_abc2591af1927bde5e0e7b90c464fe426"><div class="ttname"><a href="class_parser.html#abc2591af1927bde5e0e7b90c464fe426">Parser::parse</a></div><div class="ttdeci">std::vector&lt; Statement::StatementUPtr &gt; parse()</div><div class="ttdoc">Parses the list of tokens provided in the parsers constructor based on Wick's grammar rules.</div><div class="ttdef"><b>Definition</b> <a href="parser_8cpp_source.html#l00010">parser.cpp:10</a></div></div>
 <div class="ttc" id="aclass_parser_html_ac30bd57d9ca36bb85efb12d9feffa752"><div class="ttname"><a href="class_parser.html#ac30bd57d9ca36bb85efb12d9feffa752">Parser::Parser</a></div><div class="ttdeci">Parser(const Tokens &amp;iTokens, ErrorReporter *const iErrorReporter=nullptr)</div><div class="ttdoc">Constructs a parser with the provided tokens and an error reporter.</div><div class="ttdef"><b>Definition</b> <a href="parser_8cpp_source.html#l00003">parser.cpp:3</a></div></div>
