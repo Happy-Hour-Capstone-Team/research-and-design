@@ -3,13 +3,37 @@
 #include "errorReporter.hpp"
 #include "expression.hpp"
 
+/**
+ * @brief The class responsible for parsing the tokens from the scanner into a
+ * parse tree. This also verifies that the provided Wick program has correct
+ * grammar and upholds some semantic rules.
+ *
+ */
 class Parser {
   public:
+  /**
+   * @brief Constructs a parser with the provided tokens and an error reporter.
+   *
+   * @param iTokens
+   * @param iErrorReporter
+   */
   Parser(const Tokens &iTokens, ErrorReporter *const iErrorReporter = nullptr);
 
+  /**
+   * @brief Constructs a parser witht he provided tokens and an error reporter.
+   *
+   * @param iTokens
+   * @param iErrorReporter
+   */
   Parser(std::initializer_list<Token> iTokens,
          ErrorReporter *const iErrorReporter = nullptr);
 
+  /**
+   * @brief Parses the list of tokens provided in the parsers constructor based
+   * on Wick's grammar rules.
+   *
+   * @return std::vector<Statement::StatementUPtr>
+   */
   std::vector<Statement::StatementUPtr> parse();
 
   private:

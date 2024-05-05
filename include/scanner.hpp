@@ -5,13 +5,35 @@
 #include <unordered_map>
 #include <vector>
 
+/**
+ * @brief The scanner is responsible for breaking up a Wick program into "words"
+ * called tokens and tagging them with additional information.
+ *
+ */
 class Scanner {
   public:
+  /**
+   * @brief Constructs a scanner object based on the text to scan and an error
+   * reporter.
+   *
+   * @param iText
+   * @param iErrorReporter
+   */
   explicit Scanner(const std::string &iText,
                    ErrorReporter *const iErrorReporter = nullptr);
 
+  /**
+   * @brief Breaks the provided text from the constructor into tokens.
+   *
+   * @return Tokens
+   */
   Tokens tokenize();
 
+  /**
+   * @brief Static function for printing out a list of tokens.
+   *
+   * @param tokens
+   */
   static void printTokens(const Tokens &tokens);
 
   private:
