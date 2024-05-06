@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.7"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>The Wick Interpreter: C:/Users/Braden Pierce/Documents/GitHub/wick-interpreter/include/parser.hpp Source File</title>
+<title>The Wick Programming Language: include/parser.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">The Wick Interpreter
+   <div id="projectname">The Wick Programming Language
    </div>
   </td>
  </tr>
@@ -149,11 +149,11 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>  Expression::ExpressionUPtr assignment();</div>
 <div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>  Expression::ExpressionUPtr equality();</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>  Expression::ExpressionUPtr andExpr();</div>
 <div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>  Expression::ExpressionUPtr andExpr();</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>  Expression::ExpressionUPtr orExpr();</div>
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span> </div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>  Expression::ExpressionUPtr orExpr();</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>  Expression::ExpressionUPtr equality();</div>
 <div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span> </div>
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>  Expression::ExpressionUPtr comparison();</div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
@@ -179,7 +179,7 @@ $(document).ready(function(){initNavTree('parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>  <a class="code hl_class" href="class_error_reporter.html">ErrorReporter</a> *<span class="keyword">const</span> errorReporter;</div>
 <div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>  <span class="keywordtype">int</span> pos{0};</div>
 <div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>};</div>
-<div class="ttc" id="aclass_error_reporter_html"><div class="ttname"><a href="class_error_reporter.html">ErrorReporter</a></div><div class="ttdoc">Provides support for error reporting in all the components of the Wick interpreter.</div><div class="ttdef"><b>Definition</b> <a href="error_reporter_8hpp_source.html#l00009">errorReporter.hpp:9</a></div></div>
+<div class="ttc" id="aclass_error_reporter_html"><div class="ttname"><a href="class_error_reporter.html">ErrorReporter</a></div><div class="ttdoc">Provides support for error reporting in all the components of the Wick interpreter.</div><div class="ttdef"><b>Definition</b> <a href="error_reporter_8hpp_source.html#l00010">errorReporter.hpp:10</a></div></div>
 <div class="ttc" id="aclass_parser_html"><div class="ttname"><a href="class_parser.html">Parser</a></div><div class="ttdoc">The class responsible for parsing the tokens from the scanner into a parse tree. This also verifies t...</div><div class="ttdef"><b>Definition</b> <a href="parser_8hpp_source.html#l00012">parser.hpp:12</a></div></div>
 <div class="ttc" id="aclass_parser_html_abc2591af1927bde5e0e7b90c464fe426"><div class="ttname"><a href="class_parser.html#abc2591af1927bde5e0e7b90c464fe426">Parser::parse</a></div><div class="ttdeci">std::vector&lt; Statement::StatementUPtr &gt; parse()</div><div class="ttdoc">Parses the list of tokens provided in the parsers constructor based on Wick's grammar rules.</div><div class="ttdef"><b>Definition</b> <a href="parser_8cpp_source.html#l00010">parser.cpp:10</a></div></div>
 <div class="ttc" id="astruct_token_html"><div class="ttname"><a href="struct_token.html">Token</a></div><div class="ttdoc">Structure for representing Wick tokens.</div><div class="ttdef"><b>Definition</b> <a href="token_8hpp_source.html#l00011">token.hpp:11</a></div></div>

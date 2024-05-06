@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.7"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>The Wick Interpreter: C:/Users/Braden Pierce/Documents/GitHub/wick-interpreter/include/statement.hpp Source File</title>
+<title>The Wick Programming Language: include/statement.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">The Wick Interpreter
+   <div id="projectname">The Wick Programming Language
    </div>
   </td>
  </tr>
@@ -197,7 +197,7 @@ $(document).ready(function(){initNavTree('statement_8hpp_source.html',''); initR
 <div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>};</div>
 <div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span> </div>
 <div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>} <span class="comment">// namespace Statement</span></div>
-<div class="ttc" id="aclass_environment_html"><div class="ttname"><a href="class_environment.html">Environment</a></div><div class="ttdoc">This class deals with memory environments; where variables, constants, and subroutines are associated...</div><div class="ttdef"><b>Definition</b> <a href="environment_8hpp_source.html#l00012">environment.hpp:12</a></div></div>
+<div class="ttc" id="aclass_environment_html"><div class="ttname"><a href="class_environment.html">Environment</a></div><div class="ttdoc">This class deals with memory environments; where variables, constants, and subroutines are associated...</div><div class="ttdef"><b>Definition</b> <a href="environment_8hpp_source.html#l00013">environment.hpp:13</a></div></div>
 <div class="ttc" id="aclass_statement_1_1_statement_1_1_visitor_html"><div class="ttname"><a href="class_statement_1_1_statement_1_1_visitor.html">Statement::Statement::Visitor</a></div><div class="ttdoc">Declares an interface for visitors over Wick statements.</div><div class="ttdef"><b>Definition</b> <a href="statement_8hpp_source.html#l00033">statement.hpp:33</a></div></div>
 <div class="ttc" id="aclass_statement_1_1_statement_1_1_visitor_html_a79124c5eb6a7a3b32a2d6d93bf9158f0"><div class="ttname"><a href="class_statement_1_1_statement_1_1_visitor.html#a79124c5eb6a7a3b32a2d6d93bf9158f0">Statement::Statement::Visitor::visit</a></div><div class="ttdeci">virtual void visit(const If &amp;ifStmt, Environment *env)=0</div><div class="ttdoc">Visits an if-then statement.</div></div>
 <div class="ttc" id="aclass_statement_1_1_statement_1_1_visitor_html_a7fe49d9d60cc11832f8182355a63ac75"><div class="ttname"><a href="class_statement_1_1_statement_1_1_visitor.html#a7fe49d9d60cc11832f8182355a63ac75">Statement::Statement::Visitor::visit</a></div><div class="ttdeci">virtual void visit(const For &amp;forStmt, Environment *env)=0</div><div class="ttdoc">Visits a for loop statement.</div></div>
@@ -205,8 +205,8 @@ $(document).ready(function(){initNavTree('statement_8hpp_source.html',''); initR
 <div class="ttc" id="aclass_statement_1_1_statement_1_1_visitor_html_a95331255172c4f842a34366dc15efd89"><div class="ttname"><a href="class_statement_1_1_statement_1_1_visitor.html#a95331255172c4f842a34366dc15efd89">Statement::Statement::Visitor::visit</a></div><div class="ttdeci">virtual void visit(const Expression &amp;expr, Environment *env)=0</div><div class="ttdoc">Visits an expression statement.</div></div>
 <div class="ttc" id="aclass_statement_1_1_statement_1_1_visitor_html_aacf559dcb2379fe545a1a43373940026"><div class="ttname"><a href="class_statement_1_1_statement_1_1_visitor.html#aacf559dcb2379fe545a1a43373940026">Statement::Statement::Visitor::visit</a></div><div class="ttdeci">virtual void visit(const Scope &amp;scope, Environment *env)=0</div><div class="ttdoc">Visits a scope (code block surrounded by '{' and '}').</div></div>
 <div class="ttc" id="aclass_statement_1_1_statement_1_1_visitor_html_ad822c6719c06ba1b5997136e7b98c82f"><div class="ttname"><a href="class_statement_1_1_statement_1_1_visitor.html#ad822c6719c06ba1b5997136e7b98c82f">Statement::Statement::Visitor::visit</a></div><div class="ttdeci">virtual void visit(const Variable &amp;var, Environment *env)=0</div><div class="ttdoc">Visits a variable declaration/definition.</div></div>
-<div class="ttc" id="anamespace_expression_html"><div class="ttname"><a href="namespace_expression.html">Expression</a></div><div class="ttdoc">Contains the grammar rules for Wick expressions.</div><div class="ttdef"><b>Definition</b> <a href="expression_8hpp_source.html#l00019">expression.hpp:19</a></div></div>
-<div class="ttc" id="anamespace_statement_html"><div class="ttname"><a href="namespace_statement.html">Statement</a></div><div class="ttdoc">Contains the grammar rules for Wick statements.</div><div class="ttdef"><b>Definition</b> <a href="expression_8hpp_source.html#l00009">expression.hpp:9</a></div></div>
+<div class="ttc" id="anamespace_expression_html"><div class="ttname"><a href="namespace_expression.html">Expression</a></div><div class="ttdoc">Contains the grammar rules for Wick expressions.</div><div class="ttdef"><b>Definition</b> <a href="expression_8cpp_source.html#l00003">expression.cpp:3</a></div></div>
+<div class="ttc" id="anamespace_statement_html"><div class="ttname"><a href="namespace_statement.html">Statement</a></div><div class="ttdoc">Contains the grammar rules for Wick statements.</div><div class="ttdef"><b>Definition</b> <a href="statement_8cpp_source.html#l00003">statement.cpp:3</a></div></div>
 <div class="ttc" id="astruct_statement_1_1_expression_html_a34fd20a98c7faa73111b3066b27bdadf"><div class="ttname"><a href="struct_statement_1_1_expression.html#a34fd20a98c7faa73111b3066b27bdadf">Statement::Expression::accept</a></div><div class="ttdeci">void accept(Visitor *visitor, Environment *env) override</div><div class="ttdoc">The accept method for all Wick statements.</div><div class="ttdef"><b>Definition</b> <a href="statement_8cpp_source.html#l00007">statement.cpp:7</a></div></div>
 <div class="ttc" id="astruct_statement_1_1_for_html"><div class="ttname"><a href="struct_statement_1_1_for.html">Statement::For</a></div><div class="ttdoc">A for loop statement (also used for while loops) like for i = 0; i &lt; 10; i++ { doSomething(); }.</div><div class="ttdef"><b>Definition</b> <a href="statement_8hpp_source.html#l00182">statement.hpp:182</a></div></div>
 <div class="ttc" id="astruct_statement_1_1_for_html_adcc955bd573df47309c03d5d907d13c1"><div class="ttname"><a href="struct_statement_1_1_for.html#adcc955bd573df47309c03d5d907d13c1">Statement::For::accept</a></div><div class="ttdeci">void accept(Visitor *visitor, Environment *env) override</div><div class="ttdoc">The accept method for all Wick statements.</div><div class="ttdef"><b>Definition</b> <a href="statement_8cpp_source.html#l00046">statement.cpp:46</a></div></div>

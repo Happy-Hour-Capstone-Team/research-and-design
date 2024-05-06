@@ -24,9 +24,22 @@
 */
 var NAVTREE =
 [
-  [ "The Wick Interpreter", "index.html", [
+  [ "The Wick Programming Language", "index.html", [
+    [ "About This Project", "index.html#autotoc_md1", null ],
+    [ "About Us", "index.html#autotoc_md2", null ],
+    [ "How The Wick Interpreter Works", "index.html#autotoc_md3", null ],
+    [ "Additional Notes", "index.html#autotoc_md4", null ],
+    [ "Future Work", "index.html#autotoc_md5", [
+      [ "The Language", "index.html#autotoc_md6", null ],
+      [ "The Interpreter", "index.html#autotoc_md7", null ],
+      [ "The IDE", "index.html#autotoc_md8", null ]
+    ] ],
     [ "Namespaces", "namespaces.html", [
-      [ "Namespace List", "namespaces.html", "namespaces_dup" ]
+      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
+      [ "Namespace Members", "namespacemembers.html", [
+        [ "All", "namespacemembers.html", null ],
+        [ "Functions", "namespacemembers_func.html", null ]
+      ] ]
     ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
@@ -48,7 +61,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"struct_token.html#acf70e9411196c602738c3ed2428c7137a0a787838ee070a815991e4c8107083d5"
+"struct_statement_1_1_expression.html#a34fd20a98c7faa73111b3066b27bdadf"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

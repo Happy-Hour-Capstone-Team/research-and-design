@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.7"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>The Wick Interpreter: Main Page</title>
+<title>The Wick Programming Language: The Wick Programming Language</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">The Wick Interpreter
+   <div id="projectname">The Wick Programming Language
    </div>
   </td>
  </tr>
@@ -89,10 +89,82 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </div>
 </div>
 
-<div class="header">
-  <div class="headertitle"><div class="title">The Wick Interpreter Documentation</div></div>
+<div><div class="header">
+  <div class="headertitle"><div class="title">The Wick Programming Language </div></div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><p><a class="anchor" id="md__r_e_a_d_m_e"></a> </p>
+<h1><a class="anchor" id="autotoc_md1"></a>
+About This Project</h1>
+<p>Wick is a novel programming language created for the purpose of gaining experience in programming language and interpreter design; two subjects that have become increasingly neglected in computer science programs. Additionally, two subjects that were captivating to our team and seemed like fun subjects for a project.</p>
+<p>Wick is presently a simple, dynamically-typed, and multi-paradigm language, supporting. First class functions (here called subroutines) are supported as well as object-oriented programming via prototypes. A manual for writing Wick programs and some additional details of the project can be found on the interpreter's GitHub repository (<a href="https://github.com/Happy-Hour-Capstone-Team/wick-interpreter">https://github.com/Happy-Hour-Capstone-Team/wick-interpreter</a>).</p>
+<p>Also provided is an online IDE (currently not hosted on a server, but can be run locally) seen on our teams GitHub page (<a href="https://github.com/Happy-Hour-Capstone-Team/wick-ide">https://github.com/Happy-Hour-Capstone-Team/wick-ide</a>).</p>
+<h1><a class="anchor" id="autotoc_md2"></a>
+About Us</h1>
+<p>This project was developed by The Happy Hour team from Arkansas Tech University through Capstone I and Capstone II from 2023 to 2024.</p>
+<p>Our members are:</p><ul>
+<li>Braden Pierce</li>
+<li>Lisset Luna</li>
+<li>Evelin Cerros-Patricio</li>
+<li>Evan Keathley</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md3"></a>
+How The Wick Interpreter Works</h1>
+<p>The interpreter is formed out of three main components: the scanner, parser, and, well, <em>interpreter</em>.</p>
+<p>When the interpreter is executed, it is passed a Wick file name (just a text file with a .wick extension). This file is read, and its contents read into a string before being passed into the scanner. The scanner's job is to break the contents of the file into different tokens (similar to words in natural language). These tokens contain a lexeme representing the raw text of the token, a type (whether it's a number, string, keyword, or something else), and some information for error reporting like its line and column number. Additionally, whitespace, comments, and other unnecessary symbols are disregarded at this stage. The scanner essentially breaks the program into a list of words depending on some regular grammar.</p>
+<p>When the scanner is done, the list of tokens is passed into the parser. The parser breaks the tokens into grammatical concepts like subroutine definitions, prototype definitions, expressions, and so on. This is presently accomplished using a recursive-descent parser that translates the context-free grammar for Wick directly into class methods. These methods return nodes and together form a parse tree. These nodes can either be expression nodes (implying that they can be evaluated to return some value) or statement nodes (implying they impart some state in the program, like change a variables value). Both these nodes define an interface for visitors to perform operations on them. Some basic semantic analysis is also performed here (like making sure return is only used within an appropriate context or similar).</p>
+<p>If an error is found during either of these stages, the error reporter passed along is informed. Scanning/parsing will continue as long as possible to allow the accruement of all errors in the program at once, but execution will be preempted.</p>
+<p>Finally, the program is run via the tree-traversal interpreter. This does as it sounds, iterating through the statement nodes produced by the parser and traversing downward, applying the expected behavior associated with each node. For instance, the interpreter may come along a statement variable node implying a variable is being declared. If an initializer exists, it is evaluated and its value associated with the variable token in the working environment. The interpreter also initializes the global environment with all native subroutines and constants when started, in the same manner as if a user had defined them.</p>
+<h1><a class="anchor" id="autotoc_md4"></a>
+Additional Notes</h1>
+<p>Wick is a strongly-typed language in that operations between inappropriate data types will result in an error. This is in contrast to weakly-typed languages that will attempt "something" or another to fulfill the operation, regardless of how unintuitive the behavior is.</p>
+<p>Wick is a dynamically-typed language in that the data types of operands are checked for validity at runtime rather than at compile time. This is in contrast to statically-typed languages where such issues can be caught before the program is run. Wick does not necessarily <em>have</em> to be a dynamically-typed language, but was made such for simplicity-sake.</p>
+<p>There is some ambiguity with the terms "compiler" and "interpreter." Simply put, compiler usually implies an additional degree of translation from the programming language (usually to an intermediary language or machine code with optimizations). Because this interpreter does essentially the bare minimum for translation, "interpreter" is usually the preferred language though "compiler" is occasionally used.</p>
+<h1><a class="anchor" id="autotoc_md5"></a>
+Future Work</h1>
+<p>While the core functionality for both the language, interpreter, IDE, and documentation are present, there is still much that could be done to make Wick and its associated technologies more complete. This section breaks up the most-critical missing features into the separate categories of the project. Technically, some of these changes may break previously existing Wick programs: a concern that will be fully reckoned with if Wick ever experiences legitimate use.</p>
+<h2><a class="anchor" id="autotoc_md6"></a>
+The Language</h2>
+<ul>
+<li>Experiments with static-typing.</li>
+<li>Native support for collections like lists.</li>
+<li>Native support for enumerated values.</li>
+<li>Switch statements.</li>
+<li>File I/O.</li>
+<li>Exception and error-handling.</li>
+<li>Multi-file Wick projects or a package manager.</li>
+<li>A standard library.</li>
+<li>Formatted printing, inheriting constructors, assignment operators (++, +=, -=, and so on), parallel programming, and more...</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md7"></a>
+The Interpreter</h2>
+<ul>
+<li>Greatly improve error-reporting throughout the project.</li>
+<li>Formalize much of the testing for the components of the interpreter.</li>
+<li>Ensure the robustness of garbage collection (currently accomplished naively with reference-counting pointers).</li>
+<li>Add a semantic analysis step to check for errors and potential issues (also would be required for static typing).</li>
+<li>Add an optimization step to interpreter to modify user programs to be more performative.</li>
+<li>Transition away from tree-traversal interpretation.</li>
+<li>Also, maybe come up with a name for this part of the project besides "Wick
+  Interpreter" would be nice...</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md8"></a>
+The IDE</h2>
+<ul>
+<li>Allow input from the terminal.</li>
+<li>Allow multi-file projects.</li>
+<li>Add the ability to save and upload Wick files.</li>
+<li>Keyword text highlighting for improved readability.</li>
+<li>A formatting button.</li>
+<li>Some portal to a repository of resources for using Wick and the IDE.<ul>
+<li>As well as those resources being spruced up and in text and video formats.</li>
+</ul>
+</li>
+<li>And, of course, actually having it be hosted...</li>
+<li>Also, maybe come up with a name for this part of the project besides "Wick
+  IDE" would be nice... </li>
+</ul>
+</div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

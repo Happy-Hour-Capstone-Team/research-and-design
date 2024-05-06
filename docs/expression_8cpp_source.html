@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.7"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>The Wick Interpreter: C:/Users/Braden Pierce/Documents/GitHub/wick-interpreter/source/expression.cpp Source File</title>
+<title>The Wick Programming Language: source/expression.cpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">The Wick Interpreter
+   <div id="projectname">The Wick Programming Language
    </div>
   </td>
  </tr>
@@ -95,7 +95,7 @@ $(document).ready(function(){initNavTree('expression_8cpp_source.html',''); init
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#include &quot;expression.hpp&quot;</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespace_expression.html">Expression</a> {</div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno"><a class="line" href="namespace_expression.html">    3</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespace_expression.html">Expression</a> {</div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno"><a class="line" href="struct_expression_1_1_literal.html#ab99251e410964634aac096477a5930ce">    4</a></span><a class="code hl_function" href="struct_expression_1_1_literal.html#ab99251e410964634aac096477a5930ce">Literal::Literal</a>(<span class="keyword">const</span> std::any &amp;iValue) : value{iValue} {}</div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno"><a class="line" href="struct_expression_1_1_literal.html#aee519aede88efdca2416cdd914882c78">    6</a></span>std::optional&lt;std::any&gt; <a class="code hl_function" href="struct_expression_1_1_literal.html#aee519aede88efdca2416cdd914882c78">Literal::accept</a>(<a class="code hl_class" href="class_expression_1_1_expression_1_1_visitor.html">Visitor</a> *visitor, <a class="code hl_class" href="class_environment.html">Environment</a> *env) {</div>
@@ -200,10 +200,10 @@ $(document).ready(function(){initNavTree('expression_8cpp_source.html',''); init
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>}</div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span> </div>
 <div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>} <span class="comment">// namespace Expression</span></div>
-<div class="ttc" id="aclass_environment_html"><div class="ttname"><a href="class_environment.html">Environment</a></div><div class="ttdoc">This class deals with memory environments; where variables, constants, and subroutines are associated...</div><div class="ttdef"><b>Definition</b> <a href="environment_8hpp_source.html#l00012">environment.hpp:12</a></div></div>
+<div class="ttc" id="aclass_environment_html"><div class="ttname"><a href="class_environment.html">Environment</a></div><div class="ttdoc">This class deals with memory environments; where variables, constants, and subroutines are associated...</div><div class="ttdef"><b>Definition</b> <a href="environment_8hpp_source.html#l00013">environment.hpp:13</a></div></div>
 <div class="ttc" id="aclass_expression_1_1_expression_1_1_visitor_html"><div class="ttname"><a href="class_expression_1_1_expression_1_1_visitor.html">Expression::Expression::Visitor</a></div><div class="ttdoc">Declares an interface for visitors over Wick expressions.</div><div class="ttdef"><b>Definition</b> <a href="expression_8hpp_source.html#l00043">expression.hpp:43</a></div></div>
 <div class="ttc" id="aclass_expression_1_1_expression_1_1_visitor_html_ab8772f7dd94211271298974339c239f2"><div class="ttname"><a href="class_expression_1_1_expression_1_1_visitor.html#ab8772f7dd94211271298974339c239f2">Expression::Expression::Visitor::visit</a></div><div class="ttdeci">virtual std::optional&lt; std::any &gt; visit(const Literal &amp;literal, Environment *env)=0</div><div class="ttdoc">Visits a literal expression.</div></div>
-<div class="ttc" id="anamespace_expression_html"><div class="ttname"><a href="namespace_expression.html">Expression</a></div><div class="ttdoc">Contains the grammar rules for Wick expressions.</div><div class="ttdef"><b>Definition</b> <a href="expression_8hpp_source.html#l00019">expression.hpp:19</a></div></div>
+<div class="ttc" id="anamespace_expression_html"><div class="ttname"><a href="namespace_expression.html">Expression</a></div><div class="ttdoc">Contains the grammar rules for Wick expressions.</div><div class="ttdef"><b>Definition</b> <a href="expression_8cpp_source.html#l00003">expression.cpp:3</a></div></div>
 <div class="ttc" id="astruct_expression_1_1_assignment_html_a211c4f4d3c92cd13a56e4ddc3899c13b"><div class="ttname"><a href="struct_expression_1_1_assignment.html#a211c4f4d3c92cd13a56e4ddc3899c13b">Expression::Assignment::Assignment</a></div><div class="ttdeci">Assignment(const Token &amp;iVariable, ExpressionUPtr iValue)</div><div class="ttdoc">Constructs a new assignment expression.</div><div class="ttdef"><b>Definition</b> <a href="expression_8cpp_source.html#l00049">expression.cpp:49</a></div></div>
 <div class="ttc" id="astruct_expression_1_1_assignment_html_abb86bad86a3137a930df7ae22ce47981"><div class="ttname"><a href="struct_expression_1_1_assignment.html#abb86bad86a3137a930df7ae22ce47981">Expression::Assignment::accept</a></div><div class="ttdeci">std::optional&lt; std::any &gt; accept(Visitor *visitor, Environment *env) override</div><div class="ttdoc">The accept method for all Wick expressions.</div><div class="ttdef"><b>Definition</b> <a href="expression_8cpp_source.html#l00052">expression.cpp:52</a></div></div>
 <div class="ttc" id="astruct_expression_1_1_binary_html_a96f6639bdfcebc2ef415fc1aea0cc332"><div class="ttname"><a href="struct_expression_1_1_binary.html#a96f6639bdfcebc2ef415fc1aea0cc332">Expression::Binary::accept</a></div><div class="ttdeci">std::optional&lt; std::any &gt; accept(Visitor *visitor, Environment *env) override</div><div class="ttdoc">The accept method for all Wick expressions.</div><div class="ttdef"><b>Definition</b> <a href="expression_8cpp_source.html#l00022">expression.cpp:22</a></div></div>

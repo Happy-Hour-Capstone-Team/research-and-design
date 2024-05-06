@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['ternary_0',['Ternary',['../struct_expression_1_1_ternary.html',1,'Expression::Ternary'],['../struct_expression_1_1_ternary.html#a502c154e1c4d9073ddf69c9b038442ed',1,'Expression::Ternary::Ternary()']]],
-  ['token_1',['Token',['../struct_token.html',1,'']]],
-  ['tokenize_2',['tokenize',['../class_scanner.html#a51f273eeecbf6beed4155854df9fe287',1,'Scanner']]],
-  ['type_3',['Type',['../struct_token.html#acf70e9411196c602738c3ed2428c7137',1,'Token']]]
+  ['report_0',['report',['../class_error_reporter.html#a6c2a7f644f8c11547a890d639f7ad01a',1,'ErrorReporter::report(const Token &amp;token, const std::string &amp;msg)'],['../class_error_reporter.html#a8aa71bf7bc80fe869bd6643435f6bce8',1,'ErrorReporter::report(const int line, const int col, const std::string &amp;msg)']]],
+  ['return_1',['Return',['../struct_statement_1_1_return.html#a20cac5b2416ca8147e071d8b0d442454',1,'Statement::Return::Return()'],['../struct_statement_1_1_return.html',1,'Statement::Return']]],
+  ['round_2',['round',['../namespacenative.html#aec24848c031ac488f2fc61167114a6a4',1,'native']]]
 ];

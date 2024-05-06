@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.7"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>The Wick Interpreter: C:/Users/Braden Pierce/Documents/GitHub/wick-interpreter/source/statement.cpp Source File</title>
+<title>The Wick Programming Language: source/statement.cpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">The Wick Interpreter
+   <div id="projectname">The Wick Programming Language
    </div>
   </td>
  </tr>
@@ -95,7 +95,7 @@ $(document).ready(function(){initNavTree('statement_8cpp_source.html',''); initR
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#include &quot;statement.hpp&quot;</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespace_statement.html">Statement</a> {</div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno"><a class="line" href="namespace_statement.html">    3</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespace_statement.html">Statement</a> {</div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno"><a class="line" href="struct_statement_1_1_expression.html#af982728e51d8f5f957b684e071566762">    4</a></span><a class="code hl_struct" href="struct_expression_1_1_expression.html">Expression::Expression</a>(::Expression::ExpressionUPtr iExpr) :</div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span>    expr{std::move(iExpr)} {}</div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
@@ -149,10 +149,10 @@ $(document).ready(function(){initNavTree('statement_8cpp_source.html',''); initR
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>  <span class="keywordflow">return</span> visitor-&gt;<a class="code hl_function" href="class_statement_1_1_statement_1_1_visitor.html#a95331255172c4f842a34366dc15efd89">visit</a>(*<span class="keyword">this</span>, env);</div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>}</div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>} <span class="comment">// namespace Statement</span></div>
-<div class="ttc" id="aclass_environment_html"><div class="ttname"><a href="class_environment.html">Environment</a></div><div class="ttdoc">This class deals with memory environments; where variables, constants, and subroutines are associated...</div><div class="ttdef"><b>Definition</b> <a href="environment_8hpp_source.html#l00012">environment.hpp:12</a></div></div>
+<div class="ttc" id="aclass_environment_html"><div class="ttname"><a href="class_environment.html">Environment</a></div><div class="ttdoc">This class deals with memory environments; where variables, constants, and subroutines are associated...</div><div class="ttdef"><b>Definition</b> <a href="environment_8hpp_source.html#l00013">environment.hpp:13</a></div></div>
 <div class="ttc" id="aclass_statement_1_1_statement_1_1_visitor_html"><div class="ttname"><a href="class_statement_1_1_statement_1_1_visitor.html">Statement::Statement::Visitor</a></div><div class="ttdoc">Declares an interface for visitors over Wick statements.</div><div class="ttdef"><b>Definition</b> <a href="statement_8hpp_source.html#l00033">statement.hpp:33</a></div></div>
 <div class="ttc" id="aclass_statement_1_1_statement_1_1_visitor_html_a95331255172c4f842a34366dc15efd89"><div class="ttname"><a href="class_statement_1_1_statement_1_1_visitor.html#a95331255172c4f842a34366dc15efd89">Statement::Statement::Visitor::visit</a></div><div class="ttdeci">virtual void visit(const Expression &amp;expr, Environment *env)=0</div><div class="ttdoc">Visits an expression statement.</div></div>
-<div class="ttc" id="anamespace_statement_html"><div class="ttname"><a href="namespace_statement.html">Statement</a></div><div class="ttdoc">Contains the grammar rules for Wick statements.</div><div class="ttdef"><b>Definition</b> <a href="expression_8hpp_source.html#l00009">expression.hpp:9</a></div></div>
+<div class="ttc" id="anamespace_statement_html"><div class="ttname"><a href="namespace_statement.html">Statement</a></div><div class="ttdoc">Contains the grammar rules for Wick statements.</div><div class="ttdef"><b>Definition</b> <a href="statement_8cpp_source.html#l00003">statement.cpp:3</a></div></div>
 <div class="ttc" id="astruct_expression_1_1_expression_html"><div class="ttname"><a href="struct_expression_1_1_expression.html">Expression::Expression</a></div><div class="ttdoc">Parent class of all expressions. Enforces accept method.</div><div class="ttdef"><b>Definition</b> <a href="expression_8hpp_source.html#l00038">expression.hpp:38</a></div></div>
 <div class="ttc" id="astruct_statement_1_1_expression_html_a34fd20a98c7faa73111b3066b27bdadf"><div class="ttname"><a href="struct_statement_1_1_expression.html#a34fd20a98c7faa73111b3066b27bdadf">Statement::Expression::accept</a></div><div class="ttdeci">void accept(Visitor *visitor, Environment *env) override</div><div class="ttdoc">The accept method for all Wick statements.</div><div class="ttdef"><b>Definition</b> <a href="statement_8cpp_source.html#l00007">statement.cpp:7</a></div></div>
 <div class="ttc" id="astruct_statement_1_1_for_html_a1eed845872fcd72cbcb4b6dab29fe41f"><div class="ttname"><a href="struct_statement_1_1_for.html#a1eed845872fcd72cbcb4b6dab29fe41f">Statement::For::For</a></div><div class="ttdeci">For(StatementUPtr iInitializer, ::Expression::ExpressionUPtr iCondition, StatementUPtr iBody, StatementUPtr iUpdate)</div><div class="ttdoc">Constructs a new for statement.</div><div class="ttdef"><b>Definition</b> <a href="statement_8cpp_source.html#l00037">statement.cpp:37</a></div></div>

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['scanner_0',['Scanner',['../class_scanner.html#ae4c3f73d625b274c8f9ddff753454d16',1,'Scanner']]],
-  ['scope_1',['Scope',['../struct_statement_1_1_scope.html#a078d30beb1b8d7e3d84124cb011a8754',1,'Statement::Scope']]],
-  ['set_2',['Set',['../struct_expression_1_1_set.html#a20fe12db725a0fde65b02a3815a20235',1,'Expression::Set']]]
+  ['report_0',['report',['../class_error_reporter.html#a6c2a7f644f8c11547a890d639f7ad01a',1,'ErrorReporter::report(const Token &amp;token, const std::string &amp;msg)'],['../class_error_reporter.html#a8aa71bf7bc80fe869bd6643435f6bce8',1,'ErrorReporter::report(const int line, const int col, const std::string &amp;msg)']]],
+  ['return_1',['Return',['../struct_statement_1_1_return.html#a20cac5b2416ca8147e071d8b0d442454',1,'Statement::Return']]],
+  ['round_2',['round',['../namespacenative.html#aec24848c031ac488f2fc61167114a6a4',1,'native']]]
 ];

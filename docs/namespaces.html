@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.7"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>The Wick Interpreter: Namespace List</title>
+<title>The Wick Programming Language: Namespace List</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">The Wick Interpreter
+   <div id="projectname">The Wick Programming Language
    </div>
   </td>
  </tr>
@@ -110,15 +110,16 @@ $(document).ready(function(){initNavTree('namespaces.html',''); initResizable();
 <tr id="row_0_10_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_expression_1_1_ternary.html" target="_self">Ternary</a></td><td class="desc">A ternary expression like -1 if x &lt; y else 1 </td></tr>
 <tr id="row_0_11_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_expression_1_1_unary.html" target="_self">Unary</a></td><td class="desc">A unary expression like !x or -x </td></tr>
 <tr id="row_0_12_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_expression_1_1_variable.html" target="_self">Variable</a></td><td class="desc">A variable expression like x or y </td></tr>
-<tr id="row_1_" class="odd"><td class="entry"><span style="width:0px;display:inline-block;">&#160;</span><span id="arr_1_" class="arrow" onclick="toggleFolder('1_')">&#9660;</span><span class="icona"><span class="icon">N</span></span><a class="el" href="namespace_statement.html" target="_self">Statement</a></td><td class="desc">Contains the grammar rules for Wick statements </td></tr>
-<tr id="row_1_0_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_statement_1_1_expression.html" target="_self">Expression</a></td><td class="desc">An expression statement (think calling a subroutine like doSomething()) </td></tr>
-<tr id="row_1_1_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_statement_1_1_for.html" target="_self">For</a></td><td class="desc">A for loop statement (also used for while loops) like for i = 0; i &lt; 10; i++ { doSomething(); } </td></tr>
-<tr id="row_1_2_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_statement_1_1_if.html" target="_self">If</a></td><td class="desc">An if-else statement like if isTrue() { doSomething(); } else { doSomethingElse(); } </td></tr>
-<tr id="row_1_3_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_statement_1_1_return.html" target="_self">Return</a></td><td class="desc">A return statement in a subroutine like return true </td></tr>
-<tr id="row_1_4_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_statement_1_1_scope.html" target="_self">Scope</a></td><td class="desc">Visits a scope statement like { doSomething(); doSomethinElse(); } </td></tr>
-<tr id="row_1_5_" class="odd"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span id="arr_1_5_" class="arrow" onclick="toggleFolder('1_5_')">&#9660;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_statement_1_1_statement.html" target="_self">Statement</a></td><td class="desc">Parent class of all statements. Enforces accept method </td></tr>
-<tr id="row_1_5_0_" class="even"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_statement_1_1_statement_1_1_visitor.html" target="_self">Visitor</a></td><td class="desc">Declares an interface for visitors over Wick statements </td></tr>
-<tr id="row_1_6_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_statement_1_1_variable.html" target="_self">Variable</a></td><td class="desc">A variable declaration/definition like variable a = 2 </td></tr>
+<tr id="row_1_" class="odd"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">N</span></span><a class="el" href="namespacenative.html" target="_self">native</a></td><td class="desc">Contains all of the native implementations of various commonly used subroutines and constants provided to users </td></tr>
+<tr id="row_2_" class="even"><td class="entry"><span style="width:0px;display:inline-block;">&#160;</span><span id="arr_2_" class="arrow" onclick="toggleFolder('2_')">&#9660;</span><span class="icona"><span class="icon">N</span></span><a class="el" href="namespace_statement.html" target="_self">Statement</a></td><td class="desc">Contains the grammar rules for Wick statements </td></tr>
+<tr id="row_2_0_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_statement_1_1_expression.html" target="_self">Expression</a></td><td class="desc">An expression statement (think calling a subroutine like doSomething()) </td></tr>
+<tr id="row_2_1_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_statement_1_1_for.html" target="_self">For</a></td><td class="desc">A for loop statement (also used for while loops) like for i = 0; i &lt; 10; i++ { doSomething(); } </td></tr>
+<tr id="row_2_2_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_statement_1_1_if.html" target="_self">If</a></td><td class="desc">An if-else statement like if isTrue() { doSomething(); } else { doSomethingElse(); } </td></tr>
+<tr id="row_2_3_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_statement_1_1_return.html" target="_self">Return</a></td><td class="desc">A return statement in a subroutine like return true </td></tr>
+<tr id="row_2_4_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_statement_1_1_scope.html" target="_self">Scope</a></td><td class="desc">Visits a scope statement like { doSomething(); doSomethinElse(); } </td></tr>
+<tr id="row_2_5_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span id="arr_2_5_" class="arrow" onclick="toggleFolder('2_5_')">&#9660;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_statement_1_1_statement.html" target="_self">Statement</a></td><td class="desc">Parent class of all statements. Enforces accept method </td></tr>
+<tr id="row_2_5_0_" class="odd"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_statement_1_1_statement_1_1_visitor.html" target="_self">Visitor</a></td><td class="desc">Declares an interface for visitors over Wick statements </td></tr>
+<tr id="row_2_6_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_statement_1_1_variable.html" target="_self">Variable</a></td><td class="desc">A variable declaration/definition like variable a = 2 </td></tr>
 </table>
 </div><!-- directory -->
 </div><!-- contents -->

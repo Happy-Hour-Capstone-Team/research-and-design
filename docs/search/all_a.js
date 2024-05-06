@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['operator_3d_3d_0',['operator==',['../struct_token.html#ab36730a1dcc0a321883548bcad698bf2',1,'Token::operator==(const Type rhs) const'],['../struct_token.html#aed498ca22b2fb168c84a4397b0f40f07',1,'Token::operator==(const Token &amp;rhs) const']]]
+  ['max_0',['max',['../namespacenative.html#a4fde5d8f39d5571774df4024eab3b3f3',1,'native']]],
+  ['min_1',['min',['../namespacenative.html#a9c28598278c92caecd61c7ec5954cb64',1,'native']]]
 ];

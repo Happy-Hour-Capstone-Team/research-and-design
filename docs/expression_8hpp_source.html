@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.7"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>The Wick Interpreter: C:/Users/Braden Pierce/Documents/GitHub/wick-interpreter/include/expression.hpp Source File</title>
+<title>The Wick Programming Language: include/expression.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">The Wick Interpreter
+   <div id="projectname">The Wick Programming Language
    </div>
   </td>
  </tr>
@@ -101,26 +101,26 @@ $(document).ready(function(){initNavTree('expression_8hpp_source.html',''); init
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment">// Forward declaration in order to implement functions/classes.</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="namespace_statement.html">    9</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespace_statement.html">Statement</a> {</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespace_statement.html">Statement</a> {</div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">struct </span><a class="code hl_namespace" href="namespace_statement.html">Statement</a>;</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_statement_1_1_variable.html">Variable</a>;</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">struct </span>Variable;</div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">using </span>StatementUPtr = std::unique_ptr&lt;Statement&gt;;</div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>} <span class="comment">// namespace Statement</span></div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="namespace_expression.html">   19</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespace_expression.html">Expression</a> {</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespace_expression.html">Expression</a> {</div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="comment">// Forward declares in order to declare visit methods.</span></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_expression_1_1_literal.html">Literal</a>;</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_expression_1_1_unary.html">Unary</a>;</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_expression_1_1_binary.html">Binary</a>;</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_expression_1_1_group.html">Group</a>;</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_expression_1_1_ternary.html">Ternary</a>;</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_expression_1_1_variable.html">Variable</a>;</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_expression_1_1_assignment.html">Assignment</a>;</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_expression_1_1_call.html">Call</a>;</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_expression_1_1_lambda.html">Lambda</a>;</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_expression_1_1_prototype.html">Prototype</a>;</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_expression_1_1_set.html">Set</a>;</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_expression_1_1_get.html">Get</a>;</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keyword">struct </span>Literal;</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">struct </span>Unary;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">struct </span>Binary;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keyword">struct </span>Group;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">struct </span>Ternary;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">struct </span>Variable;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">struct </span>Assignment;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">struct </span>Call;</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">struct </span>Lambda;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keyword">struct </span>Prototype;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">struct </span>Set;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keyword">struct </span>Get;</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="struct_expression_1_1_expression.html">   38</a></span><span class="keyword">struct </span><a class="code hl_namespace" href="namespace_expression.html">Expression</a> {</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="class_expression_1_1_expression_1_1_visitor.html">   43</a></span>  <span class="keyword">class </span><a class="code hl_class" href="class_expression_1_1_expression_1_1_visitor.html">Visitor</a> {</div>
@@ -291,7 +291,7 @@ $(document).ready(function(){initNavTree('expression_8hpp_source.html',''); init
 <div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span>};</div>
 <div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span> </div>
 <div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span>} <span class="comment">// namespace Expression</span></div>
-<div class="ttc" id="aclass_environment_html"><div class="ttname"><a href="class_environment.html">Environment</a></div><div class="ttdoc">This class deals with memory environments; where variables, constants, and subroutines are associated...</div><div class="ttdef"><b>Definition</b> <a href="environment_8hpp_source.html#l00012">environment.hpp:12</a></div></div>
+<div class="ttc" id="aclass_environment_html"><div class="ttname"><a href="class_environment.html">Environment</a></div><div class="ttdoc">This class deals with memory environments; where variables, constants, and subroutines are associated...</div><div class="ttdef"><b>Definition</b> <a href="environment_8hpp_source.html#l00013">environment.hpp:13</a></div></div>
 <div class="ttc" id="aclass_expression_1_1_expression_1_1_visitor_html"><div class="ttname"><a href="class_expression_1_1_expression_1_1_visitor.html">Expression::Expression::Visitor</a></div><div class="ttdoc">Declares an interface for visitors over Wick expressions.</div><div class="ttdef"><b>Definition</b> <a href="expression_8hpp_source.html#l00043">expression.hpp:43</a></div></div>
 <div class="ttc" id="aclass_expression_1_1_expression_1_1_visitor_html_a21afb196e0d2e2ba8f92440f8dac428f"><div class="ttname"><a href="class_expression_1_1_expression_1_1_visitor.html#a21afb196e0d2e2ba8f92440f8dac428f">Expression::Expression::Visitor::visit</a></div><div class="ttdeci">virtual std::optional&lt; std::any &gt; visit(const Group &amp;group, Environment *env)=0</div><div class="ttdoc">Visits a grouped expression (expressions within a set of parentheses).</div></div>
 <div class="ttc" id="aclass_expression_1_1_expression_1_1_visitor_html_a55c6791d7e5c3fffa3f30c59260e8b80"><div class="ttname"><a href="class_expression_1_1_expression_1_1_visitor.html#a55c6791d7e5c3fffa3f30c59260e8b80">Expression::Expression::Visitor::visit</a></div><div class="ttdeci">virtual std::optional&lt; std::any &gt; visit(const Get &amp;get, Environment *env)=0</div><div class="ttdoc">Visits a get expression (as in getting a prototype property).</div></div>
@@ -305,8 +305,8 @@ $(document).ready(function(){initNavTree('expression_8hpp_source.html',''); init
 <div class="ttc" id="aclass_expression_1_1_expression_1_1_visitor_html_ae523abd2c85c4465b61f07244030db88"><div class="ttname"><a href="class_expression_1_1_expression_1_1_visitor.html#ae523abd2c85c4465b61f07244030db88">Expression::Expression::Visitor::visit</a></div><div class="ttdeci">virtual std::optional&lt; std::any &gt; visit(const Unary &amp;unary, Environment *env)=0</div><div class="ttdoc">Visits a unary expression.</div></div>
 <div class="ttc" id="aclass_expression_1_1_expression_1_1_visitor_html_ae82324776f84aa4f71ef38cbdb680802"><div class="ttname"><a href="class_expression_1_1_expression_1_1_visitor.html#ae82324776f84aa4f71ef38cbdb680802">Expression::Expression::Visitor::visit</a></div><div class="ttdeci">virtual std::optional&lt; std::any &gt; visit(const Call &amp;call, Environment *env)=0</div><div class="ttdoc">Visits a call expression.</div></div>
 <div class="ttc" id="aclass_expression_1_1_expression_1_1_visitor_html_afc5da5841163bd15bbb243cc47545514"><div class="ttname"><a href="class_expression_1_1_expression_1_1_visitor.html#afc5da5841163bd15bbb243cc47545514">Expression::Expression::Visitor::visit</a></div><div class="ttdeci">virtual std::optional&lt; std::any &gt; visit(const Set &amp;set, Environment *env)=0</div><div class="ttdoc">Visits a set expression (as in setting a prototype property to something else).</div></div>
-<div class="ttc" id="anamespace_expression_html"><div class="ttname"><a href="namespace_expression.html">Expression</a></div><div class="ttdoc">Contains the grammar rules for Wick expressions.</div><div class="ttdef"><b>Definition</b> <a href="expression_8hpp_source.html#l00019">expression.hpp:19</a></div></div>
-<div class="ttc" id="anamespace_statement_html"><div class="ttname"><a href="namespace_statement.html">Statement</a></div><div class="ttdoc">Contains the grammar rules for Wick statements.</div><div class="ttdef"><b>Definition</b> <a href="expression_8hpp_source.html#l00009">expression.hpp:9</a></div></div>
+<div class="ttc" id="anamespace_expression_html"><div class="ttname"><a href="namespace_expression.html">Expression</a></div><div class="ttdoc">Contains the grammar rules for Wick expressions.</div><div class="ttdef"><b>Definition</b> <a href="expression_8cpp_source.html#l00003">expression.cpp:3</a></div></div>
+<div class="ttc" id="anamespace_statement_html"><div class="ttname"><a href="namespace_statement.html">Statement</a></div><div class="ttdoc">Contains the grammar rules for Wick statements.</div><div class="ttdef"><b>Definition</b> <a href="statement_8cpp_source.html#l00003">statement.cpp:3</a></div></div>
 <div class="ttc" id="astruct_expression_1_1_assignment_html"><div class="ttname"><a href="struct_expression_1_1_assignment.html">Expression::Assignment</a></div><div class="ttdoc">An assignment expression like a = 1.</div><div class="ttdef"><b>Definition</b> <a href="expression_8hpp_source.html#l00301">expression.hpp:301</a></div></div>
 <div class="ttc" id="astruct_expression_1_1_assignment_html_abb86bad86a3137a930df7ae22ce47981"><div class="ttname"><a href="struct_expression_1_1_assignment.html#abb86bad86a3137a930df7ae22ce47981">Expression::Assignment::accept</a></div><div class="ttdeci">std::optional&lt; std::any &gt; accept(Visitor *visitor, Environment *env) override</div><div class="ttdoc">The accept method for all Wick expressions.</div><div class="ttdef"><b>Definition</b> <a href="expression_8cpp_source.html#l00052">expression.cpp:52</a></div></div>
 <div class="ttc" id="astruct_expression_1_1_binary_html"><div class="ttname"><a href="struct_expression_1_1_binary.html">Expression::Binary</a></div><div class="ttdoc">A binary expression like a + b or x * y.</div><div class="ttdef"><b>Definition</b> <a href="expression_8hpp_source.html#l00223">expression.hpp:223</a></div></div>
@@ -333,7 +333,6 @@ $(document).ready(function(){initNavTree('expression_8hpp_source.html',''); init
 <div class="ttc" id="astruct_expression_1_1_variable_html"><div class="ttname"><a href="struct_expression_1_1_variable.html">Expression::Variable</a></div><div class="ttdoc">A variable expression like x or y.</div><div class="ttdef"><b>Definition</b> <a href="expression_8hpp_source.html#l00284">expression.hpp:284</a></div></div>
 <div class="ttc" id="astruct_expression_1_1_variable_html_a8ad9d206bb1054dfe54ad93011a598cb"><div class="ttname"><a href="struct_expression_1_1_variable.html#a8ad9d206bb1054dfe54ad93011a598cb">Expression::Variable::Variable</a></div><div class="ttdeci">Variable(const Token &amp;iVariable)</div><div class="ttdoc">Constructs a new variable expression.</div></div>
 <div class="ttc" id="astruct_expression_1_1_variable_html_ac537860cd30e7265611404f61e9c25a8"><div class="ttname"><a href="struct_expression_1_1_variable.html#ac537860cd30e7265611404f61e9c25a8">Expression::Variable::accept</a></div><div class="ttdeci">std::optional&lt; std::any &gt; accept(Visitor *visitor, Environment *env) override</div><div class="ttdoc">The accept method for all Wick expressions.</div><div class="ttdef"><b>Definition</b> <a href="expression_8cpp_source.html#l00045">expression.cpp:45</a></div></div>
-<div class="ttc" id="astruct_statement_1_1_variable_html"><div class="ttname"><a href="struct_statement_1_1_variable.html">Statement::Variable</a></div><div class="ttdoc">A variable declaration/definition like variable a = 2.</div><div class="ttdef"><b>Definition</b> <a href="statement_8hpp_source.html#l00121">statement.hpp:121</a></div></div>
 <div class="ttc" id="astruct_token_html"><div class="ttname"><a href="struct_token.html">Token</a></div><div class="ttdoc">Structure for representing Wick tokens.</div><div class="ttdef"><b>Definition</b> <a href="token_8hpp_source.html#l00011">token.hpp:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

@@ -1,5 +1,9 @@
 var searchData=
 [
-  ['unary_0',['Unary',['../struct_expression_1_1_unary.html#ad377a68eb93022647600d7d08f61084a',1,'Expression::Unary']]],
-  ['unionize_1',['unionize',['../class_environment.html#a86de24a06977e7b556198736d7edea7b',1,'Environment::unionize()'],['../class_persistent_map.html#a598bd39d4b48ee8718c24d2d5669f353',1,'PersistentMap::unionize()']]]
+  ['tan_0',['tan',['../namespacenative.html#a0bf273e35e4dd5f34ba3e8e896a51293',1,'native']]],
+  ['tanh_1',['tanh',['../namespacenative.html#a59bf789270ae5412159784f12fe97814',1,'native']]],
+  ['ternary_2',['Ternary',['../struct_expression_1_1_ternary.html#a502c154e1c4d9073ddf69c9b038442ed',1,'Expression::Ternary']]],
+  ['time_3',['time',['../namespacenative.html#a151beedac6abb7ad1748f133b1a93446',1,'native']]],
+  ['tokenize_4',['tokenize',['../class_scanner.html#a51f273eeecbf6beed4155854df9fe287',1,'Scanner']]],
+  ['truncate_5',['truncate',['../namespacenative.html#ab47ebdd11f632eb6db07cd6e7f820528',1,'native']]]
 ];

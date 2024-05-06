@@ -38,6 +38,11 @@ struct Prototypable {
   Prototypable copy();
 };
 
+/**
+ * @brief Contains all of the native implementations of various commonly used 
+ * subroutines and constants provided to users. 
+ * 
+ */
 namespace native {
 /**
  * @brief Does nothing. Used mostly as a helper internally, could also be used
