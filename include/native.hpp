@@ -39,9 +39,9 @@ struct Prototypable {
 };
 
 /**
- * @brief Contains all of the native implementations of various commonly used 
- * subroutines and constants provided to users. 
- * 
+ * @brief Contains all of the native implementations of various commonly used
+ * subroutines and constants provided to users.
+ *
  */
 namespace native {
 /**
